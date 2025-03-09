@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Backend\PaymentController as BackendPaymentController;
+use App\Http\Controllers\Backend\QuestionController as BackendQuestionController;
+use App\Http\Controllers\Backend\TryoutController as BackendTryoutController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\DownloadController;
 use App\Http\Controllers\Frontend\ExamController;
@@ -74,6 +76,21 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
     Route::group(['prefix' => 'payment', 'as' => 'payment.'], function (){
         Route::get('/', [BackendPaymentController::class,'index'])->name('index');
         Route::post('update', [BackendPaymentController::class,'update'])->name('update');
+    });
+
+    Route::group(['prefix' => 'tryout', 'as' => 'tryout.'], function (){
+        Route::get('/', [BackendTryoutController::class,'index'])->name('index');
+        Route::get('create', [BackendTryoutController::class,'create'])->name('create');
+        Route::post('store', [BackendTryoutController::class,'store'])->name('store');
+        Route::get('{id}/edit', [BackendTryoutController::class, 'edit'])->name('edit');
+        Route::put('{id}', [BackendTryoutController::class, 'update'])->name('update');
+        Route::delete('{id}', [BackendTryoutController::class, 'destroy'])->name('destroy');
+
+        // QUESTION
+        Route::group(['prefix' => 'question', 'as' => 'question.'], function (){
+            Route::get('{tryout_id}', [BackendQuestionController::class,'index'])->name('index');
+        });
+
     });
 });
     

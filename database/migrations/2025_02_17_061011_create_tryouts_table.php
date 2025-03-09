@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('title');
             $table->enum('category', ['Tryout', 'Latihan TWK', 'Latihan TIU', 'Latihan TKP']);
             $table->enum('access_type', ['free','premium'])->default('free');
+            $table->enum('status', ['draft', 'publish', 'archived'])->default('draft');
+            $table->integer('duration')->default(100); // dalam menit
             $table->foreignId('tryout_source_id')->constrained('tryout_sources')->onDelete('cascade')->nullable();
             $table->timestamps();
         });

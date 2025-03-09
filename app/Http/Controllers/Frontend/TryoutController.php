@@ -16,7 +16,7 @@ use Carbon\Carbon;
 class TryoutController extends Controller
 {
     public function index(){
-        $tryouts = Tryout::orderBy('id','DESC')->get();
+        $tryouts = Tryout::where('status','publish')->orderBy('id','DESC')->get();
 
         return view('frontend.tryout.index',compact('tryouts'));
     }

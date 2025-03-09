@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id(); // ID unik untuk soal
-            $table->foreignId('tryout_id')->constrained('tryouts')->onDelete('cascade'); // ID tryout terkait
-            $table->foreignId('topic_id')->constrained('question_topics')->onDelete('cascade'); // ID topik soal
+            $table->foreignId('tryout_id')->nullable()->constrained('tryouts')->onDelete('set null'); // ID tryout terkait
+            $table->foreignId('topic_id')->nullable()->constrained('question_topics')->onDelete('set null'); // ID topik soal
             $table->text('question'); // Teks soal
             $table->text('explanation'); // Penjelasan jawaban
             $table->timestamps(); // Kolom created_at dan updated_at

@@ -17,6 +17,6 @@ class AdminMiddleware
         }
 
         // Jika bukan admin, redirect ke halaman lain (misal: dashboard)
-        return back()->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        return redirect()->route('dashboard.index')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
 }
