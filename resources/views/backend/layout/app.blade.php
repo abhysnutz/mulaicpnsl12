@@ -15,6 +15,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{{ asset('assets/backend/plugins/fontawesome/css/all.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('assets/backend/css/adminlte.min.css') }}">
+  
+  <link rel="stylesheet" href="{{ asset('assets/backend/plugins/summernote/summernote-bs4.min.css') }}">
+
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -196,5 +201,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{ asset('assets/backend/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/backend/js/adminlte.min.js') }}"></script>
+
+<script src="{{ asset('assets/backend/plugins/summernote/summernote-bs4.min.js') }}"></script>
+
+<script>
+  $(document).ready(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+  });
+</script>
+@stack('js-bottom')
 </body>
 </html>

@@ -9,7 +9,9 @@ use App\Http\Controllers\Frontend\ExamController;
 use App\Http\Controllers\frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\TryoutController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 // START FRONTEND
 Route::get('/', function () {
@@ -87,11 +89,27 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::delete('{id}', [BackendTryoutController::class, 'destroy'])->name('destroy');
 
         // QUESTION
-        Route::group(['prefix' => 'question', 'as' => 'question.'], function (){
-            Route::get('{tryout_id}', [BackendQuestionController::class,'index'])->name('index');
+        Route::group(['prefix' => '{tryout_id}/question', 'as' => 'question.'], function (){
+            Route::get('/', [BackendQuestionController::class,'index'])->name('index');
+            Route::get('create', [BackendQuestionController::class,'create'])->name('create');
+            Route::post('store', [BackendQuestionController::class,'store'])->name('store');
+            Route::get('{id}/edit', [BackendQuestionController::class, 'edit'])->name('edit');
+            Route::delete('{id}', [BackendQuestionController::class, 'destroy'])->name('destroy');
+
         });
 
     });
+});
+
+Route::post('/upload-image', function (Request $request) {
+    $request->validate([
+        'file' => 'required|image|max:2048', // Maksimal 2MB
+    ]);
+
+    $path = $request->file('file')->store('public/uploads');
+    $url = Storage::url($path);
+
+    return response()->json(['imageUrl' => $url]);
 });
     
 

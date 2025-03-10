@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">{{ $content }} Management</h1>
+                <h1 class="m-0">{!! str_replace('|','<br>',$content) !!} Management</h1>
             </div>
             <!-- /.col -->
             <div class="col-sm-6">
@@ -11,7 +11,7 @@
                     <li class="breadcrumb-item">
                         <a href="#">Home</a>
                     </li>
-                    <li class="breadcrumb-item active">{{ $content }} Management</li>
+                    <li class="breadcrumb-item active">{!! str_replace('|','/',$content) !!} Management</li>
                 </ol>
             </div>
             <!-- /.col -->
@@ -35,5 +35,11 @@
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
     </div>
 @endif

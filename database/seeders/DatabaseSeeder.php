@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TryoutSourceTableSeeder::class);
         $this->call(QuestionTopicsSeeder::class);
         $this->call(TryoutsSeeder::class);
-        $this->call(QuestionAnswerSeeder::class);
+        // $this->call(QuestionAnswerSeeder::class);
         // $this->call(QuestionSeeder::class);
         // $this->call(AnswerSeeder::class);
     }

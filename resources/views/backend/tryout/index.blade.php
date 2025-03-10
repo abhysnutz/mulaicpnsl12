@@ -28,7 +28,6 @@
                                         <th>Status</th>
                                         <th>Date</th>
                                         <th>Action</th>
-                                        <th>Update Question</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -40,22 +39,25 @@
                                                 <td>{{ $tryout?->access_type ?? '-' }}</td>
                                                 <td>{{ $tryout?->category ?? '-' }}</td>
                                                 <td>{{ $tryout?->source?->name ?? '-' }}</td>
-                                                <td>{{ $tryout?->status ?? '-' }}</td>
+                                                <td>
+                                                    <span class="@if($tryout?->status == 'draft') btn-warning @elseif($tryout?->status == 'publish') btn-success @else btn-danger @endif btn-sm text-bold text-capitalize">
+                                                        {{ $tryout?->status ?? '-' }}
+                                                    </span>
+                                                </td>
                                                 <td>{{ \Carbon\Carbon::parse($tryout?->created_at)->translatedFormat('d F Y | h:i') }}</td>
                                                 <td class="d-flex align-items-center">
                                                     <a href="{{ route('console.tryout.edit', $tryout?->id) }}" class="btn btn-warning btn-sm mr-2">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form action="{{ route('console.tryout.destroy', $tryout->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tryout ini?');">
+                                                    <form class="mr-2" action="{{ route('console.tryout.destroy', $tryout->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tryout ini?');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                                                     </form>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-info btn-sm ms-auto me-2">
+                                               
+                                                    <a href="{{ route('console.tryout.question.index', $tryout->id) }}" class="btn btn-info btn-sm">
                                                         <strong> <span style="letter-spacing: 0.05em;">QUESTION</span> </strong>
-                                                    </button>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach

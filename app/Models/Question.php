@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
 {
-    protected $guards = [];
+    protected $fillable = ['order','tryout_id','topic_id','question','explanation'];
 
     public function tryout(){
         return $this->belongsTo(Tryout::class);
