@@ -27,7 +27,7 @@ class QuestionAnswerSeeder extends Seeder
             $question = Question::create([
                 'order' => $lastOrder + $i,
                 'tryout_id' => 1, // Sesuaikan dengan tryout yang ada
-                'topic_id' => ($category == 'TWK' ? rand(1, 6) : (($category == 'TIU') ? rand(7,12) : rand(13,17))), // Random topic
+                'topic_id' => ($category == 'TWK' ? rand(1, 5) : (($category == 'TIU') ? rand(6,15) : rand(16,21))), // Random topic
                 'question' => "Ini adalah soal $category nomor " . ($lastOrder + $i),
                 'explanation' => "Penjelasan soal nomor " . ($lastOrder + $i),
             ]);

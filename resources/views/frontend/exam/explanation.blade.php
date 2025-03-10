@@ -202,7 +202,7 @@
                     
                     $('#topic-question').text(reply?.question?.topic)
 
-                    $(".question").text(reply?.question?.question).data('id',reply?.question?.id);
+                    $(".question").html(reply?.question?.question).data('id',reply?.question?.id);
 
                     $('#your-answer').text(reply?.check_answer?.answer?.option ? reply?.check_answer?.answer?.option : "-");
 

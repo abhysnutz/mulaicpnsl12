@@ -14,29 +14,56 @@ class QuestionTopicsSeeder extends Seeder
     {
         $topics = [
             // TWK (Tes Wawasan Kebangsaan)
-            ['category' => 'TWK', 'name' => 'Pancasila'],
-            ['category' => 'TWK', 'name' => 'UUD 1945'],
-            ['category' => 'TWK', 'name' => 'Bhinneka Tunggal Ika'],
-            ['category' => 'TWK', 'name' => 'Sejarah Indonesia'],
-            ['category' => 'TWK', 'name' => 'Wawasan Kebangsaan'],
-            ['category' => 'TWK', 'name' => 'Negara dan Pemerintahan'],
+            ['category' => 'TWK', 'name' => 'Nasionalisme'],
+            ['category' => 'TWK', 'name' => 'Integritas'],
+            ['category' => 'TWK', 'name' => 'Bela Negara'],
+            ['category' => 'TWK', 'name' => 'Pilar Negara'],
+            ['category' => 'TWK', 'name' => 'Bahasa Indonesia'],
             
             // TIU (Tes Intelegensi Umum)
-            ['category' => 'TIU', 'name' => 'Analogi'],
-            ['category' => 'TIU', 'name' => 'Silogisme'],
-            ['category' => 'TIU', 'name' => 'Aritmetika'],
-            ['category' => 'TIU', 'name' => 'Deret Angka'],
-            ['category' => 'TIU', 'name' => 'Pola Gambar'],
-            ['category' => 'TIU', 'name' => 'Pemahaman Bacaan'],
+            ['category' => 'TIU', 'name' => 'Verbal (Analogi)'],
+            ['category' => 'TIU', 'name' => 'Verbal (Silogisme)'],
+            ['category' => 'TIU', 'name' => 'Verbal (Logika Analitik)'],
+            ['category' => 'TIU', 'name' => 'Numerik (Hitung Cepat)'],
+            ['category' => 'TIU', 'name' => 'Numerik (Deret)'],
+            ['category' => 'TIU', 'name' => 'Numerik (Perbandingan)'],
+            ['category' => 'TIU', 'name' => 'Numerik (Soal Cerita)'],
+            ['category' => 'TIU', 'name' => 'Figural (Analogi Gambar)'],
+            ['category' => 'TIU', 'name' => 'Figural (Ketidaksamaan)'],
+            ['category' => 'TIU', 'name' => 'Figural (Serial)'],
             
             // TKP (Tes Karakteristik Pribadi)
+            ['category' => 'TKP', 'name' => 'Profesionalisme'],
             ['category' => 'TKP', 'name' => 'Pelayanan Publik'],
             ['category' => 'TKP', 'name' => 'Jejaring Kerja'],
             ['category' => 'TKP', 'name' => 'Sosial Budaya'],
-            ['category' => 'TKP', 'name' => 'Teknologi Informasi'],
-            ['category' => 'TKP', 'name' => 'Profesionalisme'],
+            ['category' => 'TKP', 'name' => 'Teknologi Informasi dan Komunikasi'],
+            ['category' => 'TKP', 'name' => 'Anti Radikalisme'],
         ];
 
         DB::table('question_topics')->insert($topics);
+
+
+        // 6 TWK - NASIONALISME
+        // 6 TWK - INTEGRITAS
+        // 6 TWK - BELA NEGARA
+        // 6 TWK - PILAR NEGARA
+        // 6 TWK - BAHASA INDONESIA
+        // 4 TIU - VERBAL (ANALOGI)
+        // 3 TIU - VERBAL (SILOGISME)
+        // 4 TIU - VERBAL (LOGIKA ANALITIK)
+        // 5 TIU - NUMERIK (HITUNG CEPAT) (GAMBAR)
+        // 5 TIU - NUMERIK (DERET)
+        // 4 TIU - NUMERIK (PERBANDINGAN) (GAMBAR)
+        // 4 TIU - NUMERIK (SOAL CERITA) (GAMBAR)
+        // 2 TIU - FIGURAL (ANALOGI GAMBAR) (GAMBAR)
+        // 2 TIU - FIGURAL (KETIDAKSAMAAN) (GAMBAR)
+        // 2 TIU - FIGURAL (SERIAL) (GAMBAR)
+        // 8 TKP - PROFESIONALISME
+        // 8 TKP - PELAYANAN PUBLIK
+        // 8 TKP - JEJARING KERJA
+        // 7 TKP - SOSIAL BUDAYA
+        // 7 TKP - TEKNOLOGI INFORMASI DAN KOMUNIKASI
+        // 7 TKP - ANTI RADIKALISME
     }
 }

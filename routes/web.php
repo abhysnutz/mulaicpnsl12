@@ -94,6 +94,7 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
             Route::get('create', [BackendQuestionController::class,'create'])->name('create');
             Route::post('store', [BackendQuestionController::class,'store'])->name('store');
             Route::get('{id}/edit', [BackendQuestionController::class, 'edit'])->name('edit');
+            Route::put('{id}', [BackendQuestionController::class, 'update'])->name('update');
             Route::delete('{id}', [BackendQuestionController::class, 'destroy'])->name('destroy');
 
         });

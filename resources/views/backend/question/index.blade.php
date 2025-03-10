@@ -32,14 +32,14 @@
                                         @foreach ($questions as $question)
                                             <tr class="align-middle">
                                                 <td>{{ $question?->order }}</td>
-                                                <td>{{ $question?->question }}</td>
+                                                <td>{!! $question?->question !!}</td>
                                                 <td>{{ $question?->topic?->category }}</td>
                                                 <td>{{ $question?->topic?->name }}</td>
                                                 <td class="d-flex align-items-center">
                                                     <a href="{{ route('console.tryout.question.edit', [$tryout?->id,$question->id]) }}" class="btn btn-warning btn-sm mr-2">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form class="mr-2" action="{{ route('console.tryout.question.destroy', [$tryout?->id,$question->id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tryout ini?');">
+                                                    <form class="mr-2" action="{{ route('console.tryout.question.destroy', [$tryout?->id,$question->id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus question ini?');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>

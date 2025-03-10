@@ -274,7 +274,7 @@
                     
                     $('#topic-question').text(reply?.question?.topic)
 
-                    $(".question").text(reply?.question?.question).data('id',reply?.question?.id);
+                    $(".question").html(reply?.question?.question).data('id',reply?.question?.id);
                     
                     // // Tampilkan opsi jawaban
                     let answers = "";
