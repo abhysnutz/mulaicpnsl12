@@ -8,6 +8,9 @@ class Question extends Model
 {
     protected $fillable = ['order','tryout_id','topic_id','question','explanation'];
 
+    public $timestamps = true;
+
+
     public function tryout(){
         return $this->belongsTo(Tryout::class);
     }

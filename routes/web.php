@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\PaymentController as BackendPaymentController;
 use App\Http\Controllers\Backend\QuestionController as BackendQuestionController;
 use App\Http\Controllers\Backend\TryoutController as BackendTryoutController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Frontend\TryoutController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 // START FRONTEND
 Route::get('/', function () {
@@ -65,11 +67,11 @@ Route::get('petunjuk_upgrade', function(){ return view('frontend.petunjuk_upgrad
 
 // START BACKEND
 Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingleSession'], 'as' => 'console.'], function() {
-    Route::get('/', function(){ return redirect()->route('console.dashboard'); });
+    Route::get('/', function(){ return redirect()->route('console.dashboard.index'); });
 
-    Route::get('dashboard', function(){
-        return 'hello Dashboard';
-    })->name('dashboard');
+    Route::group(['prefix' => 'dashboard','as' => 'dashboard.'], function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('index');
+    });
     
     Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
         Route::get('/', [UserController::class,'index'])->name('index');

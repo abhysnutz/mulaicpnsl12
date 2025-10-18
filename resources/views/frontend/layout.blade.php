@@ -40,7 +40,7 @@
                                 </svg>
                             </button>
                             <div class="flex items-center px-4 sm:hidden">
-                                <img src="https://ayopppk.com/images/ayopppk.svg?dd3e832aef37338c5f2fc59f875154e1" alt="ayopppk" class="h-10 w-full">
+                                <img src="{{ asset('assets/frontend/image/logo.png') }}" alt="mulaicpns" class="h-10 w-full">
                             </div>
                             <div class="flex-1 px-4 flex justify-between">
                                 <div class="flex-1 flex"></div>

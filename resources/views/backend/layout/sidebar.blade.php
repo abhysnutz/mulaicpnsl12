@@ -19,7 +19,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="{{ route('console.dashboard') }}" class="nav-link {{ Request::is('console/dashboard*') ? 'active' : '' }}">
+                    <a href="{{ route('console.dashboard.index') }}" class="nav-link {{ Request::is('console/dashboard*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-house"></i>
                         <p>Dashboard</p>
                     </a>
@@ -69,7 +69,7 @@
         <nav class="mt-2">
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="{{ route('console.dashboard') }}" class="nav-link {{ Request::is('console/dashboard*') ? 'active' : '' }}">
+                    <a href="{{ route('console.dashboard.index') }}" class="nav-link {{ Request::is('console/dashboard*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-house"></i>
                         <p>Dashboard</p>
                     </a>

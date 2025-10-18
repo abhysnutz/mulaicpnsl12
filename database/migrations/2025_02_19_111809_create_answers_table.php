@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('question_id')->constrained('questions')->onDelete('cascade'); // ID soal terkait
             $table->char('option', 1); // Option Soal
             $table->string('answer'); // Opsi jawaban
-            $table->integer('score'); // Skor untuk jawaban
+            $table->integer('score')->default(0); // Skor untuk jawaban
             $table->timestamps(); // Kolom created_at dan updated_at
         });
     }

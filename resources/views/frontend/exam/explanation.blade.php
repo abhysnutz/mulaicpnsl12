@@ -238,7 +238,9 @@
                     
                     $(".options").html(answers);
 
-                    $(".explanation").html(reply?.question?.explanation)
+                    $(".explanation").html(
+                        reply?.question?.explanation?.replace(/\n/g, "<br>")
+                    );
 
                     // Atur tombol navigasi
                     $("#prev-button").toggle(index > 0);

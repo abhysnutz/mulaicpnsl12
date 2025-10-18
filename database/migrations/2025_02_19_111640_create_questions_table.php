@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('tryout_id')->nullable()->constrained('tryouts')->onDelete('set null'); // ID tryout terkait
             $table->foreignId('topic_id')->nullable()->constrained('question_topics')->onDelete('set null'); // ID topik soal
             $table->text('question'); // Teks soal
-            $table->text('explanation'); // Penjelasan jawaban
+            $table->text('explanation')->nullable();
             $table->timestamps(); // Kolom created_at dan updated_at
         });
     }

@@ -169,9 +169,11 @@
 <div class="hidden lg:flex lg:flex-shrink-0">
     <div class="flex flex-col w-64">
         <div class="flex flex-col flex-grow border-r border-gray-200 pt-5 pb-4 bg-white overflow-y-auto">
-            <div class="flex items-center flex-shrink-0 px-4">
-                <img src="https://ayopppk.com/images/ayopppk.svg?dd3e832aef37338c5f2fc59f875154e1" alt="AYOPPPK" class="h-8 w-full">
-            </div>
+            <div class="flex items-center justify-center flex-shrink-0 px-4">
+    <img src="http://mulaicpnsid.test/assets/frontend/image/logo.png" 
+         alt="AYOPPPK" 
+         class="h-12">
+</div>
             <div class="mt-5 flex-grow flex flex-col">
                 <nav class="flex-1 px-2 bg-white space-y-1">
                     <a href="{{ route('dashboard.index') }}" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
@@ -232,15 +234,15 @@
                 </nav>
             </div>
             <div class="flex-shrink-0 flex p-4">
-                <div class="flex-shrink-0 group block bg-indigo-600 rounded-lg shadow-lg w-full p-2">
+                <div class="flex-shrink-0 group block bg-amber-500 rounded-lg shadow-lg w-full p-2">
                     <div class="flex w-full justify-center -mt-8">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-12 w-12 bg-white rounded-full text-indigo-600 borde border-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-12 w-12 bg-white rounded-full text-amber-500 borde border-white">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
                     <div class="space-y-3 mt-3">
                         <p class="text-sm font-medium text-white text-center">Apabila Anda mengalami kesulitan, klik tombol berikut</p>
-                        <a href="https://api.whatsapp.com/send/?phone=6285183171763&amp;text=Halo%20kak,%20saya%20mau%20tanya%20tentang%20&amp;app_absent=0" target="_blank" class="inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-5 py-1.5 bg-indigo-200 font-medium text-gray-700 hover:bg-indigo-300 focus:outline-none focus:ring-0 text-sm">Hubungi Kami</a>
+                        <a href="https://api.whatsapp.com/send/?phone=6285183171763&amp;text=Halo%20kak,%20saya%20mau%20tanya%20tentang%20&amp;app_absent=0" target="_blank" class="inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-5 py-1.5 bg-amber-200 font-medium text-gray-700 hover:bg-amber-300 focus:outline-none focus:ring-0 text-sm">Hubungi Kami</a>
                     </div>
                 </div>
             </div>
