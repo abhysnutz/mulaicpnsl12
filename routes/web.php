@@ -96,6 +96,7 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
             Route::get('{id}/edit', [BackendQuestionController::class, 'edit'])->name('edit');
             Route::put('{id}', [BackendQuestionController::class, 'update'])->name('update');
             Route::delete('{id}', [BackendQuestionController::class, 'destroy'])->name('destroy');
+            Route::post('image', [BackendQuestionController::class, 'image'])->name('image');
 
         });
 
@@ -107,7 +108,7 @@ Route::post('/upload-image', function (Request $request) {
         'file' => 'required|image|max:2048', // Maksimal 2MB
     ]);
 
-    $path = $request->file('file')->store('public/uploads');
+    $path = $request->file('file')->store('uploads');
     $url = Storage::url($path);
 
     return response()->json(['imageUrl' => $url]);

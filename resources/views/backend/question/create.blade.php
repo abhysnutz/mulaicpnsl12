@@ -108,7 +108,7 @@
             data.append("file", file);
             
             $.ajax({
-                url: "/upload-image",  // Ganti dengan URL backend untuk upload gambar
+                url: "{{ route('console.tryout.question.image',$tryout->id) }}",  // Ganti dengan URL backend untuk upload gambar
                 method: "POST",
                 data: data,
                 processData: false,

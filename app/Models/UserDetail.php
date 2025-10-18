@@ -14,12 +14,12 @@ class UserDetail extends Model
         'user_id',
         'province_id',
         'city_id',
-        'date_of_birth',
         'address',
         'education',
         'birth',
         'phone',
-        'major'
+        'major',
+        'referrer'
     ];
 
 

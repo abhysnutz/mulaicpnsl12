@@ -9,6 +9,7 @@ use App\Models\QuestionTopic;
 use App\Models\Tryout;
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Storage;
 
 class QuestionController extends Controller
 {
@@ -150,5 +151,16 @@ class QuestionController extends Controller
         $question->delete();
 
         return redirect()->route('console.tryout.question.index',[$tryout_id,$id])->with('success', 'Soal berhasil dihapus!');
+    }
+
+    public function image(Request $request){
+        $request->validate([
+            'file' => 'required|image|max:2048', // Maksimal 2MB
+        ]);
+    
+        $path = $request->file('file')->store('uploads');
+        $url = Storage::url($path);
+    
+        return response()->json(['imageUrl' => $url]);
     }
 }

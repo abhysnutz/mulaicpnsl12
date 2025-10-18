@@ -20,18 +20,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('major')->nullable();
             $table->text('address')->nullable();
-            $table->enum('education', [
-                'SD',
-                'SMP',
-                'SMA',
-                'D1',
-                'D2',
-                'D3',
-                'D4',
-                'S1',
-                'S2',
-                'S3',
-            ])->nullable();
+            $table->enum('education', ['SD','SMP','SMA','D1','D2','D3','D4','S1','S2','S3'])->nullable();
+            $table->string('referrer');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

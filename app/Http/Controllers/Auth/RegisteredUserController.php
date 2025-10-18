@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'confirmed', 'unique:'.User::class],
-            'telepon' => ['required', 'numeric', 'digits_between:9,13'],
+            // 'telepon' => ['required', 'numeric', 'digits_between:9,13'],
             'password' => ['required', 'confirmed'],
         ]);
 
@@ -41,6 +42,14 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        if($user){
+            UserDetail::create([
+                'id' => $user?->id,
+                'user_id' => $user?->id,
+                'referrer' => $request->referrer ?? 'Google'
+            ]);
+        }
 
         event(new Registered($user));
 
