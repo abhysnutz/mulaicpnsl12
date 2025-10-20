@@ -25,13 +25,13 @@
                                             @foreach ($exams as $exam)
                                                 <tr>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $loop?->iteration }}</td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-600 font-semibold sm:text-gray-500">
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-amber-600 font-semibold sm:text-gray-500">
                                                         <a href="{{ route('tryout.result.statistic',$exam->id) }}" class="sm:no-underline underline">{{ $exam?->tryout?->title ?? '-' }}</a>
                                                     </td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($exam->updated_at)->format('d M Y, h:i') }} WIB</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $exam?->result?->total_score }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                        <a href="{{ route('tryout.result.statistic',$exam->id) }}" class="text-indigo-700 hover:text-white mx-1 px-3 py-2 bg-indigo-100 hover:bg-indigo-500 rounded transition">
+                                                        <a href="{{ route('tryout.result.statistic',$exam->id) }}" class="text-white hover:text-white mx-1 px-3 py-2 bg-amber-500 hover:bg-amber-700 rounded transition">
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 sm:h-6 w-5 sm:w-6 inline-block">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                                             </svg> Pembahasan

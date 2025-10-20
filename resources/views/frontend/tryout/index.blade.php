@@ -34,7 +34,7 @@
                         <li class="col-span-1 shadow-sm rounded-lg border border-gray-300 p-3 bg-white">
                             <div class="flex justify-between border-b pb-2 mb-1">
                                 <div>
-                                    <svg class="w-12 h-12 text-indigo-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <svg class="w-12 h-12 text-amber-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M6 2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h12V4H6zm2 4h8v2H8V8zm0 4h8v2H8v-2zm0 4h5v2H8v-2z"/>
                                     </svg>
                                 </div>
@@ -74,7 +74,7 @@
                                 </div>
                             </div> --}}
                             <div class="mt-3 space-y-2">
-                                <a href="{{ route('tryout.prepare',$tryout->id) }}" class="bg-blue-100 hover:bg-blue-200 text-blue-instive px-5 py-2 font-medium text-xs sm:text-sm rounded-md inline-flex items-center justify-center w-full">
+                                <a href="{{ route('tryout.prepare',$tryout->id) }}" class="bg-amber-100 hover:bg-amber-200 text-blue-instive px-5 py-2 font-medium text-xs sm:text-sm rounded-md inline-flex items-center justify-center w-full">
                                     Kerjakan
                                 </a>
                             </div>

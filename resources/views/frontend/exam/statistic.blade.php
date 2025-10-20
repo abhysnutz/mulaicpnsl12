@@ -14,8 +14,8 @@
                         <div>
                             <div class="border-b border-gray-200">
                                 <nav aria-label="Tabs" class="-mb-px flex space-x-8">
-                                    <a href="#" class="group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="-ml-0.5 mr-2 h-5 w-5 text-indigo-500">
+                                    <a href="#" class="group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm border-amber-500 text-amber-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="-ml-0.5 mr-2 h-5 w-5 amber-amber-500">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 13v-1m4 1v-3m4 3V8M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
                                         </svg>
                                         <span>Statistik</span>
@@ -40,7 +40,7 @@
                                             <dl class="w-full mx-auto mt-5 rounded-lg bg-white overflow-hidden border border-gray-300 hover:bg-gray-50 divide-y divide-gray-200 md:divide-y-0 md:divide-x">
                                                 <div class="px-4 py-5 sm:p-6 col-span-3">
                                                     <dt class="text-xl font-medium text-gray-900 text-center mb-4"> SKOR AKHIR </dt>
-                                                    <div class="text-6xl font-semibold text-indigo-600 text-center"> {{ $exam?->result?->total_score }} <span class="ml-0 text-3xl font-medium text-gray-500"> dari <strong>550</strong>
+                                                    <div class="text-6xl font-semibold text-amber-600 text-center"> {{ $exam?->result?->total_score }} <span class="ml-0 text-3xl font-medium text-gray-500"> dari <strong>550</strong>
                                                         </span>
                                                     </div>
                                                     <div>

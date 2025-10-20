@@ -136,15 +136,15 @@
                                     <div class="grid grid-cols-1 gap-4">
                                         <div>
                                             <label class="text-sm font-medium">Nama:</label>
-                                            <input type="text" name="name" placeholder="Nama" required class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" value="{{ $user?->name }}"/>
+                                            <input type="text" name="name" placeholder="Nama" required class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" value="{{ $user?->name }}"/>
                                         </div>
                                         <div>
                                             <label class="text-sm font-medium">Email:</label>
-                                            <input readonly name="email" type="email" placeholder="Alamat email" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3 bg-gray-200" value="{{ $user?->email }}"/>
+                                            <input readonly name="email" type="email" placeholder="Alamat email" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3 bg-gray-200" value="{{ $user?->email }}"/>
                                         </div>
                                     </div>
                                     <input type="hidden" name="type" value="akun">
-                                    <button type="submit" class="mt-5 bg-blackinline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-offset-2 focus:ring-indigo-500" >
+                                    <button type="submit" class="mt-5 bg-blackinline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-amber-700 focus:outline-none focus:ring-offset-2 focus:ring-amber-500" >
                                         Simpan Perubahan
                                     </button>
                                 </form>
@@ -158,15 +158,15 @@
                                         <div class="grid grid-cols-1 gap-4">
                                             <div>
                                                 <label class="text-sm font-medium">Telepon:</label>
-                                                <input name="phone" type="text" placeholder="Telepon" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" value="{{ $user?->detail?->phone }}"/>
+                                                <input name="phone" type="text" placeholder="Telepon" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" value="{{ $user?->detail?->phone }}"/>
                                             </div>
                                             <div>
                                                 <label class="text-sm font-medium">Tanggal Lahir Anda: -</label>
-                                                <input name ="birth" type="date" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" value="{{ $user?->detail?->birth }}"/>
+                                                <input name ="birth" type="date" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" value="{{ $user?->detail?->birth }}"/>
                                             </div>
                                             <div>
                                                 <label class="text-sm font-medium">Pendidikan Terakhir:</label>
-                                                <select name="education" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3">
+                                                <select name="education" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3">
                                                     <option selected="selected" value="" disabled="disabled">-- Pilih Pendidikan --</option>
                                                     <option value="SD" @if($user?->detail?->education == 'SD') selected @endif>SD/MI Sederajat</option>
                                                     <option value="SMP" @if($user?->detail?->education == 'SMP') selected @endif>SMP/MTs Sederajat</option>
@@ -184,11 +184,11 @@
                                         <div class="grid grid-cols-1 gap-4">
                                             <div>
                                                 <label class="text-sm font-medium">Jurusan:</label>
-                                                <input name="major" type="text" placeholder="Jurusan" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" value="{{ $user?->detail?->major }}"/>
+                                                <input name="major" type="text" placeholder="Jurusan" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" value="{{ $user?->detail?->major }}"/>
                                             </div>
                                             <div>
                                                 <label class="text-sm font-medium">Provinsi:</label>
-                                                <select name="province_id" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3 get-city">
+                                                <select name="province_id" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3 get-city">
                                                     <option value="0" selected="selected" disabled="disabled">-- Pilih Provinsi --</option>
                                                     @if ($provinces->count())
                                                         @foreach ($provinces as $province)
@@ -199,20 +199,20 @@
                                             </div>
                                             <div>
                                                 <label class="text-sm font-medium">Kota/Kabupaten:</label>
-                                                <select id="container-city" name="city_id" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3">
+                                                <select id="container-city" name="city_id" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3">
                                                     <option value="0" selected="selected" disabled="disabled">-- Pilih Kota/Kabupaten --</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div>
                                             <label class="text-sm font-medium">Alamat:</label>
-                                            <textarea name="address" cols="30" rows="5" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3"> {{ $user?->detail?->address }}</textarea>
+                                            <textarea name="address" cols="30" rows="5" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3"> {{ $user?->detail?->address }}</textarea>
                                         </div>
                                     </div>
                                     <input type="hidden" id="city_id" value="{{ $user?->detail?->city_id }}">
                                     <input type="hidden" name="type" value="profil">
 
-                                    <button type="submit" class="mt-5 bg-blackinline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-offset-2 focus:ring-indigo-500" >
+                                    <button type="submit" class="mt-5 bg-blackinline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-amber-700 focus:outline-none focus:ring-offset-2 focus:ring-amber-500" >
                                         Simpan Profil
                                     </button>
                                 </form>
@@ -225,18 +225,18 @@
                                     <div class="grid grid-cols-1 gap-4">
                                         <div>
                                             <x-input-label for="update_password_current_password" :value="__('Password Sekarang:')" class="text-sm font-medium" />
-                                            <x-text-input id="update_password_current_password" name="current_password" type="password" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" autocomplete="current-password" placeholder="Password Sekarang" data-gtm-form-interact-field-id="3" />
+                                            <x-text-input id="update_password_current_password" name="current_password" type="password" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" autocomplete="current-password" placeholder="Password Sekarang" data-gtm-form-interact-field-id="3" />
                                         </div>
                                         <div>
                                             <x-input-label for="update_password_password" :value="__('Password Baru:')" class="text-sm font-medium"/>
-                                            <x-text-input id="update_password_password" name="password" type="password" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" autocomplete="new-password" placeholder="Password Baru"/>
+                                            <x-text-input id="update_password_password" name="password" type="password" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" autocomplete="new-password" placeholder="Password Baru"/>
                                         </div>
                                         <div>
                                             <x-input-label for="update_password_password_confirmation" :value="__('Ulangi Password Baru:')" class="text-sm font-medium" />
-                                            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="shadow-sm mt-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" autocomplete="new-password" placeholder="Ulangi Password Baru"/>
+                                            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="shadow-sm mt-2 focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md py-3" autocomplete="new-password" placeholder="Ulangi Password Baru"/>
                                         </div>
                                     </div>
-                                    <button type="submit" class="mt-5 bg-blackinline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-offset-2 focus:ring-indigo-500" >
+                                    <button type="submit" class="mt-5 bg-blackinline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-amber-700 focus:outline-none focus:ring-offset-2 focus:ring-amber-500" >
                                         Simpan Password Baru
                                     </button>
                                 </form>

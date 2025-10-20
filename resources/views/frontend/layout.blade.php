@@ -33,7 +33,7 @@
                 <div class="flex flex-col w-0 flex-1 overflow-hidden">
                     @if (!Request::is('*prepare*') && !Request::is('*working*'))
                         <div class="relative flex-shrink-0 flex h-16 bg-white shadow">
-                            <button class="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 lg:hidden sm:flex sm:items-center hidden">
+                            <button class="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-amber-500 lg:hidden sm:flex sm:items-center hidden">
                                 <span class="sr-only">Open sidebar</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" class="h-6 w-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
@@ -47,7 +47,7 @@
                                 <div class="ml-4 flex items-center md:ml-6">
                                     <div class="ml-3 relative">
                                         <div>
-                                            <button id="user-menu" aria-haspopup="true" class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                            <button id="user-menu" aria-haspopup="true" class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
                                                 <span class="sr-only">Open user menu</span>
                                                 <img src="https://ui-avatars.com/api/?name={{ Auth::user()?->name }}&amp;background=6366f1&amp;color=fff" alt="" class="h-8 w-8 rounded-full">
                                             </button>

@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login | Belajar dan Latihan Soal Tryout PPPK</title>
 
-            <link rel="stylesheet" href="https://ayopppk.com/css/app.css?id=29fbd4e23cb5e78972c3">
+            <link rel="stylesheet" href="{{ asset('assets/frontend/css/style.css') }}">
         
     <link rel="apple-touch-icon" sizes="180x180" href="https://ayopppk.com/assets/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://ayopppk.com/assets/favicon/favicon-32x32.png">

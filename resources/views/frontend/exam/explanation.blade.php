@@ -20,8 +20,8 @@
                                         </svg>
                                         <span>Statistik</span>
                                     </a>
-                                    <a href="#" class="group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="-ml-0.5 mr-2 h-5 w-5 text-indigo-500">
+                                    <a href="#" class="group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm border-amber-500 text-amber-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="-ml-0.5 mr-2 h-5 w-5 amber-amber-500">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                                         </svg>
                                         <span>Pembahasan</span>
@@ -41,7 +41,7 @@
                                                 <div class="flex justify-between items-center">
                                                     <h3 class="text-lg font-medium"> Soal No. 
                                                         <span id="number-question"></span>
-                                                        <span id="topic-question" class="inline-flex items-center px-2.5 py-0.5 ml-2 rounded-md text-sm font-bold bg-indigo-200 text-indigo-800"></span>
+                                                        <span id="topic-question" class="inline-flex items-center px-2.5 py-0.5 ml-2 rounded-md text-sm font-bold bg-amber-500 text-white"></span>
                                                     </h3>
                                                     <span id="answer-status" class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-bold"> SALAH </span>
                                                 </div>
@@ -86,7 +86,7 @@
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 mr-2">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
                                                         </svg> Sebelumnya </button>
-                                                    <button id="next-button" type="button" class="flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"> Selanjutnya <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 ml-2">
+                                                    <button id="next-button" type="button" class="flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"> Selanjutnya <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 ml-2">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                                                         </svg>
                                                     </button>
@@ -112,16 +112,6 @@
                                                                 <div class="font-medium">Salah</div>
                                                             </div>
                                                         </div>
-                                                        {{-- <button disabled="disabled" class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-indigo-400 text-white"> 1 </button>
-                                                        <button class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-red-400 text-white"> 2 </button>
-                                                        <button class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-green-400 text-white"> 3 </button>
-                                                        <button class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-green-400 text-white"> 4 </button>
-                                                        <button class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-red-400 text-white"> 5 </button>
-                                                        <button class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-red-400 text-white"> 6 </button>
-                                                        <button class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-red-400 text-white"> 7 </button>
-                                                        <button class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-red-400 text-white"> 8 </button>
-                                                        <button class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-green-400 text-white"> 9 </button>
-                                                        <button class="bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-green-400 text-white"> 10 </button> --}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -157,7 +147,7 @@
                         
                         let button = $(`<button>`)
                             .attr("data-question-id", question).attr('data-index', index)
-                            .addClass("number-question-list bg-gray-200 hover:bg-indigo-400 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-gray-400 text-white")
+                            .addClass("number-question-list bg-gray-200 hover:bg-amber-500 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-gray-400 text-white")
                             .text(index + 1)
                             .on("click", function() {
                                 selectedQuestion(index);
@@ -179,14 +169,14 @@
                         }
                     })
 
-                    $(`.number-question-list[data-index="0"]`).prop('disabled',true).addClass('bg-indigo-400')
+                    $(`.number-question-list[data-index="0"]`).prop('disabled',true).addClass('bg-amber-500')
                 }
             })
         }
 
         function selectedQuestion(index) {
             console.log(index);
-            $(`.number-question-list`).removeClass('bg-indigo-400').prop('disabled',false)
+            $(`.number-question-list`).removeClass('bg-amber-500').prop('disabled',false)
             $.ajax({
                 url: "{{ route('tryout.result.answer') }}",
                 dataType: 'json',
@@ -196,7 +186,7 @@
                 success: function(reply) {
                     console.log(reply);
                     
-                    $(`.number-question-list[data-question-id="${reply?.question?.id}"]`).addClass('bg-indigo-400').prop('disabled',true)
+                    $(`.number-question-list[data-question-id="${reply?.question?.id}"]`).addClass('bg-amber-500').prop('disabled',true)
                     
                     $('#number-question').text(index+1)
                     

@@ -20,7 +20,7 @@
                                 <div class="flex justify-between items-center">
                                     <h3 class="text-lg font-medium"> Soal No. 
                                         <span id="number-question"></span>
-                                        <span id="topic-question" class="inline-flex items-center px-2.5 py-0.5 ml-2 rounded-md text-sm font-bold bg-indigo-200 text-indigo-800"></span>
+                                        <span id="topic-question" class="inline-flex items-center px-2.5 py-0.5 ml-2 rounded-md text-sm font-bold bg-amber-500 text-white"></span>
                                     </h3>
                                     <button id="btn-working-help" class="flex justify-center bg-blue-200 text-blue-700 px-3 py-2 items-center rounded">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 mr-1">
@@ -43,7 +43,7 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 mr-2">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
                                         </svg> Sebelumnya </button>
-                                    <button id="next-button" type="button" class="flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"> Selanjutnya 
+                                    <button id="next-button" type="button" class="flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"> Selanjutnya 
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 ml-2">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                                         </svg>
@@ -78,7 +78,7 @@
                                     <div class="font-medium mb-3">Sudah selesai ?</div>
                                     <div class="flex justify-center">
                                         <button type="button" class="btn-cancel-open flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-red-700 bg-red-200 hover:bg-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">BATAL</button>
-                                        <button type="button" class="btn-finish-open flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">SELESAI</button>
+                                        <button type="button" class="btn-finish-open flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">SELESAI</button>
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@
                                 <div class="font-medium mb-3">Sudah selesai?</div>
                                 <div class="flex justify-center">
                                     <button type="button" class="btn-cancel-open flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-red-700 bg-red-200 hover:bg-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">BATAL</button>
-                                    <button type="button" class="btn-finish-open flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">SELESAI</button>
+                                    <button type="button" class="btn-finish-open flex items-center mx-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">SELESAI</button>
                                 </div>
                             </div>
                         </div>
@@ -141,7 +141,7 @@
                                     </div>
                                 </div>
                                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                    <button id="btn-working-close" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Tutup</button>
+                                    <button id="btn-working-close" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Tutup</button>
                                 </div>
                             </div>
                         </div>
@@ -167,9 +167,9 @@
                                                 <div class="flex items-center space-x-2">
                                                     <form action="{{ route('tryout.cancel',$exam->id) }}" method="POST">
                                                         @csrf
-                                                        <button type="submit" class="mt-3 w-full inline-flex justify-center rounded-md border border-red-300 shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm transition">Ya, Batal</button>
+                                                        <button type="submit" class="mt-3 w-full inline-flex justify-center rounded-md border border-red-300 shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:mt-0 sm:w-auto sm:text-sm transition">Ya, Batal</button>
                                                     </form>
-                                                    <button type="button" class="btn-cancel-close mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Tutup</button>
+                                                    <button type="button" class="btn-cancel-close mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Tutup</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -188,23 +188,23 @@
                                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                                     <div class="sm:flex sm:items-start">
                                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-full sm:mx-0 sm:h-10 sm:w-10">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-7 mr-1 text-indigo-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-7 mr-1 amber-amber-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
                                             </svg>
                                         </div>
                                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                            <h3 id="modal-headline" class="text-lg leading-6 font-medium text-indigo-600">Submit Jawaban Sekarang?</h3>
+                                            <h3 id="modal-headline" class="text-lg leading-6 font-medium text-amber-600">Submit Jawaban Sekarang?</h3>
                                             <div class="mt-2">
                                                 <p class="mb-3">Jawaban yang telah disubmit tidak dapat diubah.</p>
                                                 <div class="flex items-center space-x-2">
                                                     <form id="form-finish" action="{{ route('tryout.finish',$exam->id) }}" method="POST">
                                                         @csrf
-                                                        <button type="submit" class="mt-3 w-full inline-flex justify-center rounded-md border border-indigo-300 shadow-sm px-4 py-2 bg-indigo-500 text-base font-medium text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm transition">
+                                                        <button type="submit" class="mt-3 w-full inline-flex justify-center rounded-md border border-amber-300 shadow-sm px-4 py-2 bg-amber-500 text-base font-medium text-white hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:mt-0 sm:w-auto sm:text-sm transition">
                                                             <span>Submit</span>
                                                         </button>
                                                     </form>
                                                     
-                                                    <button type="button" class="btn-finish-close mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Tutup</button>
+                                                    <button type="button" class="btn-finish-close mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Tutup</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -224,6 +224,13 @@
 @push('js-bottom')
     <script>
         var exam_id = {{ $exam->id }}; // Ambil ID ujian dari Blade
+        let timerInterval = null; // GLOBAL
+
+        function disableAnswers() {
+            $("input[name='answer']").prop("disabled", true);
+            $("#next-button, #prev-button").prop("disabled", true);
+            $(".number-question-list").prop("disabled", true);
+        }
 
         function allQuestion(){
             $.ajax({
@@ -239,7 +246,7 @@
                         
                         let button = $(`<button>`)
                             .attr("data-question-id", question.id).attr('data-index', index)
-                            .addClass("number-question-list bg-gray-200 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-gray-200")
+                            .addClass("number-question-list bg-gray-200 hover:bg-amber-500 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-gray-200")
                             .text(index + 1)
                             .on("click", function() {
                                 selectedQuestion(index);
@@ -257,8 +264,7 @@
         }
 
         function selectedQuestion(index) {
-            console.log(index);
-            $(`.number-question-list`).removeClass('bg-blue-300').prop('disabled',false)
+            $(`.number-question-list`).removeClass('bg-amber-500').prop('disabled',false)
             $.ajax({
                 url: "{{ route('tryout.question') }}",
                 dataType: 'json',
@@ -266,9 +272,7 @@
                     exam_id,index
                 },
                 success: function(reply) {
-                    console.log(reply);
-                    
-                    $(`.number-question-list[data-question-id="${reply?.question?.id}"]`).addClass('bg-blue-300').prop('disabled',true)
+                    $(`.number-question-list[data-question-id="${reply?.question?.id}"]`).addClass('bg-amber-500').prop('disabled',true)
                     
                     $('#number-question').text(index+1)
                     
@@ -286,7 +290,7 @@
                         answers += `
                             <div class="flex items-center mb-2">
                                 <label for="optionsRadios${answer?.option}" class="ml-3 w-full flex items-center">
-                                    <input name="answer" type="radio" id="optionsRadios${answer?.option}" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 mr-2" value="${answer?.id}" ${checked}>
+                                    <input name="answer" type="radio" id="optionsRadios${answer?.option}" class="focus:ring-amber-500 h-4 w-4 text-amber-600 border-gray-300 mr-2" value="${answer?.id}" ${checked}>
                                     <label for="optionsRadios${answer?.option}" class="translate-y-2">${answer?.option}. ${answer?.answer}</label>
                                 </label>
                             </div>
@@ -307,39 +311,41 @@
             });
         }
 
-        function getTime(){
+        function getTime() {
             $.ajax({
                 url: "{{ route('tryout.time') }}",
                 dataType: 'json',
-                data : {
-                    exam_id
-                },
-                success : function(reply){
-                    console.log(reply);
-                    let timeLeft = reply.remaining_time;
+                data: { exam_id },
+                success: function(reply) {
+                    const endTime = new Date(reply.end_time).getTime(); // ambil end_time server
 
-                    function updateTimerDisplay() {
-                        let hours = Math.floor(timeLeft / 3600);
-                        let minutes = Math.floor((timeLeft % 3600) / 60);
-                        let seconds = timeLeft % 60;
+                    function updateTimer() {
+                        const now = new Date().getTime();
+                        const remaining = Math.floor((endTime - now) / 1000);
+                        
+                        if (remaining <= 0) {
+                            clearInterval(timerInterval);
+                            $(".time-remaining").text("00:00:00");
+                            alert("Waktu ujian telah habis!");
+                            disableAnswers();
+                            $('#form-finish').submit();
+                            return;
+                        }
 
-                        $(".time-remaining").text(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+                        const hours = Math.floor(remaining / 3600);
+                        const minutes = Math.floor((remaining % 3600) / 60);
+                        const seconds = remaining % 60;
+
+                        $(".time-remaining").text(
+                            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                        );
                     }
 
-                    const countdown = setInterval(() => {
-                        if (timeLeft <= 0) {
-                            clearInterval(countdown);
-                            alert("Waktu habis! Ujian akan dikirim.");
-                            $('#form-finish').submit()
-                        } else {
-                            timeLeft--;
-                            updateTimerDisplay();
-                        }
-                    }, 1000);
-
-                    updateTimerDisplay();
+                    // jalankan timer sinkron
+                    updateTimer();
+                    timerInterval = setInterval(updateTimer, 1000);
                 }
-            })
+            });
         }
 
         function saveAnswer(){
@@ -355,7 +361,6 @@
                 }).done(function(response) {
                     $(`.number-question-list[data-question-id="${question_id}"]`).addClass('bg-green-400 text-white')
 
-                    console.log("Jawaban disimpan:", response);
                 }).fail(function(xhr) {
                     console.log("Gagal menyimpan jawaban", xhr.responseText);
                 });
@@ -373,6 +378,11 @@
 
         $(document).on("change", "input[name='answer']", function() {
             saveAnswer()
+        });
+
+        // opsional: saat user balik ke tab, sync sekali (tidak tiap detik)
+        window.addEventListener('focus', () => {
+            getTime(); // ini aman karena kita clearInterval sebelum setInterval baru
         });
 
         // Event listener tombol navigasi

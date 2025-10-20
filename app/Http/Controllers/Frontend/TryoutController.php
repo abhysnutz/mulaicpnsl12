@@ -12,6 +12,7 @@ use App\Models\UserExam;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
+use DB;
 
 class TryoutController extends Controller
 {
@@ -71,7 +72,7 @@ class TryoutController extends Controller
 
         $exam = UserExam::where('id',$id)->where('status','In Progress')->first();
         if(!$exam){
-            return back()->with('error','no exam found');
+            return back()->with('error','Tryout Tidak Ditemukan');
         }
 
         $tryout = Tryout::find($exam->tryout_id);
@@ -88,7 +89,7 @@ class TryoutController extends Controller
         $questions = $exam?->tryout?->questions;
 
         if (!$questions || !isset($questions[$request->index])) {
-            return response()->json(['error' => 'No question found'], 404);
+            return response()->json(['error' => 'Pertanyaan Tidak Ditemukan'], 404);
         }
         $question = $questions[$request->index];
         $answers = $question->answers;
@@ -132,24 +133,24 @@ class TryoutController extends Controller
     }
 
     // Display time after refresh
-    public function time(Request $request){
+   public function time(Request $request){
         $userExam = UserExam::findOrFail($request->exam_id);
-        $remainingSeconds = max(strtotime($userExam->end_time) - time(), 0);
 
-        return response()->json(['remaining_time' => $remainingSeconds]);
+        return response()->json([
+            // Sertakan offset timezone server (WIB)
+            'end_time' => \Carbon\Carbon::parse($userExam->end_time)->timezone('Asia/Jakarta')->toIso8601String(),
+        ]);
     }
 
     // User save answer
     public function answer(Request $request){
-        UserAnswer::updateOrCreate(
-            [
-                'user_exam_id' => $request->exam_id,
-                'question_id' => $request->question_id,
-            ],
-            [
-                'answer_id' => $request->answer_id
-            ]
-        );
+        DB::table('user_answers')
+            ->where('user_exam_id', $request->exam_id)
+            ->where('question_id', $request->question_id)
+            ->update([
+                'answer_id' => $request->answer_id,
+                'updated_at' => now(),
+            ]);
     
         return response()->json(['success' => true]);
     }

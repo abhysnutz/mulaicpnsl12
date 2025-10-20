@@ -24,7 +24,7 @@
                                 <dd class="mt-1 text-xs sm:text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2 lg:col-span-5">100 Menit</dd>
                             </div>
                             <div class="py-4 sm:py-5 sm:flex sm:space-x-2 justify-start">
-                                <button id="btn-prepare" type="button" class="bg-indigo-500 hover:bg-indigo-600 w-full sm:w-48 text-white font-medium text-sm px-4 py-3 rounded-md shadow-lg flex justify-center items-center mr-2 mb-2">Mulai Mengerjakan</button>
+                                <button id="btn-prepare" type="button" class="bg-amber-500 hover:bg-amber-600 w-full sm:w-48 text-white font-medium text-sm px-4 py-3 rounded-md shadow-lg flex justify-center items-center mr-2 mb-2">Mulai Mengerjakan</button>
                                 <a type="button" href="{{ route('tryout.index') }}" class="bg-pink-500 hover:bg-pink-600 w-full sm:w-48 text-white font-medium text-sm px-4 py-3 rounded-md shadow-lg flex justify-center items-center mr-2 mb-2">Kembali</a>
                             </div>
                         </dl>
@@ -54,8 +54,8 @@
                                 </div>
                             </div>
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                <a href="#" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm transition start-exam-btn" data-tryout-id="{{ $tryout->id }}">Kerjakan Sekarang</a>
-                                <button id="btn-prepare-cancel" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
+                                <a href="#" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-amber-500 text-base font-medium text-white hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:ml-3 sm:w-auto sm:text-sm transition start-exam-btn" data-tryout-id="{{ $tryout->id }}">Kerjakan Sekarang</a>
+                                <button id="btn-prepare-cancel" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
                             </div>
                         </div>
                     </div>
@@ -80,8 +80,8 @@
                                 </div>
                             </div>
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm transition"> Ya, Lanjut Mengerjakan </button>
-                                <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"> Tidak </button>
+                                <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-amber-600 text-base font-medium text-white hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:ml-3 sm:w-auto sm:text-sm transition"> Ya, Lanjut Mengerjakan </button>
+                                <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"> Tidak </button>
                             </div>
                         </div>
                     </div>
