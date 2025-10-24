@@ -91,6 +91,7 @@
 @push('js-bottom')
     <script>
         $(document).ready(function() {
+            updateScoreRules();
             $('#explanation, #question').summernote({
                 height: 100,
                 toolbar: [
@@ -128,12 +129,14 @@
         function updateScoreRules() {
             let selectedOption = $("#topic_id option:selected");
             let category = selectedOption.data("category");
-            if(category == 'TKP'){
+            if (category === 'TKP') {
                 $('#score-twk-tiu').hide();
                 $('#score-tkp').show();
+                $('#score-tkp input').prop('disabled', false);
             } else {
                 $('#score-tkp').hide();
                 $('#score-twk-tiu').show();
+                $('#score-tkp input').prop('disabled', true);
             }
         }
     </script>

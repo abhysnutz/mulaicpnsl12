@@ -49,7 +49,7 @@
                                         <div>
                                             <button id="user-menu" aria-haspopup="true" class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
                                                 <span class="sr-only">Open user menu</span>
-                                                <img src="https://ui-avatars.com/api/?name={{ Auth::user()?->name }}&amp;background=6366f1&amp;color=fff" alt="" class="h-8 w-8 rounded-full">
+                                                <img src="https://ui-avatars.com/api/?name={{ Auth::user()?->name }}&background=f59e0b&color=fff&bold=true" alt="" class="h-8 w-8 rounded-full">
                                             </button>
                                         </div>
                                     </div>

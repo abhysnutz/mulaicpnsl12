@@ -21,64 +21,63 @@
             <div class="bg-white px-5 pt-5 pb-8 rounded-lg">
 
                 @if ($payment_pending)
-                    <div class="error-notification bg-green-500 dark:bg-green-500 dark:opacity-90 rounded-xl p-3 sm:p-4 mb-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="h-5 w-5 text-white dark:text-green-500">
-                                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd"></path>
-                                </svg>
-                            </div>
-                            <div class="ml-2 sm:ml-3">
-                                <p class="text-xs sm:text-sm font-semibold text-white">Whoops!</p>
-                                <p class="text-xs sm:text-sm text-white">Silahkan Transfer sebesar Rp. <span class="font-bold">{{ number_format($payment_pending?->total, 0, ',', '.') }}</span>, sesuai riwayat transaksi dibawah .</p>
-                            </div>
-                            <div class="ml-auto pl-2 sm:pl-3">
-                                <button onclick="$('.error-notification').hide()" class="inline-flex text-white dark:text-green-600 focus:outline-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" class="h-4 sm:h-5 w-4 sm:w-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
-                            </div>
+                    <div class="bg-emerald-50 border border-emerald-400 rounded-xl px-4 py-3 mb-4 flex items-start notification">
+                        <div class="flex-shrink-0 pt-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4a.75.75 0 01-1.5 0v-4zm.75 8a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+                            </svg>
                         </div>
+                        <div class="ml-3 flex-1">
+                            <p class="font-bold text-emerald-800 text-sm">Nominal Transfer</p>
+                            <p class="text-sm text-emerald-800 font-semibold">
+                                Silakan transfer sebesar <strong>Rp {{ number_format($payment_pending?->total, 0, ',', '.') }}</strong>
+                                ke rekening tujuan yang tertera di <strong>Riwayat Transaksi</strong> di bawah 👇
+                            </p>
+                        </div>
+                        <button onclick="$('.notification').hide()" class="ml-3 custom-text-emerald">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
                 @endif
                 
 
 
                 <div class="container mx-auto p-4 md:p-6 lg:grid lg:grid-cols-2 lg:gap-8">
-                    <div class="bg-indigo-50 rounded-lg p-4 mb-6 lg:mb-0">
-                        <h2 class="text-lg font-semibold text-blue-700 mb-4">PETUNJUK TRANSFER</h2>
+                    <div class="bg-amber-50 rounded-lg p-4 mb-6 lg:mb-0">
+                        <h2 class="text-lg font-bold text-amber-600 mb-4">PETUNJUK TRANSFER</h2>
                         <ol class="space-y-2">
                             <li class="flex items-start gap-2">
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-600 text-white rounded-full text-sm">1</span>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-amber-600 text-white rounded-full text-sm">1</span>
                                 <span class="text-gray-700">Isi Form Transfer dibawah dengan lengkap dan benar</span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-600 text-white rounded-full text-sm">2</span>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-amber-600 text-white rounded-full text-sm">2</span>
                                 <span class="text-gray-700">Klik tombol "Simpan" untuk mendapatkan kode unik</span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-600 text-white rounded-full text-sm">4</span>
-                                <span class="text-gray-700">Silahkan transfer sesuai nominal yang disertai kode unik Riwayat Transaksi terakhir dibawah ini.</span>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-amber-600 text-white rounded-full text-sm">3</span>
+                                <span class="text-gray-700">Transfer sesuai nominal + kode unik pada <strong>riwayat transaksi</strong> terakhir.</span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-600 text-white rounded-full text-sm">5</span>
-                                <span class="text-gray-700">Fungsi kode unik (3 angka terakhir) adalah untuk membedakan nominal transfer dengan peserta yang lain.</span>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-amber-600 text-white rounded-full text-sm">4</span>
+                                <span class="text-gray-700">Fungsi <strong>kode unik (3 angka terakhir)</strong> adalah untuk membedakan nominal transfer dengan peserta yang lain.</span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-600 text-white rounded-full text-sm">6</span>
-                                <span class="text-gray-700">Konfirmasi kirim Whatsapp ke mimin dengan melampirkan bukti transfer ya.</span>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-amber-600 text-white rounded-full text-sm">5</span>
+                                <span class="text-gray-700">Setelah transfer, <strong>konfirmasi via WhatsApp</strong> dengan <strong>melampirkan bukti transfer.</strong></span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-600 text-white rounded-full text-sm">7</span>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-amber-600 text-white rounded-full text-sm">6</span>
                                 <span class="text-gray-700">Jika Whatsapp belum terbaca atau belum dibalas mimin, silahkan Miscall atau telepon via WA.</span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-600 text-white rounded-full text-sm">8</span>
-                                <span class="text-gray-700">Jika masih belum direspon juga maka harap bersabar mungkin mimin lagi istirahat / lagi gak pegang HP, tapi gak usah khawatir akan tetap diproses.</span>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-amber-600 text-white rounded-full text-sm">7</span>
+                                <span class="text-gray-700">Jika belum direspons, mohon bersabar — pembayaran tetap akan diproses.</span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-600 text-white rounded-full text-sm">9</span>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-amber-600 text-white rounded-full text-sm">8</span>
                                 <span class="text-gray-700">Terima kasih</span>
                             </li>
                         </ol>
@@ -89,22 +88,22 @@
                             <!-- Nama Lengkap -->
                             <div class="space-y-1">
                                 <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                                <input type="text" class="w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" disabled value="{{ Auth::user()?->name }}">
+                                <input type="text" class="w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500" disabled value="{{ Auth::user()?->name }}">
                             </div>
                             <!-- Email -->
                             <div class="space-y-1">
                                 <label class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" class="w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" disabled value="{{ Auth::user()?->email }}">
+                                <input type="email" class="w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500" disabled value="{{ Auth::user()?->email }}">
                             </div>
                             <!-- WhatsApp -->
                             <div class="space-y-1">
                                 <label class="block text-sm font-medium text-gray-700">No. WhatsApp</label>
-                                <input name="whatsapp" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 no-arrows" placeholder="628123456789" required>
+                                <input name="whatsapp" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 no-arrows" placeholder="628123456789" required>
                             </div>
                             <!-- Metode Pembayaran -->
                             <div class="space-y-1">
                                 <label class="block text-sm font-medium text-gray-700">Metode Pembayaran</label>
-                                <select name="payment_method_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <select name="payment_method_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                                     @if ($methods->count())
                                         @foreach ($methods as $method)
                                             <option value="{{ $method->id }}">{{ $method?->name }}</option>
@@ -127,19 +126,19 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
-                    <h2 class="text-xl font-semibold text-indigo-700">Riwayat Transaksi</h2>
+                    <h2 class="text-xl font-bold text-amber-600">Riwayat Transaksi</h2>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="min-w-full bg-white">
                         <thead>
                             <tr class="bg-amber-500 text-white">
-                                <th class="px-6 py-3 text-left text-sm font-medium">No</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium">Tanggal</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium">Rekening/No Tujuan</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium">Jumlah Transfer</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium">Status</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium">Opsi</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium"><strong>No</strong></th>
+                                <th class="px-6 py-3 text-left text-sm font-medium"><strong>Tanggal</strong></th>
+                                <th class="px-6 py-3 text-left text-sm font-medium"><strong>Rekening/No Tujuan</strong></th>
+                                <th class="px-6 py-3 text-left text-sm font-medium"><strong>Jumlah Transfer</strong></th>
+                                <th class="px-6 py-3 text-left text-sm font-medium"><strong>Status</strong></th>
+                                <th class="px-6 py-3 text-left text-sm font-medium"><strong>Opsi</strong></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
@@ -152,12 +151,12 @@
                                         <div>No. Rekening: <span class="text-bold">{{ $payment?->method?->account_number }}</span></div>
                                         <div>Nama: <span class="text-bold">{{ $payment?->method?->account_name }}</span></div>
                                     </td>
-                                    <td class="px-6 py-4 text-bold">{{ $payment?->total ?? 0}}</td>
+                                    <td class="px-6 py-4 text-bold">{{ number_format($payment?->total, 0, ',', '.') }}</td>
                                     <td class="px-6 py-4">
                                         <span class="px-2 py-2 text-sm @if($payment?->status == 'pending') bg-amber-500 @elseif($payment?->status == 'confirmed') bg-green-500 @else bg-red-500 @endif text-bold text-white rounded capitalize">{{ $payment?->status }}</span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <button onclick="showDetail('{{ $payment?->method?->name }}','{{ $payment?->method?->account_number }}','{{ $payment?->method?->account_name }}','{{ $payment?->unique_code }}','{{ $payment?->total }}','{{ \Carbon\Carbon::parse($payment?->created_at)->format('d-M-Y H:i') }}','{{ $payment?->status }}')" class="openModal px-4 py-2 text-sm text-white bg-blue-500 rounded hover:bg-blue-600">
+                                        <button onclick="showDetail('{{ $payment?->method?->name }}','{{ $payment?->method?->account_number }}','{{ $payment?->method?->account_name }}','{{ $payment?->unique_code }}','{{ number_format($payment?->total, 0, ',', '.') }}','{{ \Carbon\Carbon::parse($payment?->created_at)->format('d-M-Y H:i') }}','{{ $payment?->status }}')" class="openModal px-4 py-2 text-sm text-white bg-blue-500 rounded hover:bg-blue-600">
                                             Lihat Detail
                                         </button>
                                     </td>

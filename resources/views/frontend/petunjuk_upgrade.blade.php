@@ -5,154 +5,126 @@
         <div class="bg-white px-5 pt-5 pb-8 rounded-lg">
             @include('frontend.breadcrumb', ['content' => 'Petunjuk Upgrade'])
             
-            <div class="max-w-100 mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-md border border-gray-200">
-                <h2 class="text-base sm:text-lg font-semibold text-gray-800">
-                    Sebelum melangkah lebih lanjut, berikut beberapa informasi yang perlu diketahui:
-                </h2>
-            
-                <ul class="mt-4 space-y-3 text-gray-700 text-sm sm:text-base">
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            1
-                        </span>
-                        <span class="flex-1">
-                            Jika status Anda masih peserta <span class="font-semibold">"FREE"</span>, maka Anda belum memiliki akses untuk mengikuti <span class="font-semibold">Tryout Premium</span>.
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            2
-                        </span>
-                        <span class="flex-1">
-                            Anda tetap bisa mengikuti <span class="font-semibold">Latihan Tryout</span> yang statusnya <span class="font-semibold">"FREE"</span> aja.
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            3
-                        </span>
-                        <span class="flex-1">
-                            Tryout Free bisa diulang, namun mohon maaf belum dapat pembahasannya ya.
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            4
-                        </span>
-                        <span class="flex-1">
-                            Untuk dapat melihat/mendownload latihan soal + pembahasannya maka Anda kami sarankan upgrade keanggotaan menjadi peserta <span class="font-semibold text-blue-600">PREMIUM</span> terlebih dahulu.
-                        </span>
-                    </li>
-                </ul>
+            <div class="max-w-4xl mx-auto p-6 sm:p-8 bg-amber-50 rounded-xl shadow-lg border border-gray-100 space-y-10">
 
-                <h2 class="text-base sm:text-lg font-semibold text-gray-800 mt-5">
-                    Bagaimana cara menjadi Peserta Premium ?
-                </h2>
+                <!-- Section 1: Informasi Awal -->
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-amber-600 mb-2 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z" />
+                        </svg>
+                        Informasi Penting Sebelum Upgrade
+                    </h2>
+                    <p class="text-gray-600 text-sm sm:text-base mb-4">
+                        Berikut beberapa hal yang perlu kamu ketahui sebelum melakukan upgrade ke <strong>Premium</strong>.
+                    </p>
 
-                <p class="mt-3 text-gray-700 text-sm sm:text-base" style="text-align: justify">
-                    Dengan membayar Rp50.000, berarti Anda telah turut memberikan kontribusi membantu kami dalam biaya operasional, biaya sewa hosting maupun sewa domain website.<br />
-                    Karena untuk mengelola itu semua kami juga membutuhkan biaya serta dukungan dari berbagai pihak termasuk dari Anda. Sehingga kami juga semangat dalam mencari referensi soal dari internet untuk dibagikan kepada Anda dan peserta lainnya.
-                </p>
+                    <ul class="space-y-3 text-gray-700 text-sm sm:text-base">
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">1</span>
+                            <span>Jika status Anda masih <strong>"FREE"</strong>, maka Anda belum memiliki akses ke <strong>Tryout Premium</strong>.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">2</span>
+                            <span>Anda tetap bisa mengikuti <strong>Latihan Tryout</strong> yang statusnya <strong>"FREE"</strong> aja.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">3</span>
+                            <span>Tryout Free bisa diulang, namun belum tersedia pembahasan soal.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">4</span>
+                            <span>Untuk akses soal & pembahasan lengkap, silakan upgrade menjadi <span class="font-semibold text-blue-600">PESERTA PREMIUM</span>.</span>
+                        </li>
+                    </ul>
+                </div>
 
-                <p class="mt-10 text-gray-700 text-sm sm:text-base">Harapan kami cara dan nilai tersebut diatas tidak memberatkan Anda. Dan tidak ada paksaan untuk itu.</p>
+                <!-- Section 2: Cara Menjadi Premium -->
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-amber-600 mb-2">
+                        Cara Menjadi Peserta Premium 🪙
+                    </h2>
+                    <p class="text-gray-700 leading-relaxed text-sm sm:text-base text-justify">
+                        Dengan membayar <span class="font-bold text-emerald-700">Rp 50.000</span>, Anda turut berkontribusi untuk membantu biaya operasional platform, server hosting, dan pengembangan sistem. 
+                        Dukungan Anda sangat berarti bagi kami untuk terus menyediakan soal dan pembahasan yang berkualitas untuk semua peserta.
+                    </p>
+                    <p class="mt-4 text-gray-700 text-sm sm:text-base">Keanggotaan berlaku <strong>1 tahun</strong> sejak tanggal upgrade.</p>
+                </div>
 
-                <p class="mt-3 text-gray-700 text-sm sm:text-base">Keanggotaan hanya berlaku <strong>1 tahun sejak tanggal upgrade</strong>. (Misal upgrade tanggal 1 Mei 2025 maka berakhir tanggal 1 Mei 2026)</p>
+                <!-- Section 3: Fasilitas Premium -->
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-amber-600 mb-2">
+                        Fasilitas Peserta Premium 🏆
+                    </h2>
+                    <ul class="space-y-3 text-gray-700 text-sm sm:text-base">
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">1</span>
+                            <span>Tryout dapat diulang dan dikerjakan kapan saja.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">2</span>
+                            <span>Mendapatkan <strong>Paket Soal dan Pembahasan</strong> Tryout & Mini Tryout (TWK, TIU, TKP).</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">3</span>
+                            <span>Akses <strong>Modul Ebook</strong> materi SKD & TPA secara offline.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">4</span>
+                            <span>Fasilitas berlaku selama <strong>1 tahun</strong>.</span>
+                        </li>
+                    </ul>
 
-                <h2 class="mt-10 text-base sm:text-lg font-semibold text-gray-800">
-                    Tentang Fasilitas Pengguna / Peserta Premium
-                </h2>
+                    <div class="mt-6 text-center space-y-1">
+                        <p class="font-semibold text-gray-800">💪 Semangat belajar dan berlatih wujudkan harapan menjadi ASN</p>
+                        <p class="font-medium text-gray-700">Kami membantu… Anda membantu… Kita saling membantu 🤝</p>
+                    </div>
+                </div>
 
-                <ul class="mt-4 space-y-3 text-gray-700 text-sm sm:text-base">
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            1
-                        </span>
-                        <span class="flex-1">
-                            Tryout dapat diulang dan dilakukan kapan saja.
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            2
-                        </span>
-                        <span class="flex-1">
-                            Mendapatkan Paket Soal dan Pembahasan Tryout dan Mini Tryout per jenis TKD.
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            3
-                        </span>
-                        <span class="flex-1">
-                            Kumpulan Modul Ebook Soal SKD, TPA maupn SKD untuk menambah referensi bahan belajar secara offline.
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            4
-                        </span>
-                        <span class="flex-1">
-                            Fasilitas berlaku <span class="font-semibold">1 tahun sejak tanggal upgrade.</span>
-                        </span>
-                    </li>
-                </ul>
+                <!-- Section 4: Cara Upgrade -->
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-amber-600 mb-2">
+                        Langkah Upgrade Premium ⚡
+                    </h2>
+                    <ul class="space-y-3 text-gray-700 text-sm sm:text-base">
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">1</span>
+                            <span>Transfer <span class="font-bold text-emerald-700">Rp 50.000</span> melalui sistem transfer/top up.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">2</span>
+                            <span>Metode: BNI, BCA, OVO, DANA, LINKAJA.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">3</span>
+                            <span>Lihat nomor rekening di halaman ini.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">4</span>
+                            <span>Untuk metode lain, silakan <strong>Chat Mimin</strong>.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center bg-amber-500 text-white font-bold rounded-full">5</span>
+                            <span>Klik tombol di bawah untuk melanjutkan proses pembayaran.</span>
+                        </li>
+                    </ul>
 
-                <p class="mt-10"><strong>Semangat belajar dan berlatih wujudkan harapan menjadi ASN</strong></p>
-                <p class="mt-3"><strong>Kami membantu...</strong></p>
-                <p class="mt-3"><strong>Anda membantu...</strong></p>
-                <p class="mt-3"><strong>Kita saling  membantu...</strong></p>
-
-                <h2 class="mt-10 text-base sm:text-lg font-semibold text-gray-800">
-                    Saya ingin upgrade, Bagaimana Caranya
-                </h2>
-                <ul class="mt-4 space-y-3 text-gray-700 text-sm sm:text-base">
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            1
-                        </span>
-                        <span class="flex-1">
-                            Membayar Rp. 50.000,- melalui sistem transfer./top up.
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            2
-                        </span>
-                        <span class="flex-1">
-                            Transfer atau Top Up bisa ke Bank BNI, BCA, OVO, LINKAJA, DANA.
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            3
-                        </span>
-                        <span class="flex-1">
-                            Nomor Rekening ada dihalaman upgrade.
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            4
-                        </span>
-                        <span class="flex-1">
-                            Untuk opsi yang lain?  (Silahkan Chat Mimin)
-                        </span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <span class="flex justify-center w-7 h-7 font-bold rounded-full shrink-0 self-start">
-                            5
-                        </span>
-                        <span class="flex-1">
-                            Silahkan lanjut dan Klik Link dibawah ya....
-                        </span>
-                    </li>
-                </ul>
-                <div class="mt-10 flex items-center justify-center">
-                    <a href="{{ route('payment.index') }}" class="bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition-all">
-                        @if (Auth::user()?->subscription_status == 'free') UPGRADE SEKARANG @else PERPANJANG PREMIUM @endif
-                    </a>
+                    <div class="mt-8 flex justify-center">
+                        <a href="{{ route('payment.index') }}" 
+                        class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-sm sm:text-base font-semibold px-6 py-3 rounded-lg shadow-md transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            @if (Auth::user()?->subscription_status == 'free') 
+                                UPGRADE SEKARANG 
+                            @else 
+                                PERPANJANG PREMIUM 
+                            @endif
+                        </a>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

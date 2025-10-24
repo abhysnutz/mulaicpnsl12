@@ -97,7 +97,7 @@
                                 <div class="flex-shrink-0 flex border-b border-gary-300 px-4 pb-4">
                                     <div class="flex-shrink-0 w-full group block">
                                         <div class="flex items-center">
-                                            <div><img src="https://ui-avatars.com/api/?name={{ $user?->name }}&amp;background=6366f1&amp;color=fff" alt="" class="h-8 sm:h-10 w-8 sm:w-10 rounded-full" /></div>
+                                            <div><img src="https://ui-avatars.com/api/?name={{ $user?->name }}&background=f59e0b&color=fff&bold=true" alt="" class="h-8 sm:h-10 w-8 sm:w-10 rounded-full" /></div>
                                             <div class="ml-3 truncate">
                                                 <p class="text-sm font-medium text-gray-800 truncate">{{ $user?->name }}</p>
                                                 <p class="text-xs font-medium text-gray-500 group-hover:text-gray-800 truncate">{{ $user?->email }}</p>
@@ -106,20 +106,20 @@
                                     </div>
                                 </div>
                                 <nav aria-label="Tabs" class="space-y-1">
-                                    <a href="#" class="bg-blue-50 border-blue-700 text-blue-700 hover:bg-blue-50 hover:text-blue-700 group border-l-4 px-3 py-2 flex items-center text-sm font-medium profile-button" data-profile="akun">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-blue-700 group-hover:text-blue-700 flex-shrink-0 -ml-1 mr-3 h-5 sm:h-6 w-5 sm:w-6 profile-svg" data-profile="akun">
+                                    <a href="#" class="bg-amber-500 border-amber-700 text-white hover:bg-amber-500 hover:text-white group border-l-4 px-3 py-2 flex items-center text-sm font-medium profile-button" data-profile="akun">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-white group-hover:text-white flex-shrink-0 -ml-1 mr-3 h-5 sm:h-6 w-5 sm:w-6 profile-svg" data-profile="akun">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" ></path>
                                         </svg>
                                         <span class="truncate">Akun</span>
                                     </a>
-                                    <a href="#" class="border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-800 group border-l-4 px-3 py-2 flex items-center text-sm font-medium profile-button" data-profile="profil">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" class="text-gray-400 group-hover:text-gray-500 flex-shrink-0 -ml-1 mr-3 h-5 sm:h-6 w-5 sm:w-6 profile-svg" data-profile="profil">
+                                    <a href="#" class="border-transparent text-gray-600 hover:bg-amber-500 hover:text-white group border-l-4 px-3 py-2 flex items-center text-sm font-medium profile-button" data-profile="profil">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" class="text-gray-400 hover:text-white group-hover:text-white flex-shrink-0 -ml-1 mr-3 h-5 sm:h-6 w-5 sm:w-6 profile-svg" data-profile="profil">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" ></path>
                                         </svg>
                                         <span class="truncate">Profil</span>
                                     </a>
-                                    <a href="#" class="border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-800 group border-l-4 px-3 py-2 flex items-center text-sm font-medium profile-button" data-profile="password">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" class="text-gray-400 group-hover:text-gray-500 flex-shrink-0 -ml-1 mr-3 h-5 sm:h-6 w-5 sm:w-6 profile-svg" data-profile="password">
+                                    <a href="#" class="border-transparent text-gray-600 hover:bg-amber-500 hover:text-white group border-l-4 px-3 py-2 flex items-center text-sm font-medium profile-button" data-profile="password">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" class="text-gray-400 hover:text-white group-hover:text-white flex-shrink-0 -ml-1 mr-3 h-5 sm:h-6 w-5 sm:w-6 profile-svg" data-profile="password">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" ></path>
                                         </svg>
                                         <span class="truncate">Ubah Password</span>
@@ -258,11 +258,11 @@
                 let data = $(this).data('profile');
                 
                 // left menu
-                $('.profile-button').removeClass('bg-blue-50 border-blue-700 text-blue-700 hover:bg-blue-50 hover:text-blue-700').addClass('border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-800')
-                $(this).removeClass('border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-800').addClass('bg-blue-50 border-blue-700 text-blue-700 hover:bg-blue-50 hover:text-blue-700')
+                $('.profile-button').removeClass('bg-amber-500 border-amber-700 text-white hover:bg-amber-500 hover:text-white').addClass('border-transparent text-gray-600 hover:bg-amber-500 hover:text-white')
+                $(this).removeClass('border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-800').addClass('bg-amber-500 border-amber-700 text-white hover:bg-amber-500 hover:text-white')
 
-                $('.profile-svg').removeClass('text-blue-700 group-hover:text-blue-700').addClass('text-gray-400 group-hover:text-gray-500')
-                $(`.profile-svg[data-profile="${data}"]`).removeClass('text-gray-400 group-hover:text-gray-500').addClass('text-blue-700 group-hover:text-blue-700')
+                $('.profile-svg').removeClass('text-white group-hover:text-white').addClass('text-gray-400 group-hover:text-gray-500')
+                $(`.profile-svg[data-profile="${data}"]`).removeClass('text-gray-400 group-hover:text-gray-500').addClass('text-white group-hover:text-white')
 
                 $('.profile').removeClass('block').addClass('hidden')
                 $(`.profile.${data}`).removeClass('hidden').addClass('block')

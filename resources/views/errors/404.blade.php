@@ -15,11 +15,7 @@
         <div class="flex-1 min-h-full min-w-full rounded-3xl bg-white shadow-xl p-10 lg:p-20 text-gray-800 relative md:flex items-center text-center md:text-left">
             <div class="w-full md:w-1/2">
                 <div class="mb-10 lg:mb-20">
-                    <img
-                        class="h-36 w-auto"
-                        src="{{ asset('assets/frontend/image/logo.png') }}"
-                        alt="Workflow"
-                    />
+                    <img class="h-10 w-auto" src="{{ asset('assets/frontend/image/logo.png') }}" alt="Workflow" />
                 </div>
                 <div class="mb-10 md:mb-20 text-gray-600 font-light">
                     <h1 class="font-black uppercase text-3xl lg:text-5xl text-gray-500 mb-10">Whoops.. <span class="text-red-400 ml-2"> 404!</span></h1>

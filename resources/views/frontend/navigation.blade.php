@@ -176,13 +176,13 @@
 </div>
             <div class="mt-5 flex-grow flex flex-col">
                 <nav class="flex-1 px-2 bg-white space-y-1">
-                    <a href="{{ route('dashboard.index') }}" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
+                    <a href="{{ route('dashboard.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('dashboard.index') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('dashboard.index') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                         </svg> Home
                     </a>
-                    <a href="{{ route('profile.edit') }}" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
+                    <a href="{{ route('profile.edit') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('profile.edit') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('profile.edit') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg> Profil
                     </a>
@@ -196,24 +196,30 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                         </svg> Pembelian
                     </a> --}}
-                    <a href="{{ route('tryout.index') }}" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
+                    <!-- Tryout -->
+                    <a href="{{ route('tryout.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('tryout.index') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('tryout.index') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
                         </svg> Tryout
                     </a>
-                    <a href="{{ route('tryout.result.index') }}" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
+
+                    <!-- Hasil Tryout -->
+                    <a href="{{ route('tryout.result.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('tryout.result.index') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="mr-3 h-6 w-6 {{ request()->routeIs('tryout.result.index') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg> Hasil Tryout
                     </a>
-                    <a href="{{ route('download.index') }}" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="" viewBox="0 0 24 24" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6" fill="none" stroke="currentColor">
+
+                    <!-- Materi Download -->
+                    <a href="{{ route('download.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('download.index') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('download.index') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                             <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z"></path>
                         </svg> Materi Download
                     </a>
+
                     @if (Auth::user()?->subscription_status == 'free')
-                        <a href="{{ route('petunjuk_upgrade') }}" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
+                        <a href="{{ route('petunjuk_upgrade') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('petunjuk_upgrade') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" class="mr-3 h-6 w-6 {{ request()->routeIs('petunjuk_upgrade') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg> Petunjuk Upgrade
                         </a>
@@ -221,15 +227,12 @@
                     
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                        <button type="submit" class="w-full text-gray-600 hover:bg-amber-100 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H9M4 4h7a2 2 0 012 2v12a2 2 0 01-2 2H4m0-16h7a2 2 0 012 2v12a2 2 0 01-2 2H4"></path>
                             </svg> Logout
                         </button>
                     </form>
-                    
-                    
-                      
                     
                 </nav>
             </div>

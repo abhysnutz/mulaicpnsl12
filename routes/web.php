@@ -14,10 +14,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
+
+Route::get('/redis-set', function () {
+    Redis::set('hello', 'Halo dari Redis facade!');
+    return 'Key berhasil disimpan';
+});
+
 
 // START FRONTEND
 Route::get('/', function () {
-    return view('welcome');
+    return view('frontend.home');
 });
 
 Route::get('/dashboard', function () {

@@ -18,10 +18,16 @@ class CheckTryoutAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $tryout = Tryout::find($request->route('id')); // Ambil tryout berdasarkan ID dari route
+        $tryout = Tryout::withCount('questions')->find($request->route('id')); // Ambil tryout berdasarkan ID dari route
 
         if (!$tryout) {
             return abort(404);
+        }
+
+        // ✅ Cek jumlah soal
+        if ($tryout->questions_count === 0) {
+            return redirect()->route('tryout.index')
+                ->with('error', 'Maaf, soal untuk tryout ini belum dibuat.');
         }
 
         if ($tryout->access_type === 'premium') {

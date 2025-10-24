@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\QuestionTopic;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use DB;
@@ -41,7 +42,9 @@ class QuestionTopicsSeeder extends Seeder
             ['category' => 'TKP', 'name' => 'Anti Radikalisme'],
         ];
 
-        DB::table('question_topics')->insert($topics);
+        QuestionTopic::insert($topics);
+
+        // DB::table('question_topics')->insert($topics);
 
 
         // 6 TWK - NASIONALISME
