@@ -4,6 +4,7 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\PaymentController as BackendPaymentController;
 use App\Http\Controllers\Backend\QuestionController as BackendQuestionController;
 use App\Http\Controllers\Backend\TryoutController as BackendTryoutController;
+use App\Http\Controllers\Backend\TryoutQuestionController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\DownloadController;
 use App\Http\Controllers\Frontend\ExamController;
@@ -100,16 +101,24 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
 
         // QUESTION
         Route::group(['prefix' => '{tryout_id}/question', 'as' => 'question.'], function (){
-            Route::get('/', [BackendQuestionController::class,'index'])->name('index');
-            Route::get('create', [BackendQuestionController::class,'create'])->name('create');
-            Route::post('store', [BackendQuestionController::class,'store'])->name('store');
-            Route::get('{id}/edit', [BackendQuestionController::class, 'edit'])->name('edit');
-            Route::put('{id}', [BackendQuestionController::class, 'update'])->name('update');
-            Route::delete('{id}', [BackendQuestionController::class, 'destroy'])->name('destroy');
-            Route::post('image', [BackendQuestionController::class, 'image'])->name('image');
-
+            Route::get('/', [TryoutQuestionController::class,'index'])->name('index');
+            Route::get('create', [TryoutQuestionController::class,'create'])->name('create');
+            Route::post('store', [TryoutQuestionController::class,'store'])->name('store');
+            Route::get('{id}/edit', [TryoutQuestionController::class, 'edit'])->name('edit');
+            Route::put('{id}', [TryoutQuestionController::class, 'update'])->name('update');
+            Route::delete('{id}', [TryoutQuestionController::class, 'destroy'])->name('destroy');
         });
+    });
 
+    Route::group(['prefix' => 'question', 'as' => 'question.'], function (){
+        Route::get('/', [BackendQuestionController::class,'index'])->name('index');
+        Route::get('create', [BackendQuestionController::class,'create'])->name('create');
+        Route::post('store', [BackendQuestionController::class,'store'])->name('store');
+        Route::get('{id}/edit', [BackendQuestionController::class, 'edit'])->name('edit');
+        Route::put('{id}', [BackendQuestionController::class, 'update'])->name('update');
+        Route::delete('{id}', [BackendQuestionController::class, 'destroy'])->name('destroy');
+        Route::post('image', [BackendQuestionController::class, 'image'])->name('image');
+        Route::post('{id}/clone', [BackendQuestionController::class, 'clone'])->name('clone');
     });
 });
 

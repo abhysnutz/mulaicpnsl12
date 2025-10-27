@@ -66,8 +66,14 @@ class TryoutController extends Controller
 
     public function destroy($id){
         $tryout = Tryout::findOrFail($id);
+
+        // Hapus semua relasi soal di tabel pivot
+        $tryout->questions()->detach();
+
+        // Hapus tryout
         $tryout->delete();
 
-        return redirect()->route('console.tryout.index')->with('success', 'Tryout berhasil dihapus.');
+        return redirect()->route('console.tryout.index')
+            ->with('success', 'Tryout berhasil dihapus.');
     }
 }

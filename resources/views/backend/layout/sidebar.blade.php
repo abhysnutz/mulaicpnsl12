@@ -43,6 +43,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('console.question.index') }}" class="nav-link {{ Request::is('console/question*') ? 'active' : '' }}">
+                        <i class="nav-icon far fa-solid fa-book"></i>
+                        <p>Question</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="../calendar.html" class="nav-link">
                       <i class="nav-icon far fa-calendar-alt"></i>
                       <p>

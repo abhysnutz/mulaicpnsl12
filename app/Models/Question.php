@@ -9,14 +9,7 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['order','tryout_id','topic_id','question','explanation'];
-
-    public $timestamps = true;
-
-
-    public function tryout(){
-        return $this->belongsTo(Tryout::class);
-    }
+    protected $fillable = ['topic_id','question','explanation'];
 
     public function answers(){
         return $this->hasMany(Answer::class);
@@ -28,5 +21,16 @@ class Question extends Model
 
     public function topic(){
         return $this->belongsTo(QuestionTopic::class);
+    }
+
+    public function tryouts()
+    {
+        return $this->belongsToMany(Tryout::class, 'question_tryout')
+                    ->withPivot('order')
+                    ->withTimestamps();
+    }
+
+    public function getCorrectAnswerAttribute(){
+        return $this->answers->firstWhere('score', 5)?->option;
     }
 }

@@ -1,25 +1,33 @@
 @extends('backend.layout.app')
+
 @section('content')
-    @include('backend.layout.breadcrumb',['content' => 'Edit Question'])
+    @include('backend.layout.breadcrumb',['content' => 'Create Question'])
 
     <div class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="container mt-4">
-                        <form action="{{ route('console.question.update', $question->id) }}" method="POST">
+                        <form action="{{ route('console.tryout.question.store',$tryout?->id) }}" method="POST">
                             @csrf
-                            @method('PUT')
 
-                            {{-- Category - Topic --}}
+                            {{-- Tryout --}}
                             <div class="row mb-3">
-                                <label for="topic_id" class="col-sm-2 col-form-label text-end">Category - Topic</label>
+                                <label class="col-sm-12 col-form-label text-end">Tryout</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" disabled value="{{ $tryout?->title }}">
+                                </div>
+                            </div>
+
+                            {{-- Topic --}}
+                            <div class="row mb-3">
+                                <label for="topic_id" class="col-sm-12 col-form-label text-end">Category - Topic</label>
                                 <div class="col-sm-12">
                                     <select class="form-control" id="topic_id" name="topic_id" onchange="updateScoreRules()">
                                         @foreach ($topics as $topic)
                                             <option value="{{ $topic->id }}"
                                                 data-category="{{ $topic->category }}"
-                                                {{ $question->topic_id == $topic->id ? 'selected' : '' }}>
+                                                {{ old('topic_id') == $topic->id ? 'selected' : '' }}>
                                                 {{ $topic->category }} - {{ $topic->name }}
                                             </option>
                                         @endforeach
@@ -27,56 +35,71 @@
                                 </div>
                             </div>
 
+                            {{-- Nomor Soal --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-12 col-form-label text-end">Nomor</label>
+                                <div class="col-sm-12">
+                                    <input type="number" class="form-control" name="order"
+                                           value="{{ old('order', $number) }}">
+                                </div>
+                            </div>
+
                             {{-- Soal --}}
                             <div class="mb-3">
                                 <label for="question" class="form-label">Soal</label>
-                                <textarea name="question" id="question" class="form-control" required>{{ $question->question }}</textarea>
+                                <textarea name="question" id="question" class="form-control" required>{{ old('question') }}</textarea>
                             </div>
-                            
+
                             {{-- Penjelasan --}}
                             <div class="mb-3">
                                 <label for="explanation" class="form-label">Penjelasan</label>
-                                <textarea name="explanation" id="explanation">{{ $question->explanation }}</textarea>
+                                <textarea name="explanation" id="explanation">{{ old('explanation') }}</textarea>
                             </div>
 
                             {{-- Jawaban --}}
                             <h4>Jawaban</h4>
-                            @foreach($question->answers as $index => $answer)
+                            @foreach(['A', 'B', 'C', 'D', 'E'] as $index => $option)
                                 <div class="mb-2">
-                                    <label class="form-label">Jawaban {{ chr(65 + $index) }}</label>
-                                    <input type="text" name="answers[]" class="form-control" required value="{{ $answer->answer }}">
+                                    <label class="form-label">Jawaban {{ $option }}</label>
+                                    <input type="text" name="answers[]"
+                                           class="form-control"
+                                           value="{{ old('answers.'.$index) }}"
+                                           required>
                                 </div>
                             @endforeach
 
                             {{-- Jawaban Benar (TWK/TIU) --}}
-                            <div id="score-twk-tiu" class="mb-3" style="{{ $question->topic->category == 'TKP' ? 'display:none;' : '' }}">
+                            <div id="score-twk-tiu" class="mb-3">
                                 <label for="correct_answer" class="form-label">Jawaban Benar</label>
                                 <select name="correct_answer" id="correct_answer" class="form-control">
-                                    @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
-                                        <option value="{{ $option }}"
-                                            {{ $question->correct_answer == $option ? 'selected' : '' }}>
-                                            {{ $option }}
+                                    @foreach(['A','B','C','D','E'] as $opt)
+                                        <option value="{{ $opt }}" {{ old('correct_answer') == $opt ? 'selected' : '' }}>
+                                            {{ $opt }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            {{-- Skor TKP --}}
-                            <div id="score-tkp" class="mb-3" style="{{ $question->topic->category == 'TKP' ? '' : 'display:none;' }}">
+                            {{-- Skor (TKP) --}}
+                            <div id="score-tkp" class="mb-3" style="display: none;">
                                 <label class="form-label">Skor</label>
-                                @foreach($question->answers as $index => $answer)
-                                    <input type="number" name="score_tkp[]" min="1" max="5" class="form-control mb-2"
-                                        placeholder="Skor {{ chr(65 + $index) }}" value="{{ $answer->score }}">
+                                @foreach(['A', 'B', 'C', 'D', 'E'] as $index => $option)
+                                    <input type="number" name="score_tkp[]"
+                                           min="1" max="5"
+                                           class="form-control mb-1"
+                                           placeholder="Skor {{ $option }}"
+                                           value="{{ old('score_tkp.'.$index) }}">
                                 @endforeach
                             </div>
 
-                            <div class="row">
-                                <div class="col-sm-2"></div> 
-                                <div class="col-sm-6">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                            {{-- Submit --}}
+                            <div class="row mt-4">
+                                <div class="col-sm-6 offset-sm-2">
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -86,19 +109,23 @@
 
 @push('js-bottom')
 <script>
-    $(document).ready(function() {
-        updateScoreRules();
+    $(document).ready(function () {
         $('#explanation, #question').summernote({
             height: 100,
-            toolbar: [['insert', ['picture']]],
+            toolbar: [
+                ['insert', ['picture']],
+            ],
             callbacks: {
-                onImageUpload: function(files) {
+                onImageUpload: function (files) {
                     let editor_id = $(this).attr('id');
                     let type = (editor_id === 'question') ? 'question' : 'explanation';
                     uploadImage(files[0], editor_id, type);
                 }
             }
         });
+
+        // Trigger category rules saat load ulang
+        updateScoreRules();
     });
 
     function uploadImage(file, editor_id, type) {
@@ -112,11 +139,11 @@
             data: data,
             processData: false,
             contentType: false,
-            success: function(response) {
+            success: function (response) {
                 var imgNode = $('<img>').attr('src', response.imageUrl);
                 $(`#${editor_id}`).summernote('insertNode', imgNode[0]);
             },
-            error: function(error) {
+            error: function (error) {
                 console.log("Upload gagal:", error);
             }
         });
@@ -125,14 +152,13 @@
     function updateScoreRules() {
         let selectedOption = $("#topic_id option:selected");
         let category = selectedOption.data("category");
+
         if (category === 'TKP') {
             $('#score-twk-tiu').hide();
             $('#score-tkp').show();
-            $('#score-tkp input').prop('disabled', false);
         } else {
             $('#score-tkp').hide();
             $('#score-twk-tiu').show();
-            $('#score-tkp input').prop('disabled', true);
         }
     }
 </script>

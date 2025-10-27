@@ -1,14 +1,14 @@
 @extends('backend.layout.app')
 @section('content')
-    @include('backend.layout.breadcrumb',['content' => 'Question' ])
+    @include('backend.layout.breadcrumb',['content' => $tryout?->title.' | Question' ])
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center">
-                            <h3 class="card-title mb-0">Question Management</h3>
-                            <a href ="{{ route('console.question.create') }}" type="button" class="btn btn-primary btn-sm ml-auto">
+                            <h3 class="card-title mb-0">Bordered Table</h3>
+                            <a href ="{{ route('console.tryout.question.create',$tryout->id) }}" type="button" class="btn btn-primary btn-sm ml-auto">
                                 <strong>
                                     <i class="fas fa-plus fa-fw mr-1"></i> 
                                     <span style="letter-spacing: 0.05em;">CREATE</span>
@@ -31,21 +31,15 @@
                                     @if ($questions->count())
                                         @foreach ($questions as $question)
                                             <tr class="align-middle">
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $question?->pivot?->order }}</td>
                                                 <td>{!! $question?->question !!}</td>
                                                 <td>{{ $question?->topic?->category }}</td>
                                                 <td>{{ $question?->topic?->name }}</td>
                                                 <td class="d-flex align-items-center">
-                                                    <form action="{{ route('console.question.clone', $question->id) }}" method="POST" class="mr-2">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-sm btn-primary">
-                                                            <i class="fas fa-clone me-1"></i>
-                                                        </button>
-                                                    </form>
-                                                    <a href="{{ route('console.question.edit',$question->id) }}" class="btn btn-warning btn-sm mr-2">
+                                                    <a href="{{ route('console.tryout.question.edit', [$tryout?->id,$question->id]) }}" class="btn btn-warning btn-sm mr-2">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form class="mr-2" action="{{ route('console.question.destroy',$question->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus question ini?');">
+                                                    <form class="mr-2" action="{{ route('console.tryout.question.destroy', [$tryout?->id,$question->id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus question ini?');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>

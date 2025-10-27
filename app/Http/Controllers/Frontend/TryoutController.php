@@ -35,35 +35,43 @@ class TryoutController extends Controller
         $result['data'] = [];
 
         $user = Auth::user();
-        $userExam = UserExam::Create([
-            'user_id' => $user?->id,
+
+        // Buat sesi ujian user
+        $userExam = UserExam::create([
+            'user_id'   => $user?->id,
             'tryout_id' => $request->tryout_id,
-            'status' => 'In Progress',
-            'start_time' => Carbon::now(),
-            'end_time' => Carbon::now()->addMinutes(100),
+            'status'    => 'In Progress',
+            'start_time' => now(),
+            'end_time'   => now()->addMinutes(100),
         ]);
 
-        if($userExam){
-            $questions = Question::where('tryout_id', $request->tryout_id)->get();
+        if ($userExam) {
+            // ✅ Ambil soal lewat relasi Tryout
+            $tryout = Tryout::with(['questions' => function ($q) {
+                $q->orderBy('pivot_order', 'asc');
+            }])->findOrFail($request->tryout_id);
 
-            // Siapkan array untuk menyimpan data yang akan di-insert
+            $questions = $tryout->questions;
+
+            // Siapkan data user_answers
             $userAnswers = [];
-
-            // Iterasi melalui semua soal
             foreach ($questions as $question) {
                 $userAnswers[] = [
                     'user_exam_id' => $userExam->id,
-                    'question_id' => $question?->id,
-                    'answer_id' => null, // Set answer_id ke null
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'question_id'  => $question->id,
+                    'answer_id'    => null,
+                    'created_at'   => now(),
+                    'updated_at'   => now(),
                 ];
             }
+
+            // Insert jawaban kosong untuk tiap soal
             UserAnswer::insert($userAnswers);
 
             $result['status'] = 1;
             $result['data'] = $userExam->toArray();
         }
+
         return response()->json($result, 200);
     }
 
