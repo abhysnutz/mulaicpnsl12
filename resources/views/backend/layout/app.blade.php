@@ -17,6 +17,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{{ asset('assets/backend/css/adminlte.min.css') }}">
   
   <link rel="stylesheet" href="{{ asset('assets/backend/plugins/summernote/summernote-bs4.min.css') }}">
+  @stack('css-top')
 
   <meta name="csrf-token" content="{{ csrf_token() }}">
 

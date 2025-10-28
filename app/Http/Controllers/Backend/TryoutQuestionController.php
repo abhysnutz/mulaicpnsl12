@@ -252,8 +252,6 @@ class TryoutQuestionController extends Controller
         }
     }
 
-
-
     public function destroy($tryout_id, $id){
         $tryout = Tryout::findOrFail($tryout_id);
 
@@ -263,4 +261,18 @@ class TryoutQuestionController extends Controller
         return redirect()->route('console.tryout.question.index', $tryout_id)
             ->with('success', 'Soal berhasil dihapus dari tryout!');
     }
+
+    public function reorder(Request $request, $tryout_id){
+        $order = $request->input('order', []);
+
+        foreach ($order as $item) {
+            DB::table('question_tryout')
+                ->where('tryout_id', $tryout_id)
+                ->where('question_id', $item['id'])
+                ->update(['order' => $item['position']]);
+        }
+
+        return response()->json(['status' => 'success']);
+    }
+
 }

@@ -268,4 +268,10 @@ class QuestionController extends Controller
             return redirect()->back()->with('error', 'Gagal cloning soal: '.$e->getMessage());
         }
     }
+
+    public function preview($id){
+        $question = Question::with('answers')->findOrFail($id);
+        // pakai tampilan frontend ujian, bukan tampilan admin
+        return view('backend.question.preview', compact('question'));
+    }
 }

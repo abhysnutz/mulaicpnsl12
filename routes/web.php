@@ -107,6 +107,8 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
             Route::get('{id}/edit', [TryoutQuestionController::class, 'edit'])->name('edit');
             Route::put('{id}', [TryoutQuestionController::class, 'update'])->name('update');
             Route::delete('{id}', [TryoutQuestionController::class, 'destroy'])->name('destroy');
+            Route::post('reorder', [TryoutQuestionController::class, 'reorder'])->name('reorder');
+
         });
     });
 
@@ -119,6 +121,7 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::delete('{id}', [BackendQuestionController::class, 'destroy'])->name('destroy');
         Route::post('image', [BackendQuestionController::class, 'image'])->name('image');
         Route::post('{id}/clone', [BackendQuestionController::class, 'clone'])->name('clone');
+        Route::get('preview/{id}', [BackendQuestionController::class, 'preview'])->name('preview');
     });
 });
 

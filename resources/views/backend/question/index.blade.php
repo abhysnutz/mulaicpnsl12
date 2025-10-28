@@ -36,6 +36,9 @@
                                                 <td>{{ $question?->topic?->category }}</td>
                                                 <td>{{ $question?->topic?->name }}</td>
                                                 <td class="d-flex align-items-center">
+                                                    <a href="{{ route('console.question.preview', $question->id) }}" target="_blank" class="btn btn-info btn-sm mr-2">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
                                                     <form action="{{ route('console.question.clone', $question->id) }}" method="POST" class="mr-2">
                                                         @csrf
                                                         <button type="submit" class="btn btn-sm btn-primary">

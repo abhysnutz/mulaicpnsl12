@@ -27,11 +27,11 @@
     <body inmaintabuse="1"> 
         <div>
             <div class="h-screen flex overflow-hidden bg-gray-100">
-                @if (!Request::is('*prepare*') && !Request::is('*working*'))
+                @if (!Request::is('*prepare*') && !Request::is('*working*') && !Request::is('*preview*'))
                     @include('frontend.navigation')
                 @endif
                 <div class="flex flex-col w-0 flex-1 overflow-hidden">
-                    @if (!Request::is('*prepare*') && !Request::is('*working*'))
+                    @if (!Request::is('*prepare*') && !Request::is('*working*') && !Request::is('*preview*'))
                         <div class="relative flex-shrink-0 flex h-16 bg-white shadow">
                             <button class="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-amber-500 lg:hidden sm:flex sm:items-center hidden">
                                 <span class="sr-only">Open sidebar</span>
