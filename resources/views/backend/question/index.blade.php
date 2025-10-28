@@ -5,7 +5,43 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
+
+                    {{-- Import & Export Bar --}}
+                    <div class="card-body border-bottom pb-3">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+
+                            {{-- Export & Template --}}
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{{ route('console.question.export') }}" class="btn btn-success d-flex align-items-center shadow-sm mr-2">
+                                    <i class="fas fa-file-export mr-2"></i> Export Soal
+                                </a>
+
+                                <a href="{{ asset('template_import_soal_cpns.xlsx') }}" target="_blank" class="btn btn-secondary d-flex align-items-center shadow-sm">
+                                    <i class="fas fa-download mr-2"></i> Download Template
+                                </a>
+                            </div>
+
+                            {{-- Import Form (1 baris) --}}
+                            <form action="{{ route('console.question.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2 flex-wrap">
+                                @csrf
+                                <div class="input-group">
+                                    <div class="custom-file mr-2">
+                                        <input type="file" name="file" id="importFile" class="custom-file-input" required>
+                                        <label class="custom-file-label" for="importFile">
+                                            <i class="fas fa-file-excel mr-2"></i> Pilih File Excel...
+                                        </label>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary d-flex align-items-center shadow-sm" type="submit">
+                                            <i class="fas fa-upload mr-2"></i> Import
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     <div class="card mb-4">
+                        
                         <div class="card-header d-flex align-items-center">
                             <h3 class="card-title mb-0">Question Management</h3>
                             <a href ="{{ route('console.question.create') }}" type="button" class="btn btn-primary btn-sm ml-auto">
@@ -67,3 +103,13 @@
         </div>
     </div>
 @endsection
+
+@push('js-bottom')
+    <script>
+        // Ganti label saat pilih file
+        document.querySelector('.custom-file-input').addEventListener('change', function (e) {
+            const fileName = e.target.files[0].name;
+            e.target.nextElementSibling.innerText = fileName;
+        });
+    </script>
+@endpush

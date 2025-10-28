@@ -17,17 +17,52 @@ tbody tr.cursor-move:active {
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
+                    {{-- Import & Export Bar --}}
+                    <div class="card-body border-bottom pb-3">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+
+                            {{-- Export & Template --}}
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{{ route('console.tryout.question.export', $tryout->id) }}" class="btn btn-success d-flex align-items-center shadow-sm mr-2">
+                                    <i class="fas fa-file-export mr-2"></i> Export Soal
+                                </a>
+
+                                <a href="{{ asset('template_import_soal_cpns.xlsx') }}" target="_blank" class="btn btn-secondary d-flex align-items-center shadow-sm">
+                                    <i class="fas fa-download mr-2"></i> Download Template
+                                </a>
+                            </div>
+
+                            {{-- Import Form (1 baris) --}}
+                            <form action="{{ route('console.tryout.question.import', $tryout->id) }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2 flex-wrap">
+                                @csrf
+                                <div class="input-group">
+                                    <div class="custom-file mr-2">
+                                        <input type="file" name="file" id="importFile" class="custom-file-input" required>
+                                        <label class="custom-file-label" for="importFile">
+                                            <i class="fas fa-file-excel mr-2"></i> Pilih File Excel...
+                                        </label>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary d-flex align-items-center shadow-sm" type="submit">
+                                            <i class="fas fa-upload mr-2"></i> Import
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center">
-                            <h3 class="card-title mb-0">
-                                <strong>Total Soal : {{ $questions->count() }}</strong>
-                            </h3>
-                            <a href ="{{ route('console.tryout.question.create',$tryout->id) }}" type="button" class="btn btn-primary btn-sm ml-auto">
-                                <strong>
-                                    <i class="fas fa-plus fa-fw mr-1"></i> 
-                                    <span style="letter-spacing: 0.05em;">CREATE</span>
-                                </strong>
-                            </a>
+                            <h3 class="card-title mb-0">Daftar Soal</h3>
+                            <div class="ml-auto">
+                                <a href="{{ route('console.tryout.question.create', $tryout->id) }}" class="btn btn-primary btn-sm mr-2">
+                                    <i class="fas fa-plus mr-1"></i> Buat Soal Baru
+                                </a>
+                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#bankModal">
+                                    <i class="fas fa-database mr-1"></i> Tambah dari Bank Soal
+                                </button>
+                            </div>
                         </div>
 
                         <div class="card-body table-responsive p-0" style="height: 450px;">
@@ -77,6 +112,56 @@ tbody tr.cursor-move:active {
             </div>
         </div>
     </div>
+
+    {{-- Modal pilih soal --}}
+    <div class="modal fade" id="bankModal" tabindex="-1" role="dialog" aria-labelledby="bankModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <form action="{{ route('console.tryout.question.attach', $tryout->id) }}" method="POST">
+            @csrf
+            <div class="modal-header">
+            <h5 class="modal-title" id="bankModalLabel">Pilih Soal dari Bank Soal</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                {{-- Filter Kategori & Topik --}}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <select id="filterCategory" class="form-control">
+                            <option value="">Semua Kategori</option>
+                            <option value="TWK">TWK</option>
+                            <option value="TIU">TIU</option>
+                            <option value="TKP">TKP</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" id="searchQuestion" class="form-control" placeholder="Cari soal...">
+                    </div>
+                </div>
+
+                <div style="max-height: 400px; overflow-y:auto;">
+                @foreach($bankQuestions as $q)
+                    <div class="form-check mb-2 bank-item" data-category="{{ $q->topic->category }}">
+                        <input type="checkbox" name="question_ids[]" value="{{ $q->id }}" class="form-check-input">
+                        <label class="form-check-label">
+                            <strong>[{{ $q->topic->category }} - {{ $q->topic->name }}]</strong> 
+                            {!! Str::limit(strip_tags($q->question), 120) !!}
+                        </label>
+                    </div>
+                @endforeach
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Tambahkan</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+
 @endsection
 
 @push('js-bottom')
@@ -107,6 +192,28 @@ tbody tr.cursor-move:active {
                     console.log(data);
                 });
             }
+        });
+
+         $('#filterCategory').on('change', function(){
+            let cat = $(this).val().toLowerCase();
+            $('.bank-item').each(function(){
+                let itemCat = $(this).data('category').toLowerCase();
+                $(this).toggle(cat === '' || itemCat === cat);
+            });
+        });
+
+        $('#searchQuestion').on('keyup', function(){
+            let keyword = $(this).val().toLowerCase();
+            $('.bank-item').each(function(){
+                let text = $(this).text().toLowerCase();
+                $(this).toggle(text.includes(keyword));
+            });
+        });
+
+        // Ganti label saat pilih file
+        document.querySelector('.custom-file-input').addEventListener('change', function (e) {
+            const fileName = e.target.files[0].name;
+            e.target.nextElementSibling.innerText = fileName;
         });
     </script>
 @endpush

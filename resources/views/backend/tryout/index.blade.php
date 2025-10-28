@@ -25,6 +25,7 @@
                                         <th>Type</th>
                                         <th>Category</th>
                                         <th>Source</th>
+                                        <th>Jumlah soal</th>
                                         <th>Status</th>
                                         <th>Date</th>
                                         <th>Action</th>
@@ -39,6 +40,11 @@
                                                 <td>{{ $tryout?->access_type ?? '-' }}</td>
                                                 <td>{{ $tryout?->category ?? '-' }}</td>
                                                 <td>{{ $tryout?->source?->name ?? '-' }}</td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-info">
+                                                        {{ $tryout->questions()->count() }}
+                                                    </span>
+                                                </td>
                                                 <td>
                                                     <span class="@if($tryout?->status == 'draft') btn-warning @elseif($tryout?->status == 'publish') btn-success @else btn-danger @endif btn-sm text-bold text-capitalize">
                                                         {{ $tryout?->status ?? '-' }}

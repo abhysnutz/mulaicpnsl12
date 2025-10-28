@@ -18,9 +18,8 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
-Route::get('/redis-set', function () {
-    Redis::set('hello', 'Halo dari Redis facade!');
-    return 'Key berhasil disimpan';
+Route::get('/info', function () {
+    return phpinfo();
 });
 
 
@@ -108,7 +107,9 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
             Route::put('{id}', [TryoutQuestionController::class, 'update'])->name('update');
             Route::delete('{id}', [TryoutQuestionController::class, 'destroy'])->name('destroy');
             Route::post('reorder', [TryoutQuestionController::class, 'reorder'])->name('reorder');
-
+            Route::post('attach', [TryoutQuestionController::class, 'attach'])->name('attach');
+            Route::get('export', [TryoutQuestionController::class, 'export'])->name('export');
+            Route::post('import', [TryoutQuestionController::class, 'import'])->name('import');
         });
     });
 
@@ -122,6 +123,8 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::post('image', [BackendQuestionController::class, 'image'])->name('image');
         Route::post('{id}/clone', [BackendQuestionController::class, 'clone'])->name('clone');
         Route::get('preview/{id}', [BackendQuestionController::class, 'preview'])->name('preview');
+        Route::get('export', [BackendQuestionController::class, 'export'])->name('export');
+        Route::post('import', [BackendQuestionController::class, 'import'])->name('import');
     });
 });
 
