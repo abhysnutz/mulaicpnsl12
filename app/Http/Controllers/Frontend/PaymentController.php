@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewPaymentNotificationMail;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -24,14 +26,26 @@ class PaymentController extends Controller
         if($user){
             $unique_code = mt_rand(1, 999);
             $price = Setting::where('key', 'package_price')->value('value');
-            Payment::Create([
+            $payment = Payment::Create([
                 'user_id' => $user?->id,
                 'whatsapp' => $request?->whatsapp ?? null,
                 'payment_method_id' => $request?->payment_method_id,
                 'unique_code' => $unique_code,
                 'total' => $price + $unique_code
             ]);
+
+             // 📧 Kirim email ke owner (ganti dengan emailmu)
+            if($payment){
+                try {
+                    \Log::info('Mengirim email ke ' . env('OWNER_EMAIL'));
+                    Mail::to(env('OWNER_EMAIL'))->queue(new NewPaymentNotificationMail($payment));
+                } catch (\Exception $e) {
+                    \Log::error('Gagal kirim email: ' . $e->getMessage());
+                }
+            }
         }
+
+       
 
         return back()->with('status', 'payment-updated');
     }

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PaymentStatusMail;
 use App\Models\Payment;
 use App\Models\UserSubscription;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -15,18 +17,28 @@ class PaymentController extends Controller
         return view('backend.payment.index',compact('payments'));
     }
 
-    public function update(Request $request){
-        $payment = Payment::find($request->id);
+    public function update(Request $request)
+    {
+        $payment = Payment::findOrFail($request->id);
         $payment->status = $request->status;
         $payment->save();
 
-        // Jika pembayaran dikonfirmasi, tambahkan atau perpanjang subscription
+        // Jika pembayaran dikonfirmasi
         if ($request->status === 'confirmed') {
             $this->addOrExtendSubscription($payment->user_id);
+
+            // kirim email ke user
+            Mail::to($payment->user->email)
+                ->queue(new PaymentStatusMail($payment, 'accepted'));
+        }else{
+            $message = $request->message ?? 'Bukti pembayaran tidak valid atau tidak sesuai.';
+            Mail::to($payment->user->email)
+                ->queue(new PaymentStatusMail($payment, 'rejected', $message));
         }
-    
-        return redirect()->back()->with('success', 'Payment status updated successfully!');        
+
+        return redirect()->back()->with('success', 'Payment status updated successfully!');
     }
+
 
     private function addOrExtendSubscription($userId){
         $subscription = UserSubscription::where('user_id', $userId)->first();

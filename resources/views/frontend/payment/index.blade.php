@@ -42,8 +42,6 @@
                     </div>
                 @endif
                 
-
-
                 <div class="container mx-auto p-4 md:p-6 lg:grid lg:grid-cols-2 lg:gap-8">
                     <div class="bg-amber-50 rounded-lg p-4 mb-6 lg:mb-0">
                         <h2 class="text-lg font-bold text-amber-600 mb-4">PETUNJUK TRANSFER</h2>
@@ -231,6 +229,12 @@
 
 @push('js-bottom')
 <script>
+    $('form').on('submit', function () {
+        const btn = $(this).find('button[type="submit"]');
+        btn.prop('disabled', true);
+        btn.addClass('opacity-50 cursor-not-allowed');
+        btn.text('Menyimpan...');
+    });
    
     // Open modal
     $('.openModal').on('click',function(){
