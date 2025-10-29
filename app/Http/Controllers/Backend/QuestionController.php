@@ -246,7 +246,7 @@ class QuestionController extends Controller
     public function image(Request $request){
         $request->validate([
             'file' => 'required|image|max:2048',
-            'type' => 'required|in:question,explanation', // bisa diperluas nanti: answer_A, answer_B, dst.
+            'type' => ['required', 'regex:/^(question|explanation|answer_[A-E])$/'],
         ]);
 
         $type = $request->type;

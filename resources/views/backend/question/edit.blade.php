@@ -42,9 +42,24 @@
                             {{-- Jawaban --}}
                             <h4>Jawaban</h4>
                             @foreach($question->answers as $index => $answer)
+                                @php $option = chr(65 + $index); @endphp
                                 <div class="mb-2">
-                                    <label class="form-label">Jawaban {{ chr(65 + $index) }}</label>
-                                    <input type="text" name="answers[]" class="form-control" required value="{{ $answer->answer }}">
+                                    <label class="form-label">Jawaban {{ $option }}</label>
+                                    
+                                    {{-- Input text TWK/TKP --}}
+                                    <input type="text" 
+                                           name="answers[{{ $index }}]" 
+                                           class="form-control answer-input" 
+                                           value="{{ $answer->answer }}"
+                                           required>
+
+                                    {{-- Textarea Summernote TIU --}}
+                                    <textarea 
+                                        id="answer_{{ $option }}" 
+                                        name="answers[{{ $index }}]"
+                                        class="form-control answer-textarea d-none"
+                                        rows="2"
+                                    >{{ $answer->answer }}</textarea>
                                 </div>
                             @endforeach
 
@@ -86,54 +101,82 @@
 
 @push('js-bottom')
 <script>
-    $(document).ready(function() {
-        updateScoreRules();
-        $('#explanation, #question').summernote({
-            height: 100,
-            toolbar: [['insert', ['picture']]],
-            callbacks: {
-                onImageUpload: function(files) {
-                    let editor_id = $(this).attr('id');
-                    let type = (editor_id === 'question') ? 'question' : 'explanation';
-                    uploadImage(files[0], editor_id, type);
-                }
-            }
-        });
+$(function () {
+    // Soal dan Penjelasan
+    initSummernote('#question', 'question');
+    initSummernote('#explanation', 'explanation');
+
+    // Jawaban A–E
+    ['A','B','C','D','E'].forEach(opt => {
+        initSummernote(`#answer_${opt}`, `answer_${opt}`);
     });
 
-    function uploadImage(file, editor_id, type) {
-        var data = new FormData();
-        data.append("file", file);
-        data.append("type", type);
+    updateScoreRules(); // tampilkan sesuai kategori saat pertama kali load
+});
 
-        $.ajax({
-            url: "{{ route('console.question.image') }}",
-            method: "POST",
-            data: data,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                var imgNode = $('<img>').attr('src', response.imageUrl);
-                $(`#${editor_id}`).summernote('insertNode', imgNode[0]);
-            },
-            error: function(error) {
-                console.log("Upload gagal:", error);
+function initSummernote(selector, type){
+    $(selector).summernote({
+        height: 100,
+        toolbar: [['insert', ['picture']]],
+        callbacks: {
+            onImageUpload: function(files){
+                uploadImage(files[0], selector, type);
             }
+        }
+    });
+}
+
+function uploadImage(file, selector, type){
+    const data = new FormData();
+    data.append("file", file);
+    data.append("type", type);
+
+    $.ajax({
+        url: "{{ route('console.question.image') }}",
+        method: "POST",
+        headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+        data,
+        processData: false,
+        contentType: false,
+        success: function(res){
+            const img = $('<img>').attr('src', res.imageUrl);
+            $(selector).summernote('insertNode', img[0]);
+        },
+        error: function(err){
+            alert("Upload gambar gagal. Pastikan file ≤ 2MB.");
+            console.error(err);
+        }
+    });
+}
+
+function updateScoreRules(){
+    const cat = $("#topic_id option:selected").data("category");
+
+    if (cat === 'TIU') {
+        // tampilkan summernote jawaban
+        $('.answer-input').addClass('d-none').attr('disabled', true).removeAttr('required');
+        $('.answer-textarea').each(function(){
+            $(this).removeClass('d-none').removeAttr('disabled').attr('required', true);
+            $(this).next('.note-editor').show();
         });
+    } else {
+        // tampilkan input text jawaban
+        $('.answer-textarea').each(function(){
+            $(this).addClass('d-none').attr('disabled', true).removeAttr('required');
+            $(this).next('.note-editor').hide();
+        });
+        $('.answer-input').removeClass('d-none').removeAttr('disabled').attr('required', true);
     }
 
-    function updateScoreRules() {
-        let selectedOption = $("#topic_id option:selected");
-        let category = selectedOption.data("category");
-        if (category === 'TKP') {
-            $('#score-twk-tiu').hide();
-            $('#score-tkp').show();
-            $('#score-tkp input').prop('disabled', false);
-        } else {
-            $('#score-tkp').hide();
-            $('#score-twk-tiu').show();
-            $('#score-tkp input').prop('disabled', true);
-        }
+    if (cat === 'TKP') {
+        $('#score-twk-tiu').hide();
+        $('#score-tkp').show();
+        $('#correct_answer').val('');
+    } else {
+        $('#score-tkp').hide();
+        $('#score-twk-tiu').show();
+        $('input[name="score_tkp[]"]').val('');
     }
+}
 </script>
 @endpush

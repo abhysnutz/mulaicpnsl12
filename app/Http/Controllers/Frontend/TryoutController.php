@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Support\Facades\Cache;
 
 class TryoutController extends Controller
 {
@@ -30,30 +31,31 @@ class TryoutController extends Controller
     }
 
     public function exam(Request $request){
-        $result = [];
-        $result['status'] = 0;
-        $result['data'] = [];
-
+        $result = ['status' => 0, 'data' => []];
         $user = Auth::user();
 
-        // Buat sesi ujian user
+        // 1️⃣ Buat sesi ujian user
         $userExam = UserExam::create([
-            'user_id'   => $user?->id,
-            'tryout_id' => $request->tryout_id,
-            'status'    => 'In Progress',
+            'user_id'    => $user->id,
+            'tryout_id'  => $request->tryout_id,
+            'status'     => 'In Progress',
             'start_time' => now(),
             'end_time'   => now()->addMinutes(100),
         ]);
 
         if ($userExam) {
-            // ✅ Ambil soal lewat relasi Tryout
+            // 2️⃣ Ambil semua soal
             $tryout = Tryout::with(['questions' => function ($q) {
                 $q->orderBy('pivot_order', 'asc');
             }])->findOrFail($request->tryout_id);
 
             $questions = $tryout->questions;
 
-            // Siapkan data user_answers
+            // 3️⃣ Simpan ke cache Redis
+            $cacheKey = "tryout:{$user->id}:{$userExam->tryout_id}:questions";
+            Cache::put($cacheKey, $questions, now()->addMinutes(120));
+
+            // 4️⃣ Siapkan placeholder jawaban user
             $userAnswers = [];
             foreach ($questions as $question) {
                 $userAnswers[] = [
@@ -64,10 +66,9 @@ class TryoutController extends Controller
                     'updated_at'   => now(),
                 ];
             }
-
-            // Insert jawaban kosong untuk tiap soal
             UserAnswer::insert($userAnswers);
 
+            // 5️⃣ Return ke frontend
             $result['status'] = 1;
             $result['data'] = $userExam->toArray();
         }
@@ -89,41 +90,64 @@ class TryoutController extends Controller
     }
 
     public function question(Request $request){
-        $result = [];
-        $result['status'] = 0;
-        $result['data'] = [];
+        $exam = UserExam::with('tryout')->findOrFail($request->exam_id);
 
-        $exam = UserExam::where('id', $request->exam_id)->first();
-        $questions = $exam?->tryout?->questions;
+        $userId   = $exam->user_id;
+        $tryoutId = $exam->tryout_id;
+        $index    = (int) $request->index;
 
-        if (!$questions || !isset($questions[$request->index])) {
+        // 🔑 Key cache unik per user & tryout
+        $cacheKey = "tryout:{$userId}:{$tryoutId}:questions";
+
+        // 🧠 Ambil soal dari cache
+        $questions = Cache::get($cacheKey);
+
+        // ⚠️ Jika cache hilang, rebuild dari database
+        if (!$questions) {
+            $questions = $exam->tryout
+                ->questions()
+                ->with(['answers', 'topic'])
+                ->orderBy('pivot_order', 'asc')
+                ->get();
+
+            // simpan ulang ke cache
+            Cache::put($cacheKey, $questions, now()->addMinutes(120));
+        }
+
+        // 🚨 Jika index di luar jangkauan
+        if (!isset($questions[$index])) {
             return response()->json(['error' => 'Pertanyaan Tidak Ditemukan'], 404);
         }
-        $question = $questions[$request->index];
-        $answers = $question->answers;
 
-         // Cek jawaban user sebelumnya
-        $selected_answer = UserAnswer::where('user_exam_id', $request->exam_id)->where('question_id', $question->id)->value('answer_id');
+        $question = $questions[$index];
+
+        // ✅ Ambil jawaban user sebelumnya
+        $selected_answer = UserAnswer::where('user_exam_id', $exam->id)
+            ->where('question_id', $question->id)
+            ->value('answer_id');
+
+        // ✨ Jawaban dari relasi yang sudah di-load
+        $answers = $question->answers->map(function ($answer) {
+            return [
+                'id'     => $answer->id,
+                'answer' => $answer->answer,
+                'option' => $answer->option,
+            ];
+        });
 
         return response()->json([
             'question' => [
-                'id' => $question->id,
+                'id'       => $question->id,
                 'question' => $question->question,
-                'answers' => $answers->map(function ($answer) {
-                    return [
-                        'id' => $answer->id,
-                        'answer' => $answer->answer,
-                        'option' => $answer->option,
-                    ];
-                }),
-                'topic' => $question?->topic?->name
+                'answers'  => $answers,
+                'topic'    => $question?->topic?->name,
             ],
             'selected_answer' => $selected_answer,
-            'index' => $request->index + 1, // Untuk pagination
-            'total' => $questions->count()
-        ],200);
-        
+            'index'           => $index + 1,        // pagination 1-based
+            'total'           => count($questions)  // total soal
+        ], 200);
     }
+
 
     public function questions(Request $request){
         
@@ -164,73 +188,80 @@ class TryoutController extends Controller
     }
 
     public function cancel($exam_id){
-        $exam = UserExam::where('id', $exam_id)
-            ->where('user_id', Auth::id())
-            ->where('status', 'In Progress')
-            ->first();
+        $exam = UserExam::where('id', $exam_id)->where('user_id', Auth::id())->where('status', 'In Progress')->first();
 
-        if (!$exam) {
+        if (!$exam){
             return redirect()->route('dashboard.index')->with('error', 'Ujian tidak ditemukan atau sudah selesai.');
         }
 
-        $exam->update(['status' => 'Cancel','end_time'=> Carbon::now()]);
+        // 🛑 Ubah status ujian
+        $exam->update(['status' => 'Cancel','end_time'  => Carbon::now() ]);
 
-        return redirect()->route('dashboard.index')->with('success', 'Ujian telah dibatalkan.');
+        // 🧹 Hapus cache soal user ini
+        $cacheKey = "tryout:{$exam->user_id}:{$exam->tryout_id}:questions";
+        Cache::forget($cacheKey);
+
+        return redirect()->route('dashboard.index')->with('success', 'Ujian telah dibatalkan dan cache soal dihapus.');
     }
 
     public function finish($exam_id){
-        $exam = UserExam::where('id', $exam_id)
-            ->where('user_id', Auth::id())
-            ->where('status', 'In Progress')
-            ->first();
+        // 🧭 Validasi ujian masih berlangsung
+        $exam = UserExam::where('id', $exam_id)->where('user_id', Auth::id())->where('status', 'In Progress')->first();
 
         if (!$exam) {
             return redirect()->route('dashboard.index')->with('error', 'Ujian tidak ditemukan atau sudah selesai.');
         }
 
-        $exam->update(['status' => 'Completed','end_time'=> Carbon::now()]);
+        // 🕒 Update status ujian menjadi Completed
+        $exam->update(['status'    => 'Completed', 'end_time'  => Carbon::now() ]);
 
+        // 🧮 Hitung nilai TWK, TIU, TKP
         $total_twk = 0;
         $total_tiu = 0;
         $total_tkp = 0;
 
-        $user_answers = UserAnswer::where('user_exam_id',$exam_id)->get();
+        $user_answers = UserAnswer::where('user_exam_id', $exam_id)
+            ->with(['answer.question.topic']) // pre-load relasi untuk efisiensi
+            ->get();
 
         foreach ($user_answers as $user_answer) {
-            if ($user_answer?->answer?->question?->topic?->category == 'TWK') {
-                $total_twk += $user_answer?->answer?->score;  // 0 or 5
-            }
-            if ($user_answer?->answer?->question?->topic?->category == 'TIU') {
-                $total_tiu += $user_answer?->answer?->score;  // 0 or 5
-            }
-            if ($user_answer?->answer?->question?->topic?->category == 'TKP') {
-                $total_tkp += $user_answer?->answer?->score;  // 1 to 5
+            $category = $user_answer?->answer?->question?->topic?->category;
+
+            if ($category === 'TWK') {
+                $total_twk += $user_answer?->answer?->score ?? 0;
+            } elseif ($category === 'TIU') {
+                $total_tiu += $user_answer?->answer?->score ?? 0;
+            } elseif ($category === 'TKP') {
+                $total_tkp += $user_answer?->answer?->score ?? 0;
             }
         }
 
         $total_score = $total_twk + $total_tiu + $total_tkp;
 
-        // Menentukan status kelulusan
-        $passing_grade_twk = Setting::where('key', 'passing_grade_twk')->value('value');
-        $passing_grade_tiu = Setting::where('key', 'passing_grade_tiu')->value('value');
-        $passing_grade_tkp = Setting::where('key', 'passing_grade_tkp')->value('value');
+        // 🧪 Ambil passing grade dari tabel settings
+        $passing_grade_twk = (int) Setting::where('key', 'passing_grade_twk')->value('value');
+        $passing_grade_tiu = (int) Setting::where('key', 'passing_grade_tiu')->value('value');
+        $passing_grade_tkp = (int) Setting::where('key', 'passing_grade_tkp')->value('value');
 
-        $isPassed = true;
-        
-        if ($total_twk < $passing_grade_twk) $isPassed = false;
-        if ($total_tiu < $passing_grade_tiu) $isPassed = false;
-        if ($total_tkp < $passing_grade_tkp) $isPassed = false;
-        
+        $isPassed = $total_twk >= $passing_grade_twk &&
+                    $total_tiu >= $passing_grade_tiu &&
+                    $total_tkp >= $passing_grade_tkp;
 
+        // 📝 Simpan hasil ujian ke exam_results
         ExamResult::create([
             'user_exam_id' => $exam_id,
-            'total_twk' => $total_twk,
-            'total_tiu' => $total_tiu,
-            'total_tkp' => $total_tkp,
-            'total_score' => $total_score,
-            'is_passed' => $isPassed
+            'total_twk'    => $total_twk,
+            'total_tiu'    => $total_tiu,
+            'total_tkp'    => $total_tkp,
+            'total_score'  => $total_score,
+            'is_passed'    => $isPassed,
         ]);
 
-        return redirect()->route('tryout.result.statistic',$exam_id);
+        // 🧹 Bersihkan cache soal untuk ujian ini
+        $cacheKey = "tryout:{$exam->user_id}:{$exam->tryout_id}:questions";
+        Cache::forget($cacheKey);
+
+        // ✅ Redirect ke halaman hasil ujian
+        return redirect()->route('tryout.result.statistic', $exam_id);
     }
 }

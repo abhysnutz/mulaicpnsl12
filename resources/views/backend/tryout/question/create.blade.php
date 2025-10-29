@@ -58,15 +58,18 @@
 
                             {{-- Jawaban --}}
                             <h4>Jawaban</h4>
-                            @foreach(['A', 'B', 'C', 'D', 'E'] as $index => $option)
+                            @foreach(['A', 'B', 'C', 'D', 'E'] as $i => $opt)
                                 <div class="mb-2">
-                                    <label class="form-label">Jawaban {{ $option }}</label>
-                                    <input type="text" name="answers[]"
-                                           class="form-control"
-                                           value="{{ old('answers.'.$index) }}"
-                                           required>
+                                    <label class="form-label">Jawaban {{ $opt }}</label>
+
+                                    {{-- input text TWK & TKP --}}
+                                    <input type="text" name="answers[{{ $i }}]" class="form-control answer-input" value="{{ old('answers.'.$i) }}" required >
+
+                                    {{-- textarea Summernote TIU --}}
+                                    <textarea id="answer_{{ $opt }}" name="answers[{{ $i }}]" class="form-control answer-textarea d-none" rows="2">{{ old('answers.'.$i) }}</textarea>
                                 </div>
                             @endforeach
+
 
                             {{-- Jawaban Benar (TWK/TIU) --}}
                             <div id="score-twk-tiu" class="mb-3">
@@ -108,58 +111,95 @@
 @endsection
 
 @push('js-bottom')
-<script>
-    $(document).ready(function () {
-        $('#explanation, #question').summernote({
-            height: 100,
-            toolbar: [
-                ['insert', ['picture']],
-            ],
-            callbacks: {
-                onImageUpload: function (files) {
-                    let editor_id = $(this).attr('id');
-                    let type = (editor_id === 'question') ? 'question' : 'explanation';
-                    uploadImage(files[0], editor_id, type);
+    <script>
+        $(function () {
+            // Inisialisasi Summernote utk soal & penjelasan
+            initSummernote('#question', 'question');
+            initSummernote('#explanation', 'explanation');
+
+            // Inisialisasi Summernote utk jawaban A–E
+            ['A','B','C','D','E'].forEach(opt => {
+                initSummernote(`#answer_${opt}`, `answer_${opt}`);
+            });
+
+            // Set tampilan awal sesuai kategori
+            updateScoreRules();
+        });
+
+        function initSummernote(selector, type){
+            $(selector).summernote({
+                height: 100,
+                toolbar: [['insert', ['picture']]],
+                callbacks: {
+                    onImageUpload: function(files){
+                        uploadImage(files[0], selector, type);
+                    }
                 }
-            }
-        });
-
-        // Trigger category rules saat load ulang
-        updateScoreRules();
-    });
-
-    function uploadImage(file, editor_id, type) {
-        var data = new FormData();
-        data.append("file", file);
-        data.append("type", type);
-
-        $.ajax({
-            url: "{{ route('console.question.image') }}",
-            method: "POST",
-            data: data,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                var imgNode = $('<img>').attr('src', response.imageUrl);
-                $(`#${editor_id}`).summernote('insertNode', imgNode[0]);
-            },
-            error: function (error) {
-                console.log("Upload gagal:", error);
-            }
-        });
-    }
-
-    function updateScoreRules() {
-        let selectedOption = $("#topic_id option:selected");
-        let category = selectedOption.data("category");
-
-        if (category === 'TKP') {
-            $('#score-twk-tiu').hide();
-            $('#score-tkp').show();
-        } else {
-            $('#score-tkp').hide();
-            $('#score-twk-tiu').show();
+            });
         }
-    }
-</script>
+
+        function uploadImage(file, selector, type){
+            const data = new FormData();
+            data.append('file', file);
+            data.append('type', type);
+
+            $.ajax({
+                url: "{{ route('console.question.image') }}",
+                method: "POST",
+                headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                data,
+                processData: false,
+                contentType: false,
+                success: function(res){
+                    const img = $('<img>').attr('src', res.imageUrl);
+                    $(selector).summernote('insertNode', img[0]);
+                },
+                error: function(err){
+                    alert("Upload gambar gagal. Pastikan file ≤ 2MB.");
+                    console.error(err);
+                }
+            });
+        }
+
+        function updateScoreRules(){
+            const cat = $("#topic_id option:selected").data("category");
+
+            if (cat === 'TIU') {
+                // tampilkan editor Summernote jawaban
+                $('.answer-input')
+                    .addClass('d-none')
+                    .attr('disabled', true)
+                    .removeAttr('required');
+
+                $('.answer-textarea').each(function(){
+                    $(this).removeClass('d-none')
+                        .removeAttr('disabled')
+                        .attr('required', true);
+                    $(this).next('.note-editor').show();
+                });
+            } else {
+                // tampilkan input text biasa
+                $('.answer-textarea').each(function(){
+                    $(this).addClass('d-none')
+                        .attr('disabled', true)
+                        .removeAttr('required');
+                    $(this).next('.note-editor').hide();
+                });
+
+                $('.answer-input')
+                    .removeClass('d-none')
+                    .removeAttr('disabled')
+                    .attr('required', true);
+            }
+
+            if (cat === 'TKP') {
+                $('#score-twk-tiu').hide();
+                $('#score-tkp').show();
+            } else {
+                $('#score-tkp').hide();
+                $('#score-twk-tiu').show();
+            }
+        }
+    </script>
 @endpush
+
