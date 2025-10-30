@@ -79,11 +79,12 @@ class TryoutController extends Controller
     public function working($id){
         $user = Auth::user();
 
+        
         $exam = UserExam::where('id',$id)->where('status','In Progress')->first();
         if(!$exam){
             return back()->with('error','Tryout Tidak Ditemukan');
         }
-
+        
         $tryout = Tryout::find($exam->tryout_id);
 
         return view('frontend.tryout.working',compact('exam','tryout'));

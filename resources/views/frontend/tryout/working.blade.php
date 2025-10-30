@@ -222,200 +222,235 @@
 @endsection
 
 @push('js-bottom')
-    <script>
-        var exam_id = {{ $exam->id }}; // Ambil ID ujian dari Blade
-        let timerInterval = null; // GLOBAL
+<script>
+    var exam_id = {{ $exam->id }}; // ID ujian dari backend
+    let timerInterval = null;
+    let currentQuestionId = null;
+    let currentIndex = 0;
+    let userExamId = "{{ $exam->id }}";
+    let isNavigating = false;
 
-        function disableAnswers() {
-            $("input[name='answer']").prop("disabled", true);
-            $("#next-button, #prev-button").prop("disabled", true);
-            $(".number-question-list").prop("disabled", true);
-        }
+    function disableAnswers() {
+        $("input[name='answer']").prop("disabled", true);
+        $("#next-button, #prev-button").prop("disabled", true);
+        $(".number-question-list").prop("disabled", true);
+    }
 
-        function allQuestion(){
-            $.ajax({
-                url: "{{ route('tryout.questions') }}",
-                dataType: 'json',
-                data : {
-                    exam_id
-                },
-                success : function(reply){
-                    // Generate nomor soal
-                    $('#question-number-list').empty()
-                    $.each(reply.data, function(index, question) {
-                        
-                        let button = $(`<button>`)
-                            .attr("data-question-id", question.id).attr('data-index', index)
-                            .addClass("number-question-list bg-gray-200 hover:bg-amber-500 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-gray-200")
-                            .text(index + 1)
-                            .on("click", function() {
-                                selectedQuestion(index);
-                            });
-                        $('#question-number-list').append(button);
-                    });
-                    $(`.number-question-list[data-index="0"]`).prop('disabled',true)
+    function allQuestion() {
+        $.ajax({
+            url: "{{ route('tryout.questions') }}",
+            dataType: 'json',
+            data: { exam_id },
+            success: function(reply) {
+                $('#question-number-list').empty();
 
-                    
-                    $.each(reply.is_answers, function(index, is_answer) {
-                        $(`.number-question-list[data-question-id="${is_answer}"]`).addClass(['bg-green-400','text-white'])
-                    })
-                }
-            })
-        }
+                $.each(reply.data, function(index, question) {
+                    let button = $("<button>")
+                        .attr("data-question-id", question.id)
+                        .attr("data-index", index)
+                        .addClass("number-question-list bg-gray-200 hover:bg-amber-500 focus:outline-none focus:ring focus:ring-blue-300 py-1.5 rounded m-1 text-center w-9 font-medium bg-gray-200")
+                        .text(index + 1)
+                        .on("click", function() {
+                            goTo(index);
+                        });
+                    $('#question-number-list').append(button);
+                });
 
-        function selectedQuestion(index) {
-            $(`.number-question-list`).removeClass('bg-amber-500').prop('disabled',false)
-            $.ajax({
-                url: "{{ route('tryout.question') }}",
-                dataType: 'json',
-                data : {
-                    exam_id,index
-                },
-                success: function(reply) {
-                    $(`.number-question-list[data-question-id="${reply?.question?.id}"]`).addClass('bg-amber-500').prop('disabled',true)
-                    
-                    $('#number-question').text(index+1)
-                    
-                    $('#topic-question').text(reply?.question?.topic)
+                $(`.number-question-list[data-index='0']`).prop('disabled', true);
 
-                    $(".question").html(reply?.question?.question).data('id',reply?.question?.id);
-                    
-                    // // Tampilkan opsi jawaban
-                    let answers = "";
-                    $.each(reply?.question?.answers, function(i, answer) {
-
-                        // Cek apakah jawaban sebelumnya sudah dipilih
-                        let checked = reply?.selected_answer == answer.id ? "checked" : "";
-
-                        answers += `
-                            <div class="flex items-center mb-2">
-                                <label for="optionsRadios${answer?.option}" class="ml-3 w-full flex items-center">
-                                    <input name="answer" type="radio" id="optionsRadios${answer?.option}" class="focus:ring-amber-500 h-4 w-4 text-amber-600 border-gray-300 mr-2" value="${answer?.id}" ${checked}>
-                                    <label for="optionsRadios${answer?.option}" class="translate-y-2">${answer?.option}. ${answer?.answer}</label>
-                                </label>
-                            </div>
-                        `
-                    });
-                    
-                    $(".options").html(answers);
-
-                    // Atur tombol navigasi
-                    $("#prev-button").toggle(index > 0);
-                    $("#next-button").toggle(index < reply.total - 1);
-
-                    currentIndex = index;
-                },
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                }
-            });
-        }
-
-        function getTime() {
-            $.ajax({
-                url: "{{ route('tryout.time') }}",
-                dataType: 'json',
-                data: { exam_id },
-                success: function(reply) {
-                    const endTime = new Date(reply.end_time).getTime(); // ambil end_time server
-
-                    function updateTimer() {
-                        const now = new Date().getTime();
-                        const remaining = Math.floor((endTime - now) / 1000);
-                        
-                        if (remaining <= 0) {
-                            clearInterval(timerInterval);
-                            $(".time-remaining").text("00:00:00");
-                            alert("Waktu ujian telah habis!");
-                            disableAnswers();
-                            $('#form-finish').submit();
-                            return;
-                        }
-
-                        const hours = Math.floor(remaining / 3600);
-                        const minutes = Math.floor((remaining % 3600) / 60);
-                        const seconds = remaining % 60;
-
-                        $(".time-remaining").text(
-                            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-                        );
-                    }
-
-                    // jalankan timer sinkron
-                    updateTimer();
-                    timerInterval = setInterval(updateTimer, 1000);
-                }
-            });
-        }
-
-        function saveAnswer(){
-            let answer_id = $("input[name='answer']:checked").val();
-            let question_id = $(".question").data("id");
-
-            if (answer_id) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('tryout.answer') }}",
-                    data: { exam_id, question_id, answer_id },
-                    async: true // Biarkan berjalan di background
-                }).done(function(response) {
-                    $(`.number-question-list[data-question-id="${question_id}"]`).addClass('bg-green-400 text-white')
-
-                }).fail(function(xhr) {
-                    console.log("Gagal menyimpan jawaban", xhr.responseText);
+                $.each(reply.is_answers, function(index, is_answer) {
+                    $(`.number-question-list[data-question-id='${is_answer}']`)
+                        .addClass(['bg-green-400', 'text-white']);
                 });
             }
+        });
+    }
+
+    function selectedQuestion(index, afterLoad) {
+        $(`.number-question-list`).removeClass('bg-amber-500').prop('disabled', false);
+        $.ajax({
+            url: "{{ route('tryout.question') }}",
+            dataType: 'json',
+            data: { exam_id, index },
+            success: function(reply) {
+                $(`.number-question-list[data-question-id='${reply?.question?.id}']`)
+                    .addClass('bg-amber-500').prop('disabled', true);
+
+                $('#number-question').text(index + 1);
+                $('#topic-question').text(reply?.question?.topic);
+                $(".question").html(reply?.question?.question).data('id', reply?.question?.id);
+
+                let answers = "";
+                $.each(reply?.question?.answers, function(i, answer) {
+                    let checked = reply?.selected_answer == answer.id ? "checked" : "";
+                    answers += `
+                        <div class="flex items-center mb-2">
+                            <label for="optionsRadios${answer?.option}" class="ml-3 w-full flex items-center">
+                                <input name="answer" type="radio" id="optionsRadios${answer?.option}"
+                                    class="focus:ring-amber-500 h-4 w-4 text-amber-600 border-gray-300 mr-2"
+                                    value="${answer?.id}" ${checked}>
+                                <label for="optionsRadios${answer?.option}" class="translate-y-2">
+                                    ${answer?.option}. ${answer?.answer}
+                                </label>
+                            </label>
+                        </div>`;
+                });
+                $(".options").html(answers);
+
+                $("#prev-button").toggle(index > 0);
+                $("#next-button").toggle(index < reply.total - 1);
+
+                currentIndex = index;
+                const qid = reply?.question?.id;
+                if (typeof afterLoad === "function") afterLoad(qid);
+            },
+            error: function(xhr) { console.log(xhr.responseText); }
+        });
+    }
+
+    function startQuestion(questionId) {
+        currentQuestionId = questionId;
+        fetch("{{ route('tryout.question.start') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_exam_id: userExamId,
+                question_id: questionId
+            })
+        });
+    }
+
+    function endQuestion(questionId) {
+        if (!questionId) return;
+        fetch("{{ route('tryout.question.end') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_exam_id: userExamId,
+                question_id: questionId
+            })
+        });
+    }
+
+    function getTime() {
+        $.ajax({
+            url: "{{ route('tryout.time') }}",
+            dataType: 'json',
+            data: { exam_id },
+            success: function(reply) {
+                const endTime = new Date(reply.end_time).getTime();
+
+                function updateTimer() {
+                    const now = new Date().getTime();
+                    const remaining = Math.floor((endTime - now) / 1000);
+
+                    if (remaining <= 0) {
+                        clearInterval(timerInterval);
+                        $(".time-remaining").text("00:00:00");
+                        alert("Waktu ujian telah habis!");
+                        disableAnswers();
+                        $('#form-finish').submit();
+                        return;
+                    }
+
+                    const hours = Math.floor(remaining / 3600);
+                    const minutes = Math.floor((remaining % 3600) / 60);
+                    const seconds = remaining % 60;
+
+                    $(".time-remaining").text(
+                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                    );
+                }
+
+                updateTimer();
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        });
+    }
+
+    function saveAnswer() {
+        let answer_id = $("input[name='answer']:checked").val();
+        let question_id = $(".question").data("id");
+
+        if (answer_id) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('tryout.answer') }}",
+                data: { exam_id, question_id, answer_id },
+                async: true
+            }).done(function() {
+                $(`.number-question-list[data-question-id='${question_id}']`)
+                    .addClass('bg-green-400 text-white');
+            }).fail(function(xhr) {
+                console.log("Gagal menyimpan jawaban", xhr.responseText);
+            });
         }
-   
-        // Load soal pertama saat halaman dimuat
-        $(document).ready(function() {
-            allQuestion()
-            setTimeout(() => {
-                selectedQuestion(0);
-                getTime()
-            }, 300);
+    }
+
+    function goTo(index) {
+        if (isNavigating || (typeof currentIndex === "number" && index === currentIndex)) return;
+        isNavigating = true;
+
+        if (currentQuestionId) endQuestion(currentQuestionId);
+
+        selectedQuestion(index, function(qid) {
+            currentQuestionId = qid;
+            startQuestion(qid);
+            isNavigating = false;
         });
+    }
 
-        $(document).on("change", "input[name='answer']", function() {
-            saveAnswer()
-        });
+    $(document).ready(function() {
+        allQuestion();
+        setTimeout(() => {
+            getTime();
+            selectedQuestion(0, function(qid) {
+                startQuestion(qid); // start tracking soal pertama
+            });
+        }, 300);
+    });
 
-        // opsional: saat user balik ke tab, sync sekali (tidak tiap detik)
-        window.addEventListener('focus', () => {
-            getTime(); // ini aman karena kita clearInterval sebelum setInterval baru
-        });
+    $(document).on("change", "input[name='answer']", function() {
+        saveAnswer();
+    });
 
-        // Event listener tombol navigasi
-        $("#next-button").click(function() {
-            selectedQuestion(currentIndex + 1);
-        });
+    $('#form-finish').on('submit', function() {
+        if (currentQuestionId) endQuestion(currentQuestionId);
+    });
 
-        $("#prev-button").click(function() {
-            selectedQuestion(currentIndex - 1);
-        });
-        
-        $('#btn-working-help').on('click', function(){
-            $('.alert-overflow, .alert-background, .alert-content').fadeIn("fast");;
-        })
+    window.addEventListener('focus', () => { getTime(); });
 
-        $('#btn-working-close').on('click', function(){
-            $('.alert-overflow, .alert-background, .alert-content').fadeOut("fast");
-        })
+    $("#next-button").click(() => goTo(currentIndex + 1));
+    $("#prev-button").click(() => goTo(currentIndex - 1));
 
-        $('.btn-finish-open').on('click', function(){
-            $('.alert-finish-overflow, .alert-finish-background, .alert-finish-content').fadeIn("fast");
-        })
+    $('#btn-working-help').on('click', function() {
+        $('.alert-overflow, .alert-background, .alert-content').fadeIn("fast");
+    });
 
-        $('.btn-finish-close').on('click', function(){
-            $('.alert-finish-overflow, .alert-finish-background, .alert-finish-content').fadeOut("fast");
-        })
+    $('#btn-working-close').on('click', function() {
+        $('.alert-overflow, .alert-background, .alert-content').fadeOut("fast");
+    });
 
-        $('.btn-cancel-open').on('click', function(){
-            $('.alert-cancel-overflow, .alert-cancel-background, .alert-cancel-content').fadeIn("fast");
-        })
+    $('.btn-finish-open').on('click', function() {
+        $('.alert-finish-overflow, .alert-finish-background, .alert-finish-content').fadeIn("fast");
+    });
 
-        $('.btn-cancel-close').on('click', function(){
-            $('.alert-cancel-overflow, .alert-cancel-background, .alert-cancel-content').fadeOut("fast");
-        })
-    </script>
+    $('.btn-finish-close').on('click', function() {
+        $('.alert-finish-overflow, .alert-finish-background, .alert-finish-content').fadeOut("fast");
+    });
+
+    $('.btn-cancel-open').on('click', function() {
+        $('.alert-cancel-overflow, .alert-cancel-background, .alert-cancel-content').fadeIn("fast");
+    });
+
+    $('.btn-cancel-close').on('click', function() {
+        $('.alert-cancel-overflow, .alert-cancel-background, .alert-cancel-content').fadeOut("fast");
+    });
+</script>
 @endpush

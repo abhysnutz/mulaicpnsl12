@@ -67,7 +67,8 @@
                                                         </h4>
                                                         <hr class="my-3">
                                                         <h3>
-                                                            <i class="mdi mdi-file-document-outline"></i> Waktu Mengerjakan : <span class="font-bold"> 5 Detik</span>
+                                                            <i class="mdi mdi-file-document-outline"></i> Waktu Mengerjakan :
+                                                            <span id="question-duration" class="font-bold">-</span>
                                                         </h3>
                                                         <hr class="my-3">
                                                         <h3 class="font-bold">
@@ -131,6 +132,7 @@
 @push('js-bottom')
     <script>
         var exam_id = {{ $exam->id }}; // Ambil ID ujian dari Blade
+        var durations = {};
 
         function allQuestion(){
             $.ajax({
@@ -140,10 +142,11 @@
                     exam_id
                 },
                 success : function(reply){
+                    durations = reply.durations || {};
                     // Generate nomor soal
                     // $('#question-number-list').empty()
                     $.each(reply.data, function(index, question) {
-                        // console.log(question);
+                        console.log(question);
                         
                         let button = $(`<button>`)
                             .attr("data-question-id", question).attr('data-index', index)
@@ -174,8 +177,18 @@
             })
         }
 
+        function formatDuration(sec) {
+            if (!sec || sec <= 0) return "-";
+
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+
+            if (m === 0) return `${s} detik`;
+            if (s === 0) return `${m} menit`;
+            return `${m} menit ${s} detik`;
+        }
+
         function selectedQuestion(index) {
-            console.log(index);
             $(`.number-question-list`).removeClass('bg-amber-500').prop('disabled',false)
             $.ajax({
                 url: "{{ route('tryout.result.answer') }}",
@@ -231,6 +244,10 @@
                     $(".explanation").html(
                         reply?.question?.explanation?.replace(/\n/g, "<br>")
                     );
+
+                    const qid = reply?.question?.id;
+                    const duration = durations[qid] ?? 0;
+                    $('#question-duration').text(formatDuration(duration));
 
                     // Atur tombol navigasi
                     $("#prev-button").toggle(index > 0);

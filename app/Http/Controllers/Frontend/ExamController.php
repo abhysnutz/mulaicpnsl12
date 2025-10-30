@@ -11,6 +11,7 @@ use App\Models\UserExam;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Crypt;
+use DB;
 
 class ExamController extends Controller
 {
@@ -45,10 +46,12 @@ class ExamController extends Controller
         $result['data'] = [];
 
         $exam = UserExam::where('id', $request->exam_id)->first();
-        $questions = $exam?->tryout?->questions()->pluck('id');
+        $questions = $exam->tryout->questions()->select('questions.id')->orderBy('question_tryout.order')->pluck('questions.id');
         $is_answers = UserAnswer::with('answer:id,score')->where('user_exam_id', $exam->id)->get();
+        $durations = DB::table('question_times')->where('user_exam_id', $exam->id)->pluck('duration', 'question_id');
         $result['data'] = $questions;
         $result['is_answers'] = $is_answers;
+        $result['durations'] = $durations;
         
         return response()->json($result, 200);
     }

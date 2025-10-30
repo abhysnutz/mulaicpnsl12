@@ -15,6 +15,16 @@
                                     <input type="text" class="form-control" id="title" name="title" required>
                                 </div>
                             </div>
+
+                            <div class="row mb-3">
+                                <label for="type" class="col-sm-2 col-form-label text-end">Tipe Tryout</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" id="type" name="type" required>
+                                        <option value="SKD" selected>SKD</option>
+                                        <option value="SKB">SKB</option>
+                                    </select>
+                                </div>
+                            </div>
                     
                             <div class="row mb-3">
                                 <label for="category" class="col-sm-2 col-form-label text-end">Kategori</label>

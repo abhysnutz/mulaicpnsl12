@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('tryouts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->enum('type', ['SKD', 'SKB'])->default('SKD');
             $table->enum('category', ['Tryout', 'Latihan TWK', 'Latihan TIU', 'Latihan TKP']);
             $table->enum('access_type', ['free','premium'])->default('free');
             $table->enum('status', ['draft', 'publish', 'archived'])->default('draft');

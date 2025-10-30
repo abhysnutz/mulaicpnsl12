@@ -16,6 +16,7 @@ class TryoutsSeeder extends Seeder
         DB::table('tryouts')->insert([
             [
                 'title' => 'Tryout CPNS 2025 - Gelombang 1',
+                'type' => 'SKD',
                 'category' => 'Tryout',
                 'access_type' => 'premium',
                 'status' => 'publish',
@@ -25,6 +26,7 @@ class TryoutsSeeder extends Seeder
             ],
             [
                 'title' => 'Latihan Soal CPNS - TIU',
+                'type' => 'SKD',
                 'category' => 'Tryout',
                 'access_type' => 'free',
                 'status' => 'publish',
@@ -34,6 +36,7 @@ class TryoutsSeeder extends Seeder
             ],
             [
                 'title' => 'Latihan Soal CPNS - TKP',
+                'type' => 'SKD',
                 'category' => 'Tryout',
                 'access_type' => 'free',
                 'status' => 'draft',

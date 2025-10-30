@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\ExamController;
 use App\Http\Controllers\frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\TryoutController;
+use App\Http\Controllers\QuestionTimeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -51,6 +52,9 @@ Route::group(['prefix' => 'tryout', 'middleware' => ['auth','checkSingleSession'
     Route::post('finish/{id}', [TryoutController::class, 'finish'])->name('finish');
     Route::post('cancel{id}', [TryoutController::class, 'cancel'])->name('cancel');
 
+    Route::post('question/start', [QuestionTimeController::class, 'start'])->name('question.start');
+    Route::post('question/end', [QuestionTimeController::class, 'end'])->name('question.end');
+
     Route::group(['prefix' => 'result', 'as' => 'result.'], function () {
         Route::get('/', [ExamController::class, 'index'])->name('index');
         Route::get('{id}/statistic', [ExamController::class, 'statistic'])->name('statistic');
@@ -59,6 +63,10 @@ Route::group(['prefix' => 'tryout', 'middleware' => ['auth','checkSingleSession'
         Route::get('answer', [ExamController::class, 'answer'])->name('answer');
     });
 });
+
+
+
+
 
 Route::group(['prefix' => 'download', 'middleware' => ['auth','checkSingleSession'], 'as' => 'download.'], function () {
     Route::get('/', [   DownloadController::class, 'index'])->name('index');

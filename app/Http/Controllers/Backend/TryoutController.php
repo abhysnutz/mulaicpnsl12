@@ -22,24 +22,30 @@ class TryoutController extends Controller
 
     public function store(Request $request){
         $request->validate([
-            'title'      => 'required|string|max:255',
-            'category'  => 'required|string|in:Tryout,Latihan TWK, Latihan TIU,Latihan TKP',
-            'tryout_source_id'    => 'required|integer',
-            'duration'  => 'required|integer|min:1',
-            'access_type'    => 'required|string|in:free,premium',
+            'title'             => 'required|string|max:255',
+            'type'              => 'required|in:SKD,SKB',
+            'category'          => 'required|string|in:Tryout,Latihan TWK,Latihan TIU,Latihan TKP',
+            'tryout_source_id'  => 'required|integer|exists:tryout_sources,id',
+            'duration'          => 'required|integer|min:1',
+            'access_type'       => 'required|in:free,premium',
+            'status'            => 'nullable|in:draft,publish,archived',
         ]);
 
         Tryout::create([
-            'title'      => $request->title,
-            'category'  => $request->category,
-            'tryout_source_id' => $request->tryout_source_id, // Sesuai dengan relasi sumber tryout
-            'duration'  => $request->duration,
-            'access_type'    => $request->access_type,
-            'status'    => $request->status ?? 'draft',
+            'title'             => $request->title,
+            'type'              => $request->type, // 👈 tambahan baru
+            'category'          => $request->category,
+            'tryout_source_id'  => $request->tryout_source_id,
+            'duration'          => $request->duration,
+            'access_type'       => $request->access_type,
+            'status'            => $request->status ?? 'draft',
         ]);
 
-        return redirect()->route('console.tryout.index')->with('success', 'Tryout berhasil ditambahkan!');
+        return redirect()
+            ->route('console.tryout.index')
+            ->with('success', 'Tryout berhasil ditambahkan!');
     }
+
 
     public function edit($id){
         $tryout = Tryout::findOrFail($id);
@@ -50,18 +56,30 @@ class TryoutController extends Controller
 
     public function update(Request $request, $id){
         $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => 'required|in:Tryout,Latihan TWK,Latihan TIU,Latihan TKP',
-            'tryout_source_id' => 'required|exists:tryout_sources,id',
-            'duration' => 'required|integer|min:1',
-            'access_type' => 'required|in:free,premium',
-            'status' => 'required|in:draft,publish,archived',
+            'title'             => 'required|string|max:255',
+            'type'              => 'required|in:SKD,SKB', // ✅ tambahkan validasi type
+            'category'          => 'required|in:Tryout,Latihan TWK,Latihan TIU,Latihan TKP',
+            'tryout_source_id'  => 'required|exists:tryout_sources,id',
+            'duration'          => 'required|integer|min:1',
+            'access_type'       => 'required|in:free,premium',
+            'status'            => 'required|in:draft,publish,archived',
         ]);
 
         $tryout = Tryout::findOrFail($id);
-        $tryout->update($request->all());
 
-        return redirect()->route('console.tryout.index')->with('success', 'Tryout berhasil diperbarui.');
+        $tryout->update([
+            'title'             => $request->title,
+            'type'              => $request->type, // ✅ simpan tipe SKD / SKB
+            'category'          => $request->category,
+            'tryout_source_id'  => $request->tryout_source_id,
+            'duration'          => $request->duration,
+            'access_type'       => $request->access_type,
+            'status'            => $request->status,
+        ]);
+
+        return redirect()
+            ->route('console.tryout.index')
+            ->with('success', 'Tryout berhasil diperbarui.');
     }
 
     public function destroy($id){

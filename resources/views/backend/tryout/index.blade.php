@@ -23,6 +23,7 @@
                                         <th style="width: 10px">#</th>
                                         <th>Title</th>
                                         <th>Type</th>
+                                        <th>Access Type</th>
                                         <th>Category</th>
                                         <th>Source</th>
                                         <th>Jumlah soal</th>
@@ -37,6 +38,7 @@
                                             <tr class="align-middle">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $tryout?->title ?? '-' }}</td>
+                                                <td>{{ $tryout?->type ?? '-' }}</td>
                                                 <td>{{ $tryout?->access_type ?? '-' }}</td>
                                                 <td>{{ $tryout?->category ?? '-' }}</td>
                                                 <td>{{ $tryout?->source?->name ?? '-' }}</td>
