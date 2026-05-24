@@ -170,10 +170,10 @@
     <div class="flex flex-col w-64">
         <div class="flex flex-col flex-grow border-r border-gray-200 pt-5 pb-4 bg-white overflow-y-auto">
             <div class="flex items-center justify-center flex-shrink-0 px-4">
-    <img src="http://mulaicpnsid.test/assets/frontend/image/logo.png" 
-         alt="AYOPPPK" 
-         class="h-12">
-</div>
+                <img src="{{ asset('assets/frontend/image/logo.png') }}" 
+                    alt="{{ env('APP_NAME') }}" 
+                    class="h-12">
+            </div>
             <div class="mt-5 flex-grow flex flex-col">
                 <nav class="flex-1 px-2 bg-white space-y-1">
                     <a href="{{ route('dashboard.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('dashboard.index') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
