@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class ExamResult extends Model
 {
-    protected $fillable = ['user_exam_id','total_twk','total_tiu','total_score','is_passed'];
+    protected $fillable = ['user_exam_id','total_twk','total_tiu','total_tkp','total_score','is_passed'];
 }

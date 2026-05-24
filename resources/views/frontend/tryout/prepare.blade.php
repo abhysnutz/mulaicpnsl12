@@ -21,7 +21,7 @@
                             </div>
                             <div class="py-4 sm:grid sm:grid-cols-4 lg:grid-cols-7 sm:gap-4 border-b">
                                 <dt class="text-xs sm:text-sm font-medium text-gray-500 sm:col-span-2 lg:col-span-2">Waktu Mengerjakan</dt>
-                                <dd class="mt-1 text-xs sm:text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2 lg:col-span-5">100 Menit</dd>
+                                <dd class="mt-1 text-xs sm:text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2 lg:col-span-5">{{ $tryout?->duration ?? 100}} Menit</dd>
                             </div>
                             <div class="py-4 sm:py-5 sm:flex sm:space-x-2 justify-start">
                                 <button id="btn-prepare" type="button" class="bg-amber-500 hover:bg-amber-600 w-full sm:w-48 text-white font-medium text-sm px-4 py-3 rounded-md shadow-lg flex justify-center items-center mr-2 mb-2">Mulai Mengerjakan</button>

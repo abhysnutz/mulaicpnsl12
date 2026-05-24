@@ -34,13 +34,18 @@ class TryoutController extends Controller
         $result = ['status' => 0, 'data' => []];
         $user = Auth::user();
 
+        // 2️⃣ Ambil semua soal
+        $tryout = Tryout::with(['questions' => function ($q) {
+            $q->orderBy('pivot_order', 'asc');
+        }])->findOrFail($request->tryout_id);
+
         // 1️⃣ Buat sesi ujian user
         $userExam = UserExam::create([
             'user_id'    => $user->id,
             'tryout_id'  => $request->tryout_id,
             'status'     => 'In Progress',
             'start_time' => now(),
-            'end_time'   => now()->addMinutes(100),
+            'end_time'   => now()->addMinutes($tryout?->duration ?? 100),
         ]);
 
         if ($userExam) {
