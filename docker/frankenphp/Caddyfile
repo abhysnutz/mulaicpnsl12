@@ -1,0 +1,24 @@
+{
+	# Disable admin API (security best practice di production)
+	auto_https off
+	frankenphp
+	order php_server before file_server
+}
+
+# Listen di port 80 (HTTP)
+:80 {
+	# Root project Laravel
+	root * /app/public
+	
+	# Enable gzip compression
+	encode zstd br gzip
+	
+	# Logging ke stdout (Docker bakal capture)
+	log {
+		output stdout
+		format console
+	}
+	
+	# Serve file PHP via FrankenPHP, static file langsung
+	php_server
+}

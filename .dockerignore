@@ -1,0 +1,46 @@
+# Dependencies (akan di-install di dalam container)
+/vendor
+/node_modules
+
+# Build artifacts
+/public/build
+/public/hot
+/public/storage
+
+# Environment & secrets (JANGAN masuk image!)
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE & OS
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+/storage/logs/*.log
+npm-debug.log
+yarn-error.log
+
+# Test & dev
+/tests
+.phpunit.cache
+.phpunit.result.cache
+phpunit.xml
+
+# Docker files sendiri (gak perlu di-copy ke image)
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+.dockerignore
+
+# Misc
+README.md
+*.md
