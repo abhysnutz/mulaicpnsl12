@@ -18,14 +18,25 @@ class CheckSingleSession
     {
         if (Auth::check()) {
             $user = Auth::user();
+
+            // ⛔ Cek suspend DULU — ini yang jamin user suspended pasti ketendang
+            if ($user->is_suspended) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->route('login')
+                    ->with('status', 'Akun Anda telah disuspend. Silakan hubungi admin.');
+            }
+
+            // Baru cek single-session (token)
             $sessionToken = session('user_session_token');
-            
-            // Jika token session tidak cocok dengan yang ada di database
+
             if ($user->session_id !== $sessionToken) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
-                
+
                 return redirect()->route('login')
                     ->with('status', 'Akun Anda telah diakses pada perangkat lain. Silakan login kembali.');
             }

@@ -30,5 +30,25 @@ class UserSeeder extends Seeder
             'major' => 'Teknik Informatika',
             'referrer' => 'Google',
         ]);
+
+        $user2 = User::create([ 
+            'name' => 'Syafri',
+            'email' => 'abhy.maps25@gmail.com',
+            'password' => bcrypt('M2APS2Ldoank'),
+            'email_verified_at' => now(),
+            'is_admin' => 0,
+        ]);
+
+        UserDetail::create([
+            'user_id' => $user2->id,
+            'province_id' => 75,
+            'city_id' => 445,
+            'address' => 'Jl. Jend Sudirman',
+            'education' => 'S2',
+            'birth' => '1993-07-25',
+            'phone' => '085240564750',
+            'major' => 'Teknik Informatika',
+            'referrer' => 'Google',
+        ]);
     }
 }

@@ -26,6 +26,19 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        // ⛔ Cek suspended SEBELUM bikin sesi
+        if (Auth::user()->is_suspended) {
+            $reason = Auth::user()->suspension_reason ?: 'Pelanggaran ketentuan layanan';
+
+            Auth::guard('web')->logout();           // batalin login yang barusan
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email' => "Akun Anda telah disuspend. Alasan: {$reason}. Silakan hubungi admin di maps.abhy25@gmail.com.",
+            ])->onlyInput('email');
+        }
+
         $request->session()->regenerate();
 
         $user = Auth::user();

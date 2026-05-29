@@ -18,6 +18,9 @@ class User extends Authenticatable
         'email',
         'password',
         'session_id',
+        'is_suspended',
+        'suspension_reason',
+        'suspended_at',
     ];
 
     protected $hidden = [
@@ -30,6 +33,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_suspended' => 'boolean',
+            'suspended_at' => 'datetime',
         ];
     }
 
@@ -63,5 +68,32 @@ class User extends Authenticatable
             return 'premium';
         }
         return 'free';
+    }
+
+    // Cek apakah akun disuspend
+    public function isSuspended(): bool
+    {
+        return $this->is_suspended;
+    }
+
+    // Suspend akun + putuskan sesi aktif sekaligus
+    public function suspend(string $reason): void
+    {
+        $this->update([
+            'is_suspended'      => true,
+            'suspension_reason' => $reason,
+            'suspended_at'      => now(),
+            'session_id'        => null,
+        ]);
+    }
+
+    // Buka suspend
+    public function unsuspend(): void
+    {
+        $this->update([
+            'is_suspended'      => false,
+            'suspension_reason' => null,
+            'suspended_at'      => null,
+        ]);
     }
 }

@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('password');
             $table->tinyInteger('is_admin')->default(0);
             $table->string('session_id')->nullable();
+            $table->boolean('is_suspended')->default(false);
+            $table->string('suspension_reason')->nullable();
+            $table->timestamp('suspended_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

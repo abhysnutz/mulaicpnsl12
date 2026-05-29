@@ -90,8 +90,10 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::get('/', [DashboardController::class, 'index'])->name('index');
     });
     
-    Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
-        Route::get('/', [UserController::class,'index'])->name('index');
+    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::post('/{user}/suspend', [UserController::class, 'suspend'])->name('suspend');
+        Route::post('/{user}/unsuspend', [UserController::class, 'unsuspend'])->name('unsuspend');
     });
 
     Route::group(['prefix' => 'payment', 'as' => 'payment.'], function (){
