@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\QuestionController as BackendQuestionController
 use App\Http\Controllers\Backend\TryoutController as BackendTryoutController;
 use App\Http\Controllers\Backend\TryoutQuestionController;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\Backend\BackupController;
 use App\Http\Controllers\Frontend\DownloadController;
 use App\Http\Controllers\Frontend\ExamController;
 use App\Http\Controllers\frontend\PaymentController;
@@ -133,6 +134,17 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::get('preview/{id}', [BackendQuestionController::class, 'preview'])->name('preview');
         Route::get('export', [BackendQuestionController::class, 'export'])->name('export');
         Route::post('import', [BackendQuestionController::class, 'import'])->name('import');
+    });
+
+    Route::controller(BackupController::class)->prefix('backup')->name('backup.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/export', 'export')->name('export');
+        Route::post('/upload', 'upload')->name('upload');
+        Route::post('/import/{filename}', 'import')->name('import');
+        Route::get('/download/{filename}', 'download')->name('download');
+        Route::delete('/{filename}', 'destroy')->name('destroy');
+        Route::post('/migrate-fresh', 'migrateFresh')->name('migrate-fresh');
+
     });
 });
 

@@ -78,6 +78,15 @@
                     </a>
                 </li>
 
+                <!-- Database Backup -->
+                <li class="nav-item">
+                    <a href="{{ route('console.backup.index') }}"
+                    class="nav-link {{ Request::is('console/backup*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-database"></i>
+                        <p>Database Backup</p>
+                    </a>
+                </li>
+
                 <!-- Settings (optional) -->
                 <li class="nav-item">
                     <a href="#" class="nav-link">
