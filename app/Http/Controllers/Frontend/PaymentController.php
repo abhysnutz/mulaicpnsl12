@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Mail\NewPaymentNotificationMail;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
-use App\Models\Setting;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Mail;
@@ -26,7 +25,7 @@ class PaymentController extends Controller
         $user = Auth::user();
         if($user){
             $unique_code = mt_rand(1, 999);
-            $price = Setting::where('key', 'package_price')->value('value');
+            $price = setting('package_price');
             $payment = Payment::Create([
                 'user_id' => $user?->id,
                 'whatsapp' => $request?->whatsapp ?? null,

@@ -29,7 +29,11 @@
                                             <tr class="align-middle">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($report->created_at)->format('d-M-Y H:i') }}</td>
-                                                <td class="text-bold">#{{ $report->question_id }}</td>
+                                                <td class="text-bold">
+                                                    <a href="{{ route('console.question.edit', $report->question_id) }}" target="_blank" class="text-primary">
+                                                        #{{ $report->question_id }}
+                                                    </a>
+                                                </td>
                                                 <td>{{ $report->type }}</td>
                                                 <td style="white-space: normal; max-width: 300px;">{{ $report->note ?? '-' }}</td>
                                                 <td>{{ $report?->user?->name ?? 'User' }}</td>

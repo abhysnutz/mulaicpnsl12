@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\ExamResult;
 use App\Models\Question;
-use App\Models\Setting;
 use App\Models\Tryout;
 use App\Models\UserAnswer;
 use App\Models\UserExam;
@@ -245,9 +244,9 @@ class TryoutController extends Controller
         $total_score = $total_twk + $total_tiu + $total_tkp;
 
         // 🧪 Ambil passing grade dari tabel settings
-        $passing_grade_twk = (int) Setting::where('key', 'passing_grade_twk')->value('value');
-        $passing_grade_tiu = (int) Setting::where('key', 'passing_grade_tiu')->value('value');
-        $passing_grade_tkp = (int) Setting::where('key', 'passing_grade_tkp')->value('value');
+        $passing_grade_twk = (int) setting('passing_grade_twk');
+        $passing_grade_tiu = (int) setting('passing_grade_tiu');
+        $passing_grade_tkp = (int) setting('passing_grade_tkp');
 
         $isPassed = $total_twk >= $passing_grade_twk &&
                     $total_tiu >= $passing_grade_tiu &&

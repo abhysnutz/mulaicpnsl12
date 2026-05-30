@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\TryoutQuestionController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserActivityController;
 use App\Http\Controllers\Backend\BackupController;
+use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Frontend\DownloadController;
 use App\Http\Controllers\Frontend\ExamController;
 use App\Http\Controllers\frontend\PaymentController;
@@ -172,6 +173,14 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
     // USER ACTIVITY
     Route::controller(UserActivityController::class)->prefix('user-activity')->name('user-activity.')->group(function () {
         Route::get('/', 'index')->name('index');
+    });
+
+    // SETTINGS
+    Route::controller(SettingController::class)->prefix('setting')->name('setting.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
+        Route::post('update', 'update')->name('update');
+        Route::delete('destroy', 'destroy')->name('destroy');
     });
 });
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\ExamResult;
-use App\Models\Setting;
 use App\Models\Tryout;
 use App\Models\UserAnswer;
 use App\Models\UserExam;
@@ -23,9 +22,9 @@ class ExamController extends Controller
 
     public function statistic(Request $request, $id){
         $exam = UserExam::with(['result','tryout'])->findorfail($id);
-        $data['passing_grade_twk'] = Setting::where('key', 'passing_grade_twk')->value('value');
-        $data['passing_grade_tiu'] = Setting::where('key', 'passing_grade_tiu')->value('value');
-        $data['passing_grade_tkp'] = Setting::where('key', 'passing_grade_tkp')->value('value');
+        $data['passing_grade_twk'] = setting('passing_grade_twk');
+        $data['passing_grade_tiu'] = setting('passing_grade_tiu');
+        $data['passing_grade_tkp'] = setting('passing_grade_tkp');
         return view('frontend.exam.statistic',compact('exam','data'));
     }
 
