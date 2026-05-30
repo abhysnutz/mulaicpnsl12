@@ -69,7 +69,7 @@
                 <!-- Question -->
                 <li class="nav-item">
                     <a href="{{ route('console.question.index') }}"
-                       class="nav-link {{ Request::is('console/question*') ? 'active' : '' }}">
+                       class="nav-link {{ Request::is('console/question', 'console/question/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-question-circle"></i>
                         <p>Question Bank</p>
                     </a>
@@ -101,9 +101,10 @@
                     </a>
                 </li>
 
-                <!-- Settings (optional) -->
+                <!-- Settings -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('console.setting.index') }}"
+                    class="nav-link {{ Request::is('console/setting*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cog"></i>
                         <p>Settings</p>
                     </a>

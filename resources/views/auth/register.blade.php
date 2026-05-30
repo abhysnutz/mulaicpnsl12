@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <img class="mx-auto h-12 w-auto" src="{{ asset('assets/frontend/image/logo.png') }}" alt="Daftar MULAI CPNS">
+        <img class="mx-auto h-12 w-auto" src="{{ asset('assets/frontend/image/logo.png') }}" alt="Daftar {{ config('app.name') }}">
         <h2 class="mt-6 text-center text-2xl font-extrabold text-gray-900">
             Daftar Akun
         </h2>

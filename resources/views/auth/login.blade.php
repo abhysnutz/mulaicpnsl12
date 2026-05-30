@@ -1,7 +1,6 @@
 <x-guest-layout>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <img class="mx-auto h-12 w-auto" src="{{ asset('assets/frontend/image/logo.png') }}"
-            alt="Login AYOPPPK">
+        <img class="mx-auto h-12 w-auto" src="{{ asset('assets/frontend/image/logo.png') }}" alt="Login {{ config('app.name') }}">
         <h2 class="mt-6 text-center text-2xl font-extrabold text-gray-900">
             Login ke Akun Anda
         </h2>

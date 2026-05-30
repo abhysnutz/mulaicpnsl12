@@ -6,19 +6,19 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>{{ config('app.name') }} | Belajar dan Latihan Soal Tryout CPNS</title>
         <link rel="stylesheet" href="{{ asset('assets/frontend/css/style.css') }}">
-        <link rel="apple-touch-icon" sizes="180x180" href="https://ayopppk.com/assets/favicon/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/frontend/favicon/apple-touch-icon.png') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/frontend/favicon/favicon-32x32.png') }}">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/frontend/favicon/favicon-16x16.png') }}">
-        <link rel="manifest" href="https://ayopppk.com/assets/favicon/site.webmanifest">
-        <link rel="mask-icon" href="https://ayopppk.com/assets/favicon/safari-pinned-tab.svg" color="#5bbad5">
-        <meta name="msapplication-TileColor" content="#da532c">
+        <link rel="manifest" href="{{ asset('assets/frontend/favicon/site.webmanifest') }}">
+        <link rel="mask-icon" href="{{ asset('assets/frontend/favicon/safari-pinned-tab.svg') }}" color="#f59e0b">
+        <meta name="msapplication-TileColor" content="#f59e0b">
         <meta name="theme-color" content="#ffffff">
-        <meta name="keywords" content="pppk, p3k, bimbel pppk, tryout pppk, soal pppk, soal p3k, tryout p3k, ayo pppk, info pppk, jadwal pppk, soal pembahasan pppk, materi pppk, soal manajerial, soal sosio kultural, soal teknis, soal skolastik, pppk pgsd, pppk guru, tryout cat">
-        <meta name="description" content="{{ config('app.name') }} merupakan website belajar online untuk persiapan seleksi PPPK. Belajar secara mudah dan praktis dengan beragam latihan soal CAT PPPK. Dilengkapi dengan pembahasan soal, grafik dan berlatih manajemen waktu.">
+        <meta name="keywords" content="cpns, bimbel cpns, tryout cpns, soal cpns, mulai cpns, info cpns, jadwal cpns, soal pembahasan cpns, materi cpns, soal manajerial, soal sosio kultural, soal teknis, soal skolastik, tryout cat">
+        <meta name="description" content="{{ config('app.name') }} merupakan website belajar online untuk persiapan seleksi CPNS. Belajar secara mudah dan praktis dengan beragam latihan soal CAT CPNS. Dilengkapi dengan pembahasan soal, grafik informatif dan berlatih manajemen waktu.">
         <meta property="og:site_name" content="{{ config('app.name') }}">
         <meta property="og:url" content="{{ config('app.url') }}">
-        <meta property="og:title" content="{{ config('app.name') }} - Belajar, Tryout dan Latihan Soal PPPK">
-        <meta property="og:description" content="{{ config('app.name') }} adalah website belajar online untuk persiapan seleksi PPPK. Belajar secara mudah dan praktis dengan beragam latihan soal CAT PPPK. Dilengkapi dengan pembahasan soal, grafik dan berlatih manajemen waktu.">
+        <meta property="og:title" content="{{ config('app.name') }} - Belajar, Tryout dan Latihan Soal CPNS">
+        <meta property="og:description" content="{{ config('app.name') }} merupakan website belajar online untuk persiapan seleksi CPNS. Belajar secara mudah dan praktis dengan beragam latihan soal CAT CPNS. Dilengkapi dengan pembahasan soal, grafik informatif dan berlatih manajemen waktu.">
         <meta property="og:type" content="website">
     </head>
     <body>
@@ -29,9 +29,9 @@
                         <nav class="relative max-w-7xl mx-auto w-full flex items-center justify-between px-4 sm:px-6 py-4" aria-label="Global">
                             <div class="flex items-center flex-1">
                                 <div class="flex items-center justify-between w-full md:w-auto">
-                                    <a href="#">
+                                    <a href="{{ url('/') }}">
                                         <span class="sr-only">{{ config('app.name') }}</span>
-                                        <img class="h-8 w-auto sm:h-10" src="{{ asset('assets/frontend/image/logo.png') }}" alt="">
+                                        <img class="h-8 w-auto sm:h-10" src="{{ asset('assets/frontend/image/logo.png') }}" alt="{{ config('app.name') }}">
                                     </a>
                                     <div class="-mr-2 flex items-center md:hidden">
                                         <button id="mobileNavExpandBtn" type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-amber-500" aria-expanded="false">
@@ -52,7 +52,7 @@
                             </div>
                             <div class="hidden md:block text-right">
                                 <span class="inline-flex  space-x-6">
-                                    <a href="https://api.whatsapp.com/send/?phone={{ config('services.admin_whatsapp') }}&text={{ rawurlencode('Halo kak, saya mau tanya tentang ') }}&app_absent=0" class="umami--click--landing-contact-button inline-flex items-center px-4 py-2 border border-amber-500 text-base font-medium rounded-md text-white bg-amber-500 hover:bg-amber-700 hover:text-white" target="_blank"> Hubungi Kami </a>
+                                    <a href="https://api.whatsapp.com/send/?phone={{ config('services.admin_whatsapp') }}&text={{ rawurlencode('Halo kak, saya mau tanya tentang ') }}&app_absent=0" class="inline-flex items-center px-4 py-2 border border-amber-500 text-base font-medium rounded-md text-white bg-amber-500 hover:bg-amber-700 hover:text-white" target="_blank"> Hubungi Kami </a>
                                 </span>
                             </div>
                         </nav>
@@ -61,10 +61,10 @@
                         <div class="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
                             <div class="px-5 pt-4 flex items-center justify-between">
                                 <div>
-                                    <img class="h-8 w-auto" src="{{ asset('assets/frontend/image/logo.png') }}" alt="">
+                                    <img class="h-8 w-auto" src="{{ asset('assets/frontend/image/logo.png') }}" alt="Logo {{ config('app.name') }}">
                                 </div>
                                 <div class="-mr-2">
-                                    <button type="button" id="mobileNavCloseBtn" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                                    <button type="button" id="mobileNavCloseBtn" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-amber-500">
                                         <span class="sr-only">Close main menu</span>
                                         <!-- Heroicon name: outline/x -->
                                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -79,8 +79,8 @@
                                 <a href="#paket" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Paket</a>
                             </div>
                             <div class="px-3">
-                                <a href="{{ route('login') }}" class="block w-full px-5 py-3 text-center font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded mb-3"> Masuk 2</a>
-                                <a href="{{ route('register') }}" class="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-white-50 border-2 border-indigo-400 hover:bg-indigo-50 rounded mb-3 "> Daftar </a>
+                                <a href="{{ route('login') }}" class="block w-full px-5 py-3 text-center font-medium text-white bg-amber-500 hover:bg-amber-600 rounded mb-3"> Masuk</a>
+                                <a href="{{ route('register') }}" class="block w-full px-5 py-3 text-center font-medium text-amber-600 bg-white border-2 border-amber-400 hover:bg-amber-50 rounded mb-3 "> Daftar </a>
                             </div>
                         </div>
                     </div>
@@ -89,16 +89,16 @@
                             <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
                                 <div>
                                     <div class="hidden md:block">
-                                        <img class="h-11 w-auto" src="{{ asset('assets/frontend/favicon/favicon-44x44.png') }}" alt="Workflow" />
+                                        <img class="h-11 w-auto" src="{{ asset('assets/frontend/favicon/favicon-44x44.png') }}" alt="{{ config('app.name') }}" />
                                     </div>
                                     <div class="mt-20">
                                         <div class="relative pl-0 sm:hidden  sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full lg:pl-0 mb-4">
-                                            <img class="w-full rounded-md lg:h-auto lg:w-auto lg:max-w-4xl lg:-ml-8 lg:mt-5" src="https://ayopppk.com/assets/hero/heropppk.png" alt="Latihan Soal PPPK" />
+                                            <img class="w-full rounded-md lg:h-auto lg:w-auto lg:max-w-4xl lg:-ml-8 lg:mt-5" src="{{ asset('assets/frontend/image/heropppk.png') }}" alt="Latihan Soal CPNS" />
                                         </div>
                                         <div>
-                                            <a href="#" class="inline-flex space-x-4">
-                                                <span class="rounded bg-amber-100 px-2.5 py-1 text-xs font-semibold text-indigo-600 tracking-wide uppercase"> Belajar Jadi Mudah </span>
-                                                <span class="inline-flex items-center text-sm font-medium text-indigo-600 space-x-1">
+                                            <a href="#home" class="inline-flex space-x-4">
+                                                <span class="rounded bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-600 tracking-wide uppercase"> Belajar Jadi Mudah </span>
+                                                <span class="inline-flex items-center text-sm font-medium text-amber-600 space-x-1">
                                                     <span>{{ config('app.name') }}</span>
                                                     <!-- Heroicon name: solid/chevron-right -->
                                                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -114,8 +114,8 @@
                                         <div class="mt-4 sm:mt-6">
                                             <div class="sm:max-w-xl flex flex-col">
                                                 <div class="sm:space-y-0 flex justify-start items-center sm:inline-grid sm:grid-cols-2 sm:gap-5 mr-auto">
-                                                    <a href="{{ route('login') }}" class="umami--click--hero-login-button flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-amber-600 bg-white border-amber-500 hover:bg-amber-100 sm:px-8 mr-3 md:mr-0"> Masuk </a>
-                                                    <a href="{{ route('register') }}" class="umami--click--hero-register-button flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-opacity-70 sm:px-8"> Daftar </a>
+                                                    <a href="{{ route('login') }}" class="flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-amber-600 bg-white border-amber-500 hover:bg-amber-100 sm:px-8 mr-3 md:mr-0"> Masuk </a>
+                                                    <a href="{{ route('register') }}" class="flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-opacity-70 sm:px-8"> Daftar </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -136,7 +136,7 @@
                                         </svg>
                                     </div>
                                     <div class="relative pl-0 hidden sm:block  sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full lg:pl-0">
-                                        <img class="w-full rounded-md lg:h-auto lg:w-auto lg:max-w-4xl lg:-ml-8 lg:mt-5" src="https://ayopppk.com/assets/hero/heropppk.png" alt="Latihan Soal PPPK" />
+                                        <img class="w-full rounded-md lg:h-auto lg:w-auto lg:max-w-4xl lg:-ml-8 lg:mt-5" src="{{ asset('assets/frontend/image/heropppk.png') }}" alt="Latihan Soal CPNS" />
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
                                             <div>
                                                 <span class="h-12 w-12 rounded-md flex items-center justify-center bg-gradient-to-r bg-amber-500">
                                                     <!-- Heroicon name: outline/globe -->
-                                                    <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
                                                 </span>
@@ -167,7 +167,7 @@
                                     </div>
                                     <div class="mt-12 sm:mt-16 lg:mt-0">
                                         <div class="pl-4  sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-                                            <img class="w-full rounded-xl lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none" src="https://ayopppk.com/assets/illustrations/undraw_stand_out.svg" alt="Penerimaan Formasi PPPK 2021" />
+                                            <img class="w-full rounded-xl lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none" src="{{ asset('assets/frontend/image/undraw_stand_out.svg') }}" alt="Penerimaan Formasi CPNS {{ date('Y') }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -193,7 +193,7 @@
                                     </div>
                                     <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1">
                                         <div class="pr-4 sm:pr-6 md:-ml-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-                                            <img class="w-full rounded-xl lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none" src="https://ayopppk.com/assets/illustrations/undraw_teacher.svg" alt="Bimbel Tes PPPK Terbaik" />
+                                            <img class="w-full rounded-xl lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none" src="{{ asset('assets/frontend/image/undraw_teacher.svg') }}" alt="Bimbel Tes CPNS Terbaik" />
                                         </div>
                                     </div>
                                 </div>
@@ -312,7 +312,7 @@
                                                 <h3 class="text-2xl font-extrabold text-gray-900 sm:text-3xl"> Dapatkan Harga Spesial </h3>
                                                 <div class="mt-8">
                                                     <div class="flex items-center">
-                                                        <h4 class="flex-shrink-0 pr-4 bg-white text-sm tracking-wider font-semibold uppercase text-indigo-600"> Fasilitas yang didapat </h4>
+                                                        <h4 class="flex-shrink-0 pr-4 bg-white text-sm tracking-wider font-semibold uppercase text-amber-600"> Fasilitas yang didapat </h4>
                                                         <div class="flex-1 border-t-2 border-gray-200"></div>
                                                     </div>
                                                     <ul class="mt-8 space-y-5 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-5">
@@ -423,8 +423,8 @@
                                                 <!-- CTA BUTTON -->
                                                 <div class="mt-6">
                                                     <div class="rounded-md shadow">
-                                                        <a href="http://mulaicpnsid.test/register" 
-                                                        class="umami--click--pricing-action-button flex items-center justify-center px-5 py-3 border border-transparent text-lg font-semibold rounded-md text-white bg-red-600 hover:bg-red-700 transition">
+                                                        <a href="{{ route('register') }}" 
+                                                        class="flex items-center justify-center px-5 py-3 border border-transparent text-lg font-semibold rounded-md text-white bg-red-600 hover:bg-red-700 transition">
                                                             Ambil Promo Sekarang 🚀
                                                         </a>
                                                     </div>
@@ -443,7 +443,7 @@
                         <!-- This example requires Tailwind CSS v2.0+ -->
                         <div class="relative bg-white py-16 sm:py-24 lg:py-32">
                             <div class="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl">
-                                <h2 class="text-base font-semibold tracking-wider text-indigo-600 uppercase">Apa saja yang dipelajari?</h2>
+                                <h2 class="text-base font-semibold tracking-wider text-amber-600 uppercase">Apa saja yang dipelajari?</h2>
                                 <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl"></p>
                                 <div class="mt-12">
                                     <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -453,7 +453,7 @@
                                                     <div>
                                                         <span class="inline-flex items-center justify-center p-3 bg-amber-500 rounded-md shadow-lg">
                                                             <!-- Heroicon name: outline/collection -->
-                                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                                                             </svg>
                                                         </span>
@@ -469,7 +469,7 @@
                                                     <div>
                                                         <span class="inline-flex items-center justify-center p-3 bg-amber-500 rounded-md shadow-lg">
                                                             <!-- Heroicon name: outline/cog -->
-                                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                             </svg>
@@ -486,7 +486,7 @@
                                                     <div>
                                                         <span class="inline-flex items-center justify-center p-3 bg-amber-500 rounded-md shadow-lg">
                                                             <!-- Heroicon name: outline/share -->
-                                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                                                             </svg>
                                                         </span>
@@ -497,7 +497,7 @@
                                             </div>
                                         </div>
                                         <!-- <div class="pt-6"><div class="flow-root bg-gray-50 rounded-lg px-6 pb-8"><div class="-mt-6"><div><span class="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg"><svg class="h-6 w-6 text-white"
-																															xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg></span></div><h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Skolastik</h3><p class="mt-5 text-base text-gray-500">
+																															xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg></span></div><h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Skolastik</h3><p class="mt-5 text-base text-gray-500">
                           Bertujuan untuk mengetahui bakat dan kemampuan seseorang di bidang kemampuan.
                         </p></div></div></div> -->
                                     </div>
@@ -528,11 +528,11 @@
                         <!-- This example requires Tailwind CSS v2.0+ -->
                         <div class="bg-white my-16 hidden">
                             <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-                                <h2 class="text-center text-3xl font-extrabold text-gray-900 sm:text-4xl flex justify-center items-center"> Partnership <img class="w-32 ml-3" src="{{ asset('assets/frontend/image/logo.png') }}" alt="">
+                                <h2 class="text-center text-3xl font-extrabold text-gray-900 sm:text-4xl flex justify-center items-center"> Partnership <img class="w-32 ml-3" src="{{ asset('assets/frontend/image/logo.png') }}" alt="Logo {{ config('app.name') }}">
                                 </h2>
                                 <div class="flex justify-center mt-8">
                                     <div class="py-8 px-32 bg-gray-50">
-                                        <img class="w-48" src="https://ayopppk.com/assets/logo/ayocpns_brand_no_white.png" alt="">
+                                        <img class="w-48" src="{{ asset('assets/frontend/image/ayocpns_brand_no_white.png') }}" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -541,8 +541,9 @@
                         <!-- This example requires Tailwind CSS v2.0+ -->
                         <!-- This example requires Tailwind CSS v2.0+ -->
                         <div class="relative bg-gray-800">
-                            <div class="h-56 bg-indigo-600 sm:h-72 md:absolute md:left-0 md:h-full md:w-1/2">
-                                <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1525130413817-d45c1d127c42?ixlib=rb-1.2.1&ixqx=dQd5ajwMMT&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1920&q=60&blend=6366F1&sat=-100&blend-mode=multiply" alt="">
+                            <div class="h-56 bg-amber-600 sm:h-72 md:absolute md:left-0 md:h-full md:w-1/2">
+                                <img class="w-full h-full object-cover" src="{{ asset('assets/frontend/image/cta.jpeg') }}" alt="cta">
+                                
                             </div>
                             <div class="relative max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
                                 <div class="md:ml-auto md:w-1/2 md:pl-10">
@@ -553,7 +554,7 @@
                                     <p class="mt-3 text-lg text-gray-300"> Waktu terbaik untuk belajar adalah kemarin, waktu terbaik kedua adalah hari ini. Yuk #MulaiHariIni </p>
                                     <div class="mt-8">
                                         <div class="inline-flex rounded-md shadow">
-                                            <a href="{{ route('register') }}" class="umami--click--cta-register-button inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-gray-900 bg-white hover:bg-gray-50"> Daftar
+                                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-gray-900 bg-white hover:bg-gray-50"> Daftar
                                                 <!-- Heroicon name: solid/external-link -->
                                                 <svg class="-mr-1 ml-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                     <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
@@ -638,7 +639,7 @@
                 </div>
             </footer>
         </div>
-        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+
         <script>
             const mobileNavCloseBtn = document.querySelector('#mobileNavCloseBtn');
             mobileNavCloseBtn.addEventListener('click', toggleMobileNav);
