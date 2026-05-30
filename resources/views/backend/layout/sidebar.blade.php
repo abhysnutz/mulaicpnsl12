@@ -40,6 +40,14 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('console.user-activity.index') }}"
+                        class="nav-link {{ Request::is('console/user-activity*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-history"></i>
+                        <p>User Activity</p>
+                    </a>
+                </li>
+
                 <!-- Payment -->
                 <li class="nav-item">
                     <a href="{{ route('console.payment.index') }}"

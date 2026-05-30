@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\QuestionController as BackendQuestionController
 use App\Http\Controllers\Backend\TryoutController as BackendTryoutController;
 use App\Http\Controllers\Backend\TryoutQuestionController;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\Backend\UserActivityController;
 use App\Http\Controllers\Backend\BackupController;
 use App\Http\Controllers\Frontend\DownloadController;
 use App\Http\Controllers\Frontend\ExamController;
@@ -147,6 +148,10 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::delete('/{filename}', 'destroy')->name('destroy');
         Route::post('/migrate-fresh', 'migrateFresh')->name('migrate-fresh');
 
+    });
+
+    Route::group(['prefix' => 'user-activity', 'as' => 'user-activity.'], function () {
+        Route::get('/', [UserActivityController::class, 'index'])->name('index');
     });
 });
 
