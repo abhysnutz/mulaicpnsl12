@@ -10,7 +10,8 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewPaymentNotificationMail extends Mailable implements ShouldQueue
+class NewPaymentNotificationMail extends Mailable
+
 {
     use Queueable, SerializesModels;
 
@@ -30,7 +31,7 @@ class NewPaymentNotificationMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🔔 Pembayaran Baru Diterima',
+            subject: '🔔 Permintaan Pembayaran - ' . $this->payment->user?->name . ' - ' . $this->payment->method?->name . ' - Rp ' . number_format($this->payment->total, 0, ',', '.'),
         );
     }
 

@@ -38,7 +38,7 @@ class PaymentController extends Controller
             if($payment){
                 try {
                     \Log::info('Mengirim email ke ' . env('OWNER_EMAIL'));
-                    Mail::to(env('OWNER_EMAIL'))->queue(new NewPaymentNotificationMail($payment));
+                    Mail::to(env('OWNER_EMAIL'))->send(new NewPaymentNotificationMail($payment));
                 } catch (\Exception $e) {
                     \Log::error('Gagal kirim email: ' . $e->getMessage());
                 }

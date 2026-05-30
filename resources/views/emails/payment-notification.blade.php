@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembayaran Baru Masuk</title>
+    <title>Permintaan Pembayaran Baru</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -59,6 +59,15 @@
             color: #2b6cb0;
             font-weight: 600;
         }
+        .note {
+            background-color: #fffbea;
+            border: 1px solid #f6e05e;
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #744210;
+        }
         .button {
             display: inline-block;
             background-color: #2b6cb0;
@@ -79,10 +88,10 @@
         {{-- Logo --}}
         <img src="{{ asset('assets/frontend/image/logo.png') }}" alt="Logo Mulaicpns" class="logo">
 
-        <h2>🔔 Notifikasi Pembayaran Baru</h2>
+        <h2>🔔 Permintaan Pembayaran Baru</h2>
 
         <p>Halo Owner,</p>
-        <p>Telah terjadi <strong>pembayaran baru</strong> pada sistem tryout CPNS.</p>
+        <p>Seorang pengguna baru saja <strong>membuat kode pembayaran</strong> pada sistem tryout CPNS. Mohon pantau mutasi rekening — pembayaran kemungkinan akan segera masuk.</p>
 
         <table class="info-table">
             <tr>
@@ -102,14 +111,18 @@
                 <td>{{ $payment->method?->name ?? '-' }}</td>
             </tr>
             <tr>
-                <th>Total Pembayaran</th>
+                <th>Nominal yang Harus Ditransfer</th>
                 <td class="highlight">Rp {{ number_format($payment->total, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <th>Tanggal Transaksi</th>
+                <th>Tanggal Permintaan</th>
                 <td>{{ $payment->created_at->format('d F Y, H:i') }}</td>
             </tr>
         </table>
+
+        <div class="note">
+            ⚠️ Ini adalah <strong>permintaan pembayaran</strong>, bukan konfirmasi bahwa dana sudah diterima. Cocokkan nominal di atas (termasuk 3 angka kode unik) dengan mutasi rekening sebelum mengaktifkan akun pengguna.
+        </div>
 
         <div style="text-align: center;">
             <a href="{{ url('/console/payment') }}" class="button">
