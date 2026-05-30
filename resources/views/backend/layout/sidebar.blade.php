@@ -84,6 +84,23 @@
                     </a>
                 </li>
 
+                <!-- Question Report -->
+                <li class="nav-item">
+                    <a href="{{ route('console.question-report.index') }}"
+                    class="nav-link {{ Request::is('console/question-report*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-flag"></i>
+                        <p>
+                            Laporan Soal
+                            @php
+                                $reportBaru = \App\Models\QuestionReport::where('status', 'baru')->count();
+                            @endphp
+                            @if ($reportBaru > 0)
+                                <span class="badge badge-danger right">{{ $reportBaru }}</span>
+                            @endif
+                        </p>
+                    </a>
+                </li>
+
                 <!-- Settings (optional) -->
                 <li class="nav-item">
                     <a href="#" class="nav-link">

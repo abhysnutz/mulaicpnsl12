@@ -3,6 +3,7 @@
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\PaymentController as BackendPaymentController;
 use App\Http\Controllers\Backend\QuestionController as BackendQuestionController;
+use App\Http\Controllers\Backend\QuestionReportController as BackendQuestionReportController;
 use App\Http\Controllers\Backend\TryoutController as BackendTryoutController;
 use App\Http\Controllers\Backend\TryoutQuestionController;
 use App\Http\Controllers\Backend\UserController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\TryoutController;
 use App\Http\Controllers\QuestionTimeController;
+use App\Http\Controllers\Frontend\QuestionReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -25,7 +27,6 @@ Route::get('/info', function () {
     return phpinfo();
 });
 
-
 // START FRONTEND
 Route::get('/', function () {
     return view('frontend.home');
@@ -35,49 +36,56 @@ Route::get('/dashboard', function () {
     return view('frontend.dashboard.index');
 })->middleware(['auth','examDirect','checkSingleSession'])->name('dashboard.index');
 
-Route::group(['middleware' => ['auth','examDirect','checkSingleSession'], 'as' => 'profile.'], function () {
-    Route::get('profile', [ProfileController::class, 'edit'])->name('edit');
-    Route::get('city', [ProfileController::class, 'city'])->name('city');
-    Route::patch('profile', [ProfileController::class, 'update'])->name('update');
-    Route::delete('profile', [ProfileController::class, 'destroy'])->name('destroy');
+// PROFILE
+Route::controller(ProfileController::class)->middleware(['auth','examDirect','checkSingleSession'])->name('profile.')->group(function () {
+    Route::get('profile', 'edit')->name('edit');
+    Route::get('city', 'city')->name('city');
+    Route::patch('profile', 'update')->name('update');
+    Route::delete('profile', 'destroy')->name('destroy');
 });
 
+// TRYOUT
 Route::group(['prefix' => 'tryout', 'middleware' => ['auth','checkSingleSession'], 'as' => 'tryout.'], function () {
-    Route::get('/', [TryoutController::class, 'index'])->name('index')->middleware('examDirect');
-    Route::get('{id}/prepare', [TryoutController::class, 'prepare'])->name('prepare')->middleware(['examDirect','checkTryoutAccess']);
-    Route::post('exam', [TryoutController::class, 'exam'])->name('exam');
-    Route::get('{id}/working', [TryoutController::class, 'working'])->name('working');
-    Route::get('questions', [TryoutController::class, 'questions'])->name('questions');
-    Route::get('question', [TryoutController::class, 'question'])->name('question');
-    Route::get('time', [TryoutController::class, 'time'])->name('time');
-    Route::post('answer', [TryoutController::class, 'answer'])->name('answer');
-    Route::post('finish/{id}', [TryoutController::class, 'finish'])->name('finish');
-    Route::post('cancel{id}', [TryoutController::class, 'cancel'])->name('cancel');
+    Route::controller(TryoutController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('examDirect');
+        Route::get('{id}/prepare', 'prepare')->name('prepare')->middleware(['examDirect','checkTryoutAccess']);
+        Route::post('exam', 'exam')->name('exam');
+        Route::get('{id}/working', 'working')->name('working');
+        Route::get('questions', 'questions')->name('questions');
+        Route::get('question', 'question')->name('question');
+        Route::get('time', 'time')->name('time');
+        Route::post('answer', 'answer')->name('answer');
+        Route::post('finish/{id}', 'finish')->name('finish');
+        Route::post('cancel{id}', 'cancel')->name('cancel');
+    });
 
-    Route::post('question/start', [QuestionTimeController::class, 'start'])->name('question.start');
-    Route::post('question/end', [QuestionTimeController::class, 'end'])->name('question.end');
+    Route::controller(QuestionTimeController::class)->group(function () {
+        Route::post('question/start', 'start')->name('question.start');
+        Route::post('question/end', 'end')->name('question.end');
+    });
 
-    Route::group(['prefix' => 'result', 'as' => 'result.'], function () {
-        Route::get('/', [ExamController::class, 'index'])->name('index');
-        Route::get('{id}/statistic', [ExamController::class, 'statistic'])->name('statistic');
-        Route::get('{id}/explanation', [ExamController::class, 'explanation'])->name('explanation');
-        Route::get('questions', [ExamController::class, 'questions'])->name('questions');
-        Route::get('answer', [ExamController::class, 'answer'])->name('answer');
+    Route::post('question/report', [QuestionReportController::class, 'store'])->name('question.report');
+
+    Route::controller(ExamController::class)->prefix('result')->name('result.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('{id}/statistic', 'statistic')->name('statistic');
+        Route::get('{id}/explanation', 'explanation')->name('explanation');
+        Route::get('questions', 'questions')->name('questions');
+        Route::get('answer', 'answer')->name('answer');
     });
 });
 
 
-
-
-
-Route::group(['prefix' => 'download', 'middleware' => ['auth','checkSingleSession'], 'as' => 'download.'], function () {
-    Route::get('/', [   DownloadController::class, 'index'])->name('index');
+// DOWNLOAD
+Route::controller(DownloadController::class)->prefix('download')->middleware(['auth','checkSingleSession'])->name('download.')->group(function () {
+    Route::get('/', 'index')->name('index');
 });
 
-Route::group(['prefix' => 'payment', 'middleware' => ['auth','checkSingleSession'], 'as' => 'payment.'], function () {
-    Route::get('/', [PaymentController::class, 'index'])->name('index');
-    Route::post('store', [PaymentController::class, 'store'])->name('store');
-});
+// PAYMENT
+Route::controller(PaymentController::class)->prefix('payment')->middleware(['auth','checkSingleSession'])->name('payment.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
+    });
 
 Route::get('petunjuk_upgrade', function(){ return view('frontend.petunjuk_upgrade'); })->middleware(['auth','checkSingleSession'])->name('petunjuk_upgrade');
 
@@ -87,71 +95,83 @@ Route::get('petunjuk_upgrade', function(){ return view('frontend.petunjuk_upgrad
 Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingleSession'], 'as' => 'console.'], function() {
     Route::get('/', function(){ return redirect()->route('console.dashboard.index'); });
 
-    Route::group(['prefix' => 'dashboard','as' => 'dashboard.'], function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('index');
-    });
-    
-    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
-        Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::post('/{user}/suspend', [UserController::class, 'suspend'])->name('suspend');
-        Route::post('/{user}/unsuspend', [UserController::class, 'unsuspend'])->name('unsuspend');
+    // DASHBOARD
+    Route::controller(DashboardController::class)->prefix('dashboard')->name('dashboard.')->group(function () {
+        Route::get('/', 'index')->name('index');
     });
 
-    Route::group(['prefix' => 'payment', 'as' => 'payment.'], function (){
-        Route::get('/', [BackendPaymentController::class,'index'])->name('index');
-        Route::post('update', [BackendPaymentController::class,'update'])->name('update');
+    // USER
+    Route::controller(UserController::class)->prefix('user')->name('user.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('{user}/suspend', 'suspend')->name('suspend');
+        Route::post('{user}/unsuspend', 'unsuspend')->name('unsuspend');
     });
 
-    Route::group(['prefix' => 'tryout', 'as' => 'tryout.'], function (){
-        Route::get('/', [BackendTryoutController::class,'index'])->name('index');
-        Route::get('create', [BackendTryoutController::class,'create'])->name('create');
-        Route::post('store', [BackendTryoutController::class,'store'])->name('store');
-        Route::get('{id}/edit', [BackendTryoutController::class, 'edit'])->name('edit');
-        Route::put('{id}', [BackendTryoutController::class, 'update'])->name('update');
-        Route::delete('{id}', [BackendTryoutController::class, 'destroy'])->name('destroy');
+    // PAYMENT
+    Route::controller(BackendPaymentController::class)->prefix('payment')->name('payment.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('update', 'update')->name('update');
+    });
 
-        // QUESTION
-        Route::group(['prefix' => '{tryout_id}/question', 'as' => 'question.'], function (){
-            Route::get('/', [TryoutQuestionController::class,'index'])->name('index');
-            Route::get('create', [TryoutQuestionController::class,'create'])->name('create');
-            Route::post('store', [TryoutQuestionController::class,'store'])->name('store');
-            Route::get('{id}/edit', [TryoutQuestionController::class, 'edit'])->name('edit');
-            Route::put('{id}', [TryoutQuestionController::class, 'update'])->name('update');
-            Route::delete('{id}', [TryoutQuestionController::class, 'destroy'])->name('destroy');
-            Route::post('reorder', [TryoutQuestionController::class, 'reorder'])->name('reorder');
-            Route::post('attach', [TryoutQuestionController::class, 'attach'])->name('attach');
-            Route::get('export', [TryoutQuestionController::class, 'export'])->name('export');
-            Route::post('import', [TryoutQuestionController::class, 'import'])->name('import');
+    // TRYOUT
+    Route::controller(BackendTryoutController::class)->prefix('tryout')->name('tryout.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::delete('{id}', 'destroy')->name('destroy');
+    });
+
+    // TRYOUT > QUESTION
+    Route::controller(TryoutQuestionController::class)->prefix('tryout/{tryout_id}/question')->name('tryout.question.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('create', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::get('{id}/edit', 'edit')->name('edit');
+            Route::put('{id}', 'update')->name('update');
+            Route::delete('{id}', 'destroy')->name('destroy');
+            Route::post('reorder', 'reorder')->name('reorder');
+            Route::post('attach', 'attach')->name('attach');
+            Route::get('export', 'export')->name('export');
+            Route::post('import', 'import')->name('import');
         });
+
+    // QUESTION BANK
+    Route::controller(BackendQuestionController::class)->prefix('question')->name('question.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::delete('{id}', 'destroy')->name('destroy');
+        Route::post('image', 'image')->name('image');
+        Route::post('{id}/clone', 'clone')->name('clone');
+        Route::get('preview/{id}', 'preview')->name('preview');
+        Route::get('export', 'export')->name('export');
+        Route::post('import', 'import')->name('import');
     });
 
-    Route::group(['prefix' => 'question', 'as' => 'question.'], function (){
-        Route::get('/', [BackendQuestionController::class,'index'])->name('index');
-        Route::get('create', [BackendQuestionController::class,'create'])->name('create');
-        Route::post('store', [BackendQuestionController::class,'store'])->name('store');
-        Route::get('{id}/edit', [BackendQuestionController::class, 'edit'])->name('edit');
-        Route::put('{id}', [BackendQuestionController::class, 'update'])->name('update');
-        Route::delete('{id}', [BackendQuestionController::class, 'destroy'])->name('destroy');
-        Route::post('image', [BackendQuestionController::class, 'image'])->name('image');
-        Route::post('{id}/clone', [BackendQuestionController::class, 'clone'])->name('clone');
-        Route::get('preview/{id}', [BackendQuestionController::class, 'preview'])->name('preview');
-        Route::get('export', [BackendQuestionController::class, 'export'])->name('export');
-        Route::post('import', [BackendQuestionController::class, 'import'])->name('import');
-    });
-
+    // DATABASE BACKUP
     Route::controller(BackupController::class)->prefix('backup')->name('backup.')->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/export', 'export')->name('export');
-        Route::post('/upload', 'upload')->name('upload');
-        Route::post('/import/{filename}', 'import')->name('import');
-        Route::get('/download/{filename}', 'download')->name('download');
-        Route::delete('/{filename}', 'destroy')->name('destroy');
-        Route::post('/migrate-fresh', 'migrateFresh')->name('migrate-fresh');
-
+        Route::get('export', 'export')->name('export');
+        Route::post('upload', 'upload')->name('upload');
+        Route::post('import/{filename}', 'import')->name('import');
+        Route::get('download/{filename}', 'download')->name('download');
+        Route::delete('{filename}', 'destroy')->name('destroy');
+        Route::post('migrate-fresh', 'migrateFresh')->name('migrate-fresh');
     });
 
-    Route::group(['prefix' => 'user-activity', 'as' => 'user-activity.'], function () {
-        Route::get('/', [UserActivityController::class, 'index'])->name('index');
+    // QUESTION REPORT
+    Route::controller(BackendQuestionReportController::class)->prefix('question-report')->name('question-report.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('update', 'update')->name('update');
+    });
+
+    // USER ACTIVITY
+    Route::controller(UserActivityController::class)->prefix('user-activity')->name('user-activity.')->group(function () {
+        Route::get('/', 'index')->name('index');
     });
 });
 

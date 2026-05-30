@@ -92,6 +92,43 @@
                                                         </svg>
                                                     </button>
                                                 </div>
+                                                <hr class="my-4">
+
+
+                                                <div class="text-center">
+                                                    <button id="report-button" type="button"
+                                                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 mr-1">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        Laporkan Soal Ini
+                                                    </button>
+                                                </div>
+
+                                                <!-- Modal Report -->
+                                                <div id="report-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4">
+                                                    <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                                                        <h3 class="text-lg font-semibold mb-4">Laporkan Soal</h3>
+                                                        <div class="mb-3">
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Masalah</label>
+                                                            <select id="report-type" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                                                                <option value="Jawaban salah">Jawaban salah</option>
+                                                                <option value="Soal typo / salah ketik">Soal typo / salah ketik</option>
+                                                                <option value="Gambar bermasalah">Gambar bermasalah</option>
+                                                                <option value="Pembahasan tidak sesuai">Pembahasan tidak sesuai</option>
+                                                                <option value="Lainnya">Lainnya</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-4">
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Catatan (opsional)</label>
+                                                            <textarea id="report-note" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" placeholder="Jelaskan masalahnya..."></textarea>
+                                                        </div>
+                                                        <div class="flex justify-end space-x-2">
+                                                            <button id="report-cancel" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Batal</button>
+                                                            <button id="report-submit" type="button" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">Kirim Laporan</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="w-full lg:w-2/6 2xl:w-3/12 flex flex-col">
@@ -276,6 +313,52 @@
 
         $("#prev-button").click(function() {
             selectedQuestion(currentIndex - 1);
+        });
+
+        // Buka modal
+        $('#report-button').on('click', function() {
+            $('#report-modal').removeClass('hidden').addClass('flex');
+        });
+
+        // Tutup modal
+        $('#report-cancel').on('click', function() {
+            $('#report-modal').addClass('hidden').removeClass('flex');
+        });
+
+        // Kirim laporan
+        $('#report-submit').on('click', function() {
+            const questionId = $('.question').data('id');
+            if (!questionId) {
+                alert('Soal belum termuat, coba lagi.');
+                return;
+            }
+
+            const $btn = $(this);
+            $btn.prop('disabled', true).text('Mengirim...');
+
+            $.ajax({
+                url: "{{ route('tryout.question.report') }}",
+                method: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    question_id: questionId,
+                    exam_id: exam_id,
+                    type: $('#report-type').val(),
+                    note: $('#report-note').val()
+                },
+                success: function(reply) {
+                    alert(reply.message || 'Laporan terkirim!');
+                    $('#report-modal').addClass('hidden').removeClass('flex');
+                    $('#report-note').val('');
+                },
+                error: function(xhr) {
+                    alert('Gagal mengirim laporan. Coba lagi.');
+                    console.log(xhr.responseText);
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text('Kirim Laporan');
+                }
+            });
         });
     </script>
 @endpush
