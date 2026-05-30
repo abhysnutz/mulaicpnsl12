@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{{ env('APP_NAME') }} | Belajar dan Latihan Soal Tryout CPNS</title>
+        <title>{{ config('app.name') }} | Belajar dan Latihan Soal Tryout CPNS</title>
         <link rel="stylesheet" href="{{ asset('assets/frontend/css/style.css') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="https://ayopppk.com/assets/favicon/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/frontend/favicon/favicon-32x32.png') }}">
@@ -14,11 +14,11 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
         <meta name="keywords" content="pppk, p3k, bimbel pppk, tryout pppk, soal pppk, soal p3k, tryout p3k, ayo pppk, info pppk, jadwal pppk, soal pembahasan pppk, materi pppk, soal manajerial, soal sosio kultural, soal teknis, soal skolastik, pppk pgsd, pppk guru, tryout cat">
-        <meta name="description" content="{{ env('APP_NAME') }} merupakan website belajar online untuk persiapan seleksi PPPK. Belajar secara mudah dan praktis dengan beragam latihan soal CAT PPPK. Dilengkapi dengan pembahasan soal, grafik dan berlatih manajemen waktu.">
-        <meta property="og:site_name" content="{{ env('APP_NAME') }}">
-        <meta property="og:url" content="{{ env('APP_URL') }}">
-        <meta property="og:title" content="{{ env('APP_NAME') }} - Belajar, Tryout dan Latihan Soal PPPK">
-        <meta property="og:description" content="{{ env('APP_NAME') }} adalah website belajar online untuk persiapan seleksi PPPK. Belajar secara mudah dan praktis dengan beragam latihan soal CAT PPPK. Dilengkapi dengan pembahasan soal, grafik dan berlatih manajemen waktu.">
+        <meta name="description" content="{{ config('app.name') }} merupakan website belajar online untuk persiapan seleksi PPPK. Belajar secara mudah dan praktis dengan beragam latihan soal CAT PPPK. Dilengkapi dengan pembahasan soal, grafik dan berlatih manajemen waktu.">
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+        <meta property="og:url" content="{{ config('app.url') }}">
+        <meta property="og:title" content="{{ config('app.name') }} - Belajar, Tryout dan Latihan Soal PPPK">
+        <meta property="og:description" content="{{ config('app.name') }} adalah website belajar online untuk persiapan seleksi PPPK. Belajar secara mudah dan praktis dengan beragam latihan soal CAT PPPK. Dilengkapi dengan pembahasan soal, grafik dan berlatih manajemen waktu.">
         <meta property="og:type" content="website">
     </head>
     <body>
@@ -30,7 +30,7 @@
                             <div class="flex items-center flex-1">
                                 <div class="flex items-center justify-between w-full md:w-auto">
                                     <a href="#">
-                                        <span class="sr-only">{{ env('APP_NAME') }}</span>
+                                        <span class="sr-only">{{ config('app.name') }}</span>
                                         <img class="h-8 w-auto sm:h-10" src="{{ asset('assets/frontend/image/logo.png') }}" alt="">
                                     </a>
                                     <div class="-mr-2 flex items-center md:hidden">
@@ -52,7 +52,7 @@
                             </div>
                             <div class="hidden md:block text-right">
                                 <span class="inline-flex  space-x-6">
-                                    <a href="#" class="umami--click--landing-contact-button inline-flex items-center px-4 py-2 border border-amber-500 text-base font-medium rounded-md text-white bg-amber-500 hover:bg-amber-700 hover:text-white" target="_blank"> Hubungi Kami </a>
+                                    <a href="https://api.whatsapp.com/send/?phone={{ config('services.admin_whatsapp') }}&text={{ rawurlencode('Halo kak, saya mau tanya tentang ') }}&app_absent=0" class="umami--click--landing-contact-button inline-flex items-center px-4 py-2 border border-amber-500 text-base font-medium rounded-md text-white bg-amber-500 hover:bg-amber-700 hover:text-white" target="_blank"> Hubungi Kami </a>
                                 </span>
                             </div>
                         </nav>
@@ -99,7 +99,7 @@
                                             <a href="#" class="inline-flex space-x-4">
                                                 <span class="rounded bg-amber-100 px-2.5 py-1 text-xs font-semibold text-indigo-600 tracking-wide uppercase"> Belajar Jadi Mudah </span>
                                                 <span class="inline-flex items-center text-sm font-medium text-indigo-600 space-x-1">
-                                                    <span>{{ env('APP_NAME') }}</span>
+                                                    <span>{{ config('app.name') }}</span>
                                                     <!-- Heroicon name: solid/chevron-right -->
                                                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -108,7 +108,7 @@
                                             </a>
                                         </div>
                                         <div class="mt-6 sm:max-w-xl">
-                                            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl"> Ayo Lulus CPNS {{ date('Y') }} bersama {{ env('APP_NAME') }}! </h1>
+                                            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl"> Ayo Lulus CPNS {{ date('Y') }} bersama {{ config('app.name') }}! </h1>
                                             <p class="mt-6 text-xl text-gray-500"> Tempat tepat untuk curi start belajar persiapan seleksi CPNS! </p>
                                         </div>
                                         <div class="mt-4 sm:mt-6">
@@ -185,9 +185,9 @@
                                                 </span>
                                             </div>
                                             <div class="mt-6">
-                                                <h2 class="text-3xl font-extrabold tracking-tight text-gray-900"> Kenapa belajar di <strong class="text-amber-500">{{ env('APP_NAME') }} ?</strong>
+                                                <h2 class="text-3xl font-extrabold tracking-tight text-gray-900"> Kenapa belajar di <strong class="text-amber-500">{{ config('app.name') }} ?</strong>
                                                 </h2>
-                                                <p class="mt-4 text-lg text-gray-500"> Saat kamu sedang bersantai, jutaan pesaing kamu sedang belajar dengan giat. Apabila tidak segera bergerak, kamu akan tertinggal. {{ env('APP_NAME') }} ingin menjadi teman belajar kamu! Temukan kemudahan dan pengalaman belajar praktis di sini. </p>
+                                                <p class="mt-4 text-lg text-gray-500"> Saat kamu sedang bersantai, jutaan pesaing kamu sedang belajar dengan giat. Apabila tidak segera bergerak, kamu akan tertinggal. {{ config('app.name') }} ingin menjadi teman belajar kamu! Temukan kemudahan dan pengalaman belajar praktis di sini. </p>
                                             </div>
                                         </div>
                                     </div>
@@ -210,8 +210,8 @@
                                     <rect width="404" height="784" fill="url(#b1e6e422-73f8-40a6-b5d9-c8586e37e0e7)" />
                                 </svg>
                                 <div class="relative">
-                                    <h2 class="text-center text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl"> Fitur {{ env('APP_NAME') }} </h2>
-                                    <p class="mt-4 max-w-3xl mx-auto text-center text-xl text-gray-500"> Apa saja fitur dan fasilitas di {{ env('APP_NAME') }}? </p>
+                                    <h2 class="text-center text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl"> Fitur {{ config('app.name') }} </h2>
+                                    <p class="mt-4 max-w-3xl mx-auto text-center text-xl text-gray-500"> Apa saja fitur dan fasilitas di {{ config('app.name') }}? </p>
                                 </div>
                                 <div class="relative mt-12 lg:mt-24 lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
                                     <div class="relative">
@@ -239,7 +239,7 @@
                                                     </div>
                                                     <p class="ml-16 text-lg leading-6 font-medium text-gray-900"> Grafik Hasil Latihan yang Informatif </p>
                                                 </dt>
-                                                <dd class="mt-2 ml-16 text-base text-gray-500"> Kenali kelemahanmu! Kamu akan lebih mudah mengukur kemampuan untuk setiap bagian soal. {{ env('APP_NAME') }} menyediakan grafik hasil Latihan yang informatif. Kamu bisa memanfaatkan fitur ini untuk mengevaluasi hasil belajar serta memperbaiki kelemahan kamu. </dd>
+                                                <dd class="mt-2 ml-16 text-base text-gray-500"> Kenali kelemahanmu! Kamu akan lebih mudah mengukur kemampuan untuk setiap bagian soal. {{ config('app.name') }} menyediakan grafik hasil Latihan yang informatif. Kamu bisa memanfaatkan fitur ini untuk mengevaluasi hasil belajar serta memperbaiki kelemahan kamu. </dd>
                                             </div>
                                             <div class="relative">
                                                 <dt>
@@ -251,7 +251,7 @@
                                                     </div>
                                                     <p class="ml-16 text-lg leading-6 font-medium text-gray-900"> Berlatih Manajemen Waktu </p>
                                                 </dt>
-                                                <dd class="mt-2 ml-16 text-base text-gray-500"> Mengerjakan soal dengan benar saja juga belum cukup! Saat tes nanti kamu akan dibatasi oleh waktu. {{ env('APP_NAME') }} menyediakan fasilitas analisa waktu untuk membantu kamu mengetahui berapa lama waktu yang kamu habiskan untuk mengerjakan di setiap soal. Sehingga saat tes nanti kamu lebih siap dan dapat mengantisipasi kekurangan waktu. </dd>
+                                                <dd class="mt-2 ml-16 text-base text-gray-500"> Mengerjakan soal dengan benar saja juga belum cukup! Saat tes nanti kamu akan dibatasi oleh waktu. {{ config('app.name') }} menyediakan fasilitas analisa waktu untuk membantu kamu mengetahui berapa lama waktu yang kamu habiskan untuk mengerjakan di setiap soal. Sehingga saat tes nanti kamu lebih siap dan dapat mengantisipasi kekurangan waktu. </dd>
                                             </div>
                                         </dl>
                                     </div>
@@ -267,7 +267,7 @@
                                                 </div>
                                                 <p class="ml-16 text-lg leading-6 font-medium text-gray-900"> Akses Belajar Fleksibel </p>
                                             </dt>
-                                            <dd class="mt-2 ml-16 text-base text-gray-500"> Kami memahami kesibukan kamu. Sebagian mungkin sedang sibuk bekerja, sebagian lainnya merawat buah hati. {{ env('APP_NAME') }} adalah solusi. Kamu dapat mengakses kapan saja dan di mana saja secara praktis. {{ env('APP_NAME') }} dapat diakses menggunakan komputer, laptop maupun smartphone. Apabila mengerjakan Latihan dirasa terlalu lama? Tenang, kamu bisa mengerjakan di bagian tertentu saja. Menyenangkan, bukan? </dd>
+                                            <dd class="mt-2 ml-16 text-base text-gray-500"> Kami memahami kesibukan kamu. Sebagian mungkin sedang sibuk bekerja, sebagian lainnya merawat buah hati. {{ config('app.name') }} adalah solusi. Kamu dapat mengakses kapan saja dan di mana saja secara praktis. {{ config('app.name') }} dapat diakses menggunakan komputer, laptop maupun smartphone. Apabila mengerjakan Latihan dirasa terlalu lama? Tenang, kamu bisa mengerjakan di bagian tertentu saja. Menyenangkan, bukan? </dd>
                                         </div>
                                         <div class="relative">
                                             <dt>
@@ -279,7 +279,7 @@
                                                 </div>
                                                 <p class="ml-16 text-lg leading-6 font-medium text-gray-900"> Tampilan Simpel dan Mudah Digunakan </p>
                                             </dt>
-                                            <dd class="mt-2 ml-16 text-base text-gray-500"> Belum terbiasa belajar secara online? Jangan khawatir, {{ env('APP_NAME') }} telah memikirkan solusi masalah tersebut. Kami mendesain tampilan yang sederhana, bersih dan mudah digunakan. Sehingga kamu akan nyaman saat sedang belajar dan mengerjakan soal. </dd>
+                                            <dd class="mt-2 ml-16 text-base text-gray-500"> Belum terbiasa belajar secara online? Jangan khawatir, {{ config('app.name') }} telah memikirkan solusi masalah tersebut. Kami mendesain tampilan yang sederhana, bersih dan mudah digunakan. Sehingga kamu akan nyaman saat sedang belajar dan mengerjakan soal. </dd>
                                         </div>
                                     </div>
                                 </div>
@@ -632,7 +632,7 @@
                             </div>
                         </div>
                         <div class="mt-0 flex items-center justify-center">
-                            <p class="mt-2 text-sm sm:text-base text-gray-900 md:mt-0 md:text-right text-center"> &copy; {{ date('Y') }} {{ env('APP_NAME') }}. All rights reserved. </p>
+                            <p class="mt-2 text-sm sm:text-base text-gray-900 md:mt-0 md:text-right text-center"> &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved. </p>
                         </div>
                     </div>
                 </div>

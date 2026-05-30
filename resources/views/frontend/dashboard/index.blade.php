@@ -21,7 +21,7 @@
                     @else
                         <p>Status Anda saat ini adalah user <span class="font-bold capitalize">Premium</span> sampai tanggal <span class="font-bold">{{ \Carbon\Carbon::parse(Auth::user()?->subscription?->end_date)->translatedFormat('d F Y') }}</span>,</p>
                     @endif
-                    <p>Selamat berlatih di <span class="font-bold">{{ env('APP_NAME') }}</span>.</p>
+                    <p>Selamat berlatih di <span class="font-bold">{{ config('app.name') }}</span>.</p>
                     <p class="mt-2">SKD CPNS sudah semakin dekat, yuk akses latihan soal beserta pembahasan dengan cara upgrade statusmu, dapatkan fasilitas yang lebih lengkap.</p>
 
                     <!-- Buttons -->

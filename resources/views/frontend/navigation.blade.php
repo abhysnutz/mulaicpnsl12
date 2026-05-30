@@ -171,7 +171,7 @@
         <div class="flex flex-col flex-grow border-r border-gray-200 pt-5 pb-4 bg-white overflow-y-auto">
             <div class="flex items-center justify-center flex-shrink-0 px-4">
                 <img src="{{ asset('assets/frontend/image/logo.png') }}" 
-                    alt="{{ env('APP_NAME') }}" 
+                    alt="{{ config('app.name') }}" 
                     class="h-12">
             </div>
             <div class="mt-5 flex-grow flex flex-col">
@@ -245,7 +245,7 @@
                     </div>
                     <div class="space-y-3 mt-3">
                         <p class="text-sm font-medium text-white text-center">Apabila Anda mengalami kesulitan, klik tombol berikut</p>
-                        <a href="https://api.whatsapp.com/send/?phone=6285183171763&amp;text=Halo%20kak,%20saya%20mau%20tanya%20tentang%20&amp;app_absent=0" target="_blank" class="inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-5 py-1.5 bg-amber-200 font-medium text-gray-700 hover:bg-amber-300 focus:outline-none focus:ring-0 text-sm">Hubungi Kami</a>
+                        <a href="https://api.whatsapp.com/send/?phone={{ config('services.admin_whatsapp') }}&text={{ rawurlencode('Halo kak, saya mau tanya tentang ') }}&app_absent=0" target="_blank" class="inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-5 py-1.5 bg-amber-200 font-medium text-gray-700 hover:bg-amber-300 focus:outline-none focus:ring-0 text-sm">Hubungi Kami</a>
                     </div>
                 </div>
             </div>

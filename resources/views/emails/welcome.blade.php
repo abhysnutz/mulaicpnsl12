@@ -32,7 +32,7 @@
                     </a>
                 </div>
 
-                <p>Jika kamu mengalami kendala, jangan ragu untuk menghubungi kami di <a href="mailto:maps.mulaicpns@gmail.com" style="color:#2563eb;">maps.mulaicpns@gmail.com</a>.</p>
+                <p>Jika kamu mengalami kendala, jangan ragu untuk menghubungi kami di <a href="mailto:maps.mulaicpns25@gmail.com" style="color:#2563eb;">maps.mulaicpns25@gmail.com</a>.</p>
 
                 <p style="margin:0;">Semoga sukses menembus CPNS impianmu! 💪<br><strong>Tim Mulaicpns</strong></p>
             </td>
