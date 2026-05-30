@@ -112,8 +112,18 @@
                             <!-- Button Group -->
                             <div class="flex flex-wrap gap-3 pt-4">
                                 <button type="submit" class="px-4 py-2 bg-blue-500 text-white text-bold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"> Simpan </button>
-                                <a href="https://api.whatsapp.com/send?phone=6282187299335&text=Konfirmasi%20Member%20Premium%2C%20%0A{{ env('APP_URL') }}%0A%0ANama%20%3A%20{{ Auth::user()?->name }}%0A%0ABesar%20Transfer%20%3A%20Rp.%20{{ number_format($payment_pending?->total, 0, ',', '.') }}%20%0A%0ATransfer%20Ke%20%3A%20{{ $payment_pending?->method?->name }}%20%0A%0AMohon%20Aktivasi" target="_blank" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"> WA Konfirmasi Donasi </a>
-                                {{-- <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"> Petunjuk </button> --}}
+
+                                @if ($payment_pending)
+                                    <a href="https://api.whatsapp.com/send?phone={{ config('services.admin_whatsapp') }}&text={{ rawurlencode(
+                                        "Konfirmasi Member Premium,\n"
+                                        . url('/') . "\n\n"
+                                        . "Nama : " . Auth::user()?->name . "\n\n"
+                                        . "Besar Transfer : Rp. " . number_format($payment_pending?->total, 0, ',', '.') . "\n\n"
+                                        . "Kode Unik : " . $payment_pending?->unique_code . "\n\n"
+                                        . "Transfer Ke : " . $payment_pending?->method?->name . "\n\n"
+                                        . "Mohon Aktivasi"
+                                    ) }}" target="_blank" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"> WA Konfirmasi Donasi </a>
+                                @endif
                             </div>
                         </form>
                     </div>
