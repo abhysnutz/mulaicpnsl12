@@ -165,6 +165,5 @@ Route::post('/upload-image', function (Request $request) {
 
     return response()->json(['imageUrl' => $url]);
 });
-    
 
 require __DIR__.'/auth.php';

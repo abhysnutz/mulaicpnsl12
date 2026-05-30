@@ -38,8 +38,8 @@ class PaymentController extends Controller
             if($payment){
                 // 📧 Kirim email ke owner
                 try {
-                    \Log::info('Mengirim email ke ' . env('OWNER_EMAIL'));
-                    Mail::to(env('OWNER_EMAIL'))->send(new NewPaymentNotificationMail($payment));
+                    \Log::info('Mengirim email ke ' . config('services.owner_email'));
+                    Mail::to(config('services.owner_email'))->send(new NewPaymentNotificationMail($payment));
                 } catch (\Exception $e) {
                     \Log::error('Gagal kirim email: ' . $e->getMessage());
                 }
@@ -55,9 +55,9 @@ class PaymentController extends Controller
                         . "Tanggal: " . $payment->created_at->format('d M Y, H:i');
 
                     Http::post(
-                        'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/sendMessage',
+                        'https://api.telegram.org/bot' . config('services.telegram.bot_token') . '/sendMessage',
                         [
-                            'chat_id' => env('TELEGRAM_CHAT_ID'),
+                            'chat_id' => config('services.telegram.chat_id'),
                             'text' => $message,
                             'parse_mode' => 'Markdown',
                         ]

@@ -37,5 +37,12 @@ return [
 
     'admin_whatsapp' => env('ADMIN_WHATSAPP'),
 
+    'owner_email' => env('OWNER_EMAIL'),
+
+    'telegram' => [
+        'bot_token'     => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id'       => env('TELEGRAM_CHAT_ID'),
+        'error_chat_id' => env('TELEGRAM_ERROR_CHAT_ID'),
+    ],
 
 ];

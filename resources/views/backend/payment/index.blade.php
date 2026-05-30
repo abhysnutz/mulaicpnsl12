@@ -9,7 +9,7 @@
                         <div class="card-header">
                             <h3 class="card-title">Bordered Table</h3>
                         </div>
-                        <div class="card-body table-responsive p-0" style="height: 300px;">
+                        <div class="card-body table-responsive p-0" style="max-height: 500px;">
                             <table class="table table-head-fixed text-nowrap">
                                 <thead>
                                     <tr>
