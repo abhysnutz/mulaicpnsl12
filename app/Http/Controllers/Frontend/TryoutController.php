@@ -17,7 +17,12 @@ use Illuminate\Support\Facades\Cache;
 class TryoutController extends Controller
 {
     public function index(){
-        $tryouts = Tryout::where('status','publish')->orderBy('id','DESC')->get();
+        $tryouts = Tryout::where('status', 'publish')
+                        ->withCount(['userExams as my_attempts' => function ($q) {
+                            $q->where('user_id', auth()->id());
+                        }])
+                        ->with('questions')   // biar count soal nggak N+1 juga
+                        ->get();
 
         return view('frontend.tryout.index',compact('tryouts'));
     }

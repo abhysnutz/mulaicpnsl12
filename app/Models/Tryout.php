@@ -20,5 +20,10 @@ class Tryout extends Model
                     ->orderBy('order', 'asc'); // supaya soal urut
     }
 
+    public function userExams()
+    {
+        return $this->hasMany(UserExam::class);
+    }
+
    
 }
