@@ -13,6 +13,39 @@ use Exception;
 
 class QuestionImportService
 {
+    /**
+     * Normalisasi teks penjelasan dari cell Excel menjadi HTML <p> per baris,
+     * supaya formatnya SELARAS dengan seeder dan editor summernote.
+     *
+     * - Jika sudah mengandung tag HTML (mis. di-paste dari sumber HTML), biarkan apa adanya.
+     * - Jika plain text: pecah per baris (\n) lalu bungkus tiap baris dengan <p>...</p>.
+     */
+    private function normalizeExplanation(?string $text): ?string
+    {
+        $text = trim((string) $text);
+        if ($text === '') {
+            return null;
+        }
+
+        // Sudah HTML? jangan diutak-atik.
+        if (preg_match('/<[a-z][\s\S]*>/i', $text)) {
+            return $text;
+        }
+
+        // Normalisasi line ending lalu pecah per baris.
+        $text = str_replace(["\r\n", "\r"], "\n", $text);
+        $lines = array_filter(array_map('trim', explode("\n", $text)), fn ($l) => $l !== '');
+
+        if (empty($lines)) {
+            return null;
+        }
+
+        // Bungkus tiap baris dengan <p> (escape teksnya agar aman).
+        return collect($lines)
+            ->map(fn ($line) => '<p>' . e($line) . '</p>')
+            ->implode('');
+    }
+
     public function importFromExcel($file, $tryoutId = null)
     {
         $success = 0;
@@ -32,19 +65,21 @@ class QuestionImportService
                 // ======================
                 // 🧠 Ambil data Excel
                 // ======================
-                $kategori      = trim($row['B'] ?? '');
-                $topik         = trim($row['C'] ?? '');
-                $soal          = trim($row['D'] ?? '');
-                $penjelasan    = trim($row['K'] ?? '');
+                $kategori   = trim($row['B'] ?? '');
+                $topik      = trim($row['C'] ?? '');
+                $soal       = trim($row['D'] ?? '');
+                $penjelasan = $this->normalizeExplanation($row['K'] ?? '');
 
-                $gambarSoal         = trim($row['P'] ?? '');
-                $gambarPenjelasan   = trim($row['Q'] ?? '');
+                // ⚠️ Mapping kolom gambar diperbaiki (sebelumnya geser 1 ke kiri):
+                //    Q = Gambar Soal, R = Gambar Penjelasan, S–W = Gambar A–E
+                $gambarSoal       = trim($row['Q'] ?? '');
+                $gambarPenjelasan = trim($row['R'] ?? '');
                 $gambarJawaban = [
-                    trim($row['R'] ?? ''),
                     trim($row['S'] ?? ''),
                     trim($row['T'] ?? ''),
                     trim($row['U'] ?? ''),
                     trim($row['V'] ?? ''),
+                    trim($row['W'] ?? ''),
                 ];
 
                 $jawaban = [
@@ -56,6 +91,8 @@ class QuestionImportService
                 ];
 
                 $jawabanBenar = strtoupper(trim($row['J'] ?? ''));
+
+                // Score A–E ada di kolom L–P (P = Score E, bukan gambar)
                 $scores = [
                     (int)($row['L'] ?? 0),
                     (int)($row['M'] ?? 0),
@@ -101,7 +138,7 @@ class QuestionImportService
                 $question = Question::create([
                     'topic_id'    => $topic->id,
                     'question'    => $soal,
-                    'explanation' => $penjelasan ?: null,
+                    'explanation' => $penjelasan,
                 ]);
 
                 $tmpPath   = "question/tmp/import";
@@ -122,9 +159,9 @@ class QuestionImportService
                     Storage::disk('public')->makeDirectory($finalPath);
                     Storage::disk('public')->move("{$tmpPath}/{$gambarPenjelasan}", "{$finalPath}/explanation.png");
 
+                    $imgTag = "<p><img src='" . asset("storage/{$finalPath}/explanation.png") . "' alt=''></p>";
                     $question->update([
-                        'explanation' => ($penjelasan ? $penjelasan . '<br>' : '') .
-                            "<img src='" . asset("storage/{$finalPath}/explanation.png") . "' alt=''>"
+                        'explanation' => ($penjelasan ?? '') . $imgTag,
                     ]);
                 }
 
