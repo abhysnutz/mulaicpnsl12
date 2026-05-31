@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('question_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('exam_id')->nullable()->constrained()->nullOnDelete();
             $table->string('type'); // jenis masalah
             $table->text('note')->nullable();
             $table->string('status')->default('baru'); // baru / ditangani

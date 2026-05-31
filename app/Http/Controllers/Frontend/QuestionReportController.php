@@ -14,7 +14,6 @@ class QuestionReportController extends Controller
     {
         $data = $request->validate([
             'question_id' => 'required|integer',
-            'exam_id'     => 'nullable|integer',
             'type'        => 'required|string|max:100',
             'note'        => 'nullable|string|max:1000',
         ]);
@@ -22,7 +21,6 @@ class QuestionReportController extends Controller
         $report = QuestionReport::create([
             'question_id' => $data['question_id'],
             'user_id'     => auth()->id(),
-            'exam_id'     => $data['exam_id'] ?? null,
             'type'        => $data['type'],
             'note'        => $data['note'] ?? null,
             'status'      => 'baru',

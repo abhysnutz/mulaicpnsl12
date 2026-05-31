@@ -10,7 +10,7 @@ test('password can be updated', function () {
         ->actingAs($user)
         ->from('/profile')
         ->put('/password', [
-            'current_password' => 'password',
+            'current_password' => 'M2APS2Ldoank',
             'password' => 'new-password',
             'password_confirmation' => 'new-password',
         ]);

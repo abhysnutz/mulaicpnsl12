@@ -9,7 +9,6 @@ class QuestionReport extends Model
     protected $fillable = [
         'question_id',
         'user_id',
-        'exam_id',
         'type',
         'note',
         'status',
