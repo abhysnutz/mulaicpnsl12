@@ -12,7 +12,7 @@ use App\Http\Controllers\Backend\BackupController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Frontend\DownloadController;
 use App\Http\Controllers\Frontend\ExamController;
-use App\Http\Controllers\frontend\PaymentController;
+use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\TryoutController;
 use App\Http\Controllers\QuestionTimeController;
