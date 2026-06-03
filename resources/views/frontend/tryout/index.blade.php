@@ -110,7 +110,7 @@
 
                         <div class="px-4 pb-4">
                             <a href="{{ route('tryout.prepare',$tryout->id) }}"
-                               class="bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 font-semibold text-sm rounded-lg shadow-sm hover:shadow inline-flex items-center justify-center w-full transition-all">
+                               class="btn-start bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 font-semibold text-sm rounded-lg shadow-sm hover:shadow inline-flex items-center justify-center w-full transition-all">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 mr-2" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -143,3 +143,28 @@
     </div>
 </div>
 @endsection
+
+@push('js-bottom')
+    <script>
+        $(document).on('click', '.btn-start', function (e) {
+            var $btn = $(this);
+
+            // If already clicked (loading), block subsequent clicks
+            if ($btn.data('loading')) { e.preventDefault(); return false; }
+
+            // Mark as loading
+            $btn.data('loading', true);
+
+            // Disable interaction
+            $btn.css({ 'pointer-events': 'none', 'opacity': '0.6' });
+
+            // Swap text for spinner
+            $btn.html(
+                '<svg class="animate-spin w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">' +
+                '<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>' +
+                '<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>' +
+                '</svg> Loading...'
+            );
+        });
+    </script>
+@endpush
