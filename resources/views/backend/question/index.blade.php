@@ -1,4 +1,20 @@
 @extends('backend.layout.app')
+@push('css-top')
+<style>
+/* Batasi ukuran gambar soal di dalam tabel */
+.table td img {
+    max-height: 50px;
+    width: auto;
+    vertical-align: middle;
+    cursor: pointer;        /* tanda bisa diklik */
+    transition: opacity .15s;
+}
+.table td img:hover {
+    opacity: .8;
+}
+</style>
+    
+@endpush
 @section('content')
     @include('backend.layout.breadcrumb',['content' => 'Question' ])
     <div class="app-content">
@@ -102,6 +118,23 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal preview gambar --}}
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Preview Gambar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="imagePreviewTarget" src="" style="max-width:100%; height:auto;">
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('js-bottom')
@@ -110,6 +143,18 @@
         document.querySelector('.custom-file-input').addEventListener('change', function (e) {
             const fileName = e.target.files[0].name;
             e.target.nextElementSibling.innerText = fileName;
+        });
+
+        // Klik gambar di tabel → buka modal preview besar
+        $(document).on('click', '.table td img', function () {
+            $('#imagePreviewTarget').attr('src', $(this).attr('src'));
+            $('#imagePreviewModal').modal('show');
+        });
+
+        $('form[action="{{ route('console.question.import') }}"]').on('submit', function () {
+            const $btn = $(this).find('button[type="submit"]');
+            $btn.prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin mr-2"></i> Mengimport...');
         });
     </script>
 @endpush

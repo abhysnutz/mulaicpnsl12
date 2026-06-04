@@ -185,6 +185,14 @@ class QuestionImportService
         $sheet = $spreadsheet->getActiveSheet();
         $rows  = $sheet->toArray(null, true, true, true);
 
+        // 🔢 Jika import ke tryout, lanjutkan order dari yg terakhir (jangan mulai dari 1)
+        $nextOrder = 0;
+        if ($tryoutId) {
+            $nextOrder = (int) DB::table('question_tryout')
+                ->where('tryout_id', $tryoutId)
+                ->max('order');
+        }
+
         foreach ($rows as $index => $row) {
             if ($index === 1) continue; // skip header
             $rowNumber = $index;
@@ -331,12 +339,13 @@ class QuestionImportService
                     ]);
                 }
 
-                // 🔗 Pivot tryout
+                // 🔗 Pivot tryout — order lanjut dari yg sudah ada
                 if ($tryoutId) {
+                    $nextOrder++;
                     DB::table('question_tryout')->insert([
                         'tryout_id'   => $tryoutId,
                         'question_id' => $question->id,
-                        'order'       => $rowNumber - 1,
+                        'order'       => $nextOrder,
                     ]);
                 }
 

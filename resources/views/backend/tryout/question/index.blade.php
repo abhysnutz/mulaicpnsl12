@@ -8,6 +8,17 @@ tbody tr.cursor-move:hover {
 tbody tr.cursor-move:active {
     cursor: grabbing;
 }
+/* Batasi ukuran gambar soal di dalam tabel */
+.table td img {
+    max-height: 50px;
+    width: auto;
+    vertical-align: middle;
+    cursor: pointer;        /* tanda bisa diklik */
+    transition: opacity .15s;
+}
+.table td img:hover {
+    opacity: .8;
+}
 </style>
     
 @endpush
@@ -83,7 +94,7 @@ tbody tr.cursor-move:active {
                                                 <td class="text-center align-middle">
                                                     {{ $question?->pivot?->order }}
                                                 </td>
-                                                <td>{!! Str::limit(strip_tags($question?->question), 100) !!}</td>
+                                                <td>{!! $question?->question !!}</td>
                                                 <td>{{ $question?->topic?->category }}</td>
                                                 <td>{{ $question?->topic?->name }}</td>
                                                 <td class="d-flex align-items-center">
@@ -115,51 +126,68 @@ tbody tr.cursor-move:active {
 
     {{-- Modal pilih soal --}}
     <div class="modal fade" id="bankModal" tabindex="-1" role="dialog" aria-labelledby="bankModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-        <form action="{{ route('console.tryout.question.attach', $tryout->id) }}" method="POST">
-            @csrf
-            <div class="modal-header">
-            <h5 class="modal-title" id="bankModalLabel">Pilih Soal dari Bank Soal</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-                {{-- Filter Kategori & Topik --}}
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <select id="filterCategory" class="form-control">
-                            <option value="">Semua Kategori</option>
-                            <option value="TWK">TWK</option>
-                            <option value="TIU">TIU</option>
-                            <option value="TKP">TKP</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" id="searchQuestion" class="form-control" placeholder="Cari soal...">
-                    </div>
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            <form action="{{ route('console.tryout.question.attach', $tryout->id) }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                <h5 class="modal-title" id="bankModalLabel">Pilih Soal dari Bank Soal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
                 </div>
+                <div class="modal-body">
+                    {{-- Filter Kategori & Topik --}}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <select id="filterCategory" class="form-control">
+                                <option value="">Semua Kategori</option>
+                                <option value="TWK">TWK</option>
+                                <option value="TIU">TIU</option>
+                                <option value="TKP">TKP</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="searchQuestion" class="form-control" placeholder="Cari soal...">
+                        </div>
+                    </div>
 
-                <div style="max-height: 400px; overflow-y:auto;">
-                @foreach($bankQuestions as $q)
-                    <div class="form-check mb-2 bank-item" data-category="{{ $q->topic->category }}">
-                        <input type="checkbox" name="question_ids[]" value="{{ $q->id }}" class="form-check-input">
-                        <label class="form-check-label">
-                            <strong>[{{ $q->topic->category }} - {{ $q->topic->name }}]</strong> 
-                            {!! Str::limit(strip_tags($q->question), 120) !!}
-                        </label>
+                    <div style="max-height: 400px; overflow-y:auto;">
+                    @foreach($bankQuestions as $q)
+                        <div class="form-check mb-2 bank-item" data-category="{{ $q->topic->category }}">
+                            <input type="checkbox" name="question_ids[]" value="{{ $q->id }}" class="form-check-input">
+                            <label class="form-check-label">
+                                <strong>[{{ $q->topic->category }} - {{ $q->topic->name }}]</strong> 
+                                {!! Str::limit(strip_tags($q->question), 120) !!}
+                            </label>
+                        </div>
+                    @endforeach
                     </div>
-                @endforeach
                 </div>
+                <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Tambahkan</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+            </form>
             </div>
-            <div class="modal-footer">
-            <button type="submit" class="btn btn-success">Tambahkan</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-            </div>
-        </form>
         </div>
     </div>
+
+    {{-- Modal preview gambar --}}
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Preview Gambar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="imagePreviewTarget" src="" style="max-width:100%; height:auto;">
+                </div>
+            </div>
+        </div>
     </div>
 
 @endsection
@@ -214,6 +242,19 @@ tbody tr.cursor-move:active {
         document.querySelector('.custom-file-input').addEventListener('change', function (e) {
             const fileName = e.target.files[0].name;
             e.target.nextElementSibling.innerText = fileName;
+        });
+
+        // Klik gambar di tabel → buka modal preview besar
+        $(document).on('click', '.table td img', function () {
+            $('#imagePreviewTarget').attr('src', $(this).attr('src'));
+            $('#imagePreviewModal').modal('show');
+        });
+
+        // Disable + spinner saat submit import
+        $('form[action="{{ route('console.tryout.question.import', $tryout->id) }}"]').on('submit', function () {
+            const $btn = $(this).find('button[type="submit"]');
+            $btn.prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin mr-2"></i> Mengimport...');
         });
     </script>
 @endpush
