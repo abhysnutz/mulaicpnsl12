@@ -9,17 +9,14 @@ use App\Models\Question;
 use App\Models\QuestionTopic;
 use App\Models\Tryout;
 use App\Services\QuestionImportService;
+use App\Traits\ExportsQuestions;
 use DB;
 use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TryoutQuestionController extends Controller
 {
     protected $importService;
+    use ExportsQuestions;
 
     public function __construct(QuestionImportService $importService)
     {
@@ -355,117 +352,12 @@ class TryoutQuestionController extends Controller
         }
     }
 
-    public function export($tryoutId){
-        $tryout = Tryout::with(['questions.answers', 'questions.topic'])
-            ->findOrFail($tryoutId);
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Export Soal Tryout');
-
-        // Header kolom sama seperti export global
-        $headers = [
-            "No", "Kategori", "Topik", "Soal",
-            "A", "B", "C", "D", "E",
-            "Jawaban Benar", "Penjelasan",
-            "Score A", "Score B", "Score C", "Score D", "Score E",
-            "Gambar Soal", "Gambar Penjelasan",
-            "Gambar A", "Gambar B", "Gambar C", "Gambar D", "Gambar E",
-        ];
-
-        foreach ($headers as $i => $header) {
-            $col = $i + 1;
-            $cell = Coordinate::stringFromColumnIndex($col) . '1';
-            $sheet->setCellValue($cell, $header);
-            $sheet->getStyle($cell)->getFont()->setBold(true);
-            $sheet->getStyle($cell)->getFill()
-                ->setFillType(Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('FF0070C0');
-            $sheet->getStyle($cell)->getFont()->getColor()->setARGB('FFFFFFFF');
-        }
-
-        // Isi soal tryout
-        $rowIndex = 2;
-        foreach ($tryout->questions as $no => $q) {
-            $answers = $q->answers->sortBy('option')->values();
-            $category = $q->topic->category ?? '';
-            $topik = $q->topic->name ?? '';
-
-            // Gambar
-            $imagePath = "question/{$q->id}";
-            $gambarSoal = Storage::disk('public')->exists("{$imagePath}/question.png") ? "question.png" : "";
-            $gambarPenjelasan = Storage::disk('public')->exists("{$imagePath}/explanation.png") ? "explanation.png" : "";
-            $gambarJawaban = [];
-            foreach (['A','B','C','D','E'] as $opt) {
-                $gambarJawaban[] = Storage::disk('public')->exists("{$imagePath}/{$opt}.png") ? "{$opt}.png" : "";
-            }
-
-            // Jawaban benar untuk TWK/TIU
-            $jawabanBenar = '';
-            if ($category !== 'TKP') {
-                foreach ($answers as $ans) {
-                    if ($ans->score == 5) {
-                        $jawabanBenar = $ans->option;
-                        break;
-                    }
-                }
-            }
-
-            // Skor TKP
-            $score = [];
-            foreach ($answers as $ans) {
-                $score[] = ($category === 'TKP') ? $ans->score : 0;
-            }
-
-            // Data baris
-            $data = [
-                $no + 1,
-                $category,
-                $topik,
-                strip_tags($q->question),
-                strip_tags($answers[0]->answer ?? ''),
-                strip_tags($answers[1]->answer ?? ''),
-                strip_tags($answers[2]->answer ?? ''),
-                strip_tags($answers[3]->answer ?? ''),
-                strip_tags($answers[4]->answer ?? ''),
-                $jawabanBenar,
-                strip_tags($q->explanation ?? ''),
-                $score[0] ?? 0,
-                $score[1] ?? 0,
-                $score[2] ?? 0,
-                $score[3] ?? 0,
-                $score[4] ?? 0,
-                $gambarSoal,
-                $gambarPenjelasan,
-                $gambarJawaban[0] ?? '',
-                $gambarJawaban[1] ?? '',
-                $gambarJawaban[2] ?? '',
-                $gambarJawaban[3] ?? '',
-                $gambarJawaban[4] ?? '',
-            ];
-
-            foreach ($data as $i => $value) {
-                $col = $i + 1;
-                $cell = Coordinate::stringFromColumnIndex($col) . $rowIndex;
-                $sheet->setCellValue($cell, $value);
-            }
-
-            $rowIndex++;
-        }
-
-        // Auto size kolom
-        foreach (range(1, count($headers)) as $col) {
-            $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($col))->setAutoSize(true);
-        }
-
-        $fileName = 'export_soal_tryout_' . $tryout->id . '.xlsx';
-
-        return new StreamedResponse(function() use ($spreadsheet) {
-            $writer = new Xlsx($spreadsheet);
-            $writer->save('php://output');
-        }, 200, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
-        ]);
+    public function export($tryoutId)
+    {
+        $tryout = Tryout::with(['questions.answers', 'questions.topic'])->findOrFail($tryoutId);
+        return $this->buildExportZip(
+            $tryout->questions,
+            'export_soal_tryout_' . $tryout->id . '_' . date('Ymd_His') . '.zip'
+        );
     }
 }
