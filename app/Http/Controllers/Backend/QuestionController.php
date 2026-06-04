@@ -320,11 +320,11 @@ class QuestionController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls|max:20480'
+            'file' => 'required|file|mimes:zip,xlsx,xls|max:51200',
         ]);
 
         try {
-            $result = $this->importService->importFromExcel($request->file('file'));
+            $result = $this->importService->importFromUpload($request->file('file'));
 
             return back()->with('success', "✅ Import selesai: {$result['success']} berhasil, {$result['failed']} gagal.")
                          ->with('log', $result['log_file']);

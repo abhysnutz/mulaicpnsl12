@@ -337,7 +337,7 @@ class TryoutQuestionController extends Controller
     public function import(Request $request, $tryoutId)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls|max:20480',
+            'file' => 'required|file|mimes:zip,xlsx,xls|max:51200',
         ]);
 
         try {
