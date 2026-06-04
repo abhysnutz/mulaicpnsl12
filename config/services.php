@@ -45,4 +45,10 @@ return [
         'error_chat_id' => env('TELEGRAM_ERROR_CHAT_ID'),
     ],
 
+    'brevo' => [
+        'key' => env('BREVO_API_KEY'),
+        'from_email' => env('MAIL_FROM_ADDRESS'),
+        'from_name' => env('MAIL_FROM_NAME', 'MULAICPNS'),
+    ],
+
 ];
