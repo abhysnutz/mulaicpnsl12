@@ -22,6 +22,8 @@
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Referral Code</th>
+                                        <th>Reffered By</th>
                                         <th>Status</th>
                                         <th>Expire Subscribe</th>
                                         <th>Status Akun</th>
@@ -35,6 +37,16 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $user?->name }}</td>
                                                 <td>{{ $user?->email }}</td>
+                                                <td>
+                                                    <code>{{ $user?->referral_code }}</code>
+                                                </td>
+                                                <td>
+                                                    @if ($user?->referrer)
+                                                        {{ $user?->referrer?->name }}
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
                                                 <td class="text-capitalize text-bold">{{ $user?->subscription_status }}</td>
                                                 <td>
                                                     @if ($user?->subscription_status == 'free')

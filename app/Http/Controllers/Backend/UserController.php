@@ -10,7 +10,8 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::orderBy('name', 'ASC')->get();
+        // $users = User::orderBy('name', 'ASC')->get();
+        $users = User::with('referrer')->latest()->get();
         return view('backend.user.index', compact('users'));
     }
 
