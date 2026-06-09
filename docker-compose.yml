@@ -15,6 +15,8 @@ services:
       - ./:/app
       # Anonymous volume: jangan override vendor/ dari host
       - /app/vendor
+      - ./docker/php/conf.d/uploads.ini:/usr/local/etc/php/conf.d/zz-custom.ini
+
     depends_on:
       mysql:
         condition: service_healthy

@@ -20,9 +20,14 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('auth.register');
+        // Tangkap kode dari link ?ref=KODE untuk auto-isi field
+        $refCode = $request->query('ref');
+
+        return view('auth.register', [
+            'refCode' => $refCode,
+        ]);
     }
 
     /**
@@ -37,12 +42,21 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'confirmed', 'unique:'.User::class],
             // 'telepon' => ['required', 'numeric', 'digits_between:9,13'],
             'password' => ['required', 'confirmed'],
+            'referral_code' => ['nullable', 'string', 'max:20'],
         ]);
+
+        // Resolusi kode referral -> id pengajak. Kode salah/kosong = diabaikan (null).
+        $referredBy = null;
+        if ($request->filled('referral_code')) {
+            $referrer = User::where('referral_code', strtoupper(trim($request->referral_code)))->first();
+            $referredBy = $referrer?->id;
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'referred_by' => $referredBy,
         ]);
 
         if($user){
