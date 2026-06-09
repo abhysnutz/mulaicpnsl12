@@ -10,11 +10,14 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserActivityController;
 use App\Http\Controllers\Backend\BackupController;
 use App\Http\Controllers\Backend\SettingController;
+use App\Http\Controllers\Backend\ReferralCommissionController;
+use App\Http\Controllers\Backend\WithdrawalController;
 use App\Http\Controllers\Frontend\DownloadController;
 use App\Http\Controllers\Frontend\ExamController;
 use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\TryoutController;
+use App\Http\Controllers\Frontend\WalletController;
 use App\Http\Controllers\QuestionTimeController;
 use App\Http\Controllers\Frontend\QuestionReportController;
 use Illuminate\Http\Request;
@@ -90,6 +93,11 @@ Route::controller(PaymentController::class)->prefix('payment')->middleware(['aut
 
 Route::get('petunjuk_upgrade', function(){ return view('frontend.petunjuk_upgrade'); })->middleware(['auth','checkSingleSession'])->name('petunjuk_upgrade');
 
+// WALLET
+Route::controller(WalletController::class)->prefix('wallet')->middleware(['auth','examDirect','checkSingleSession'])->name('wallet.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('withdraw', 'withdraw')->name('withdraw');
+});
 // END FRONTEND
 
 // START BACKEND
@@ -172,6 +180,17 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
 
     // USER ACTIVITY
     Route::controller(UserActivityController::class)->prefix('user-activity')->name('user-activity.')->group(function () {
+        Route::get('/', 'index')->name('index');
+    });
+
+    // WITHDRAWAL
+    Route::controller(WithdrawalController::class)->prefix('withdrawal')->name('withdrawal.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('update', 'update')->name('update');
+    });
+
+    // KOMISI REFERRAL
+    Route::controller(ReferralCommissionController::class)->prefix('commission')->name('commission.')->group(function () {
         Route::get('/', 'index')->name('index');
     });
 

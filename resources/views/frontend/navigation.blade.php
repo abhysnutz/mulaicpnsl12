@@ -44,6 +44,14 @@
                         </div>
                         <p class="mt-1 font-medium text-xs text-gray-700">Materi Download</p>
                     </a>
+                    <a href="{{ route('wallet.index') }}">
+                        <div class="w-full flex justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-gray-700 h-6 w-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12V7H5a2 2 0 010-4h14v4M3 5v14a2 2 0 002 2h16v-5M18 12a2 2 0 000 4h4v-4h-4z"></path>
+                            </svg>
+                        </div>
+                        <p class="mt-1 font-medium text-xs text-gray-700">Wallet</p>
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <div class="w-full flex justify-center">
@@ -106,6 +114,12 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('download.index') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                             <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z"></path>
                         </svg> Materi Download
+                    </a>
+
+                    <a href="{{ route('wallet.index') }}" class="group flex items-center px-2 py-2 text-base font-medium rounded-md {{ request()->routeIs('wallet.*') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="mr-3 h-6 w-6 {{ request()->routeIs('wallet.*') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12V7H5a2 2 0 010-4h14v4M3 5v14a2 2 0 002 2h16v-5M18 12a2 2 0 000 4h4v-4h-4z"></path>
+                        </svg> Wallet
                     </a>
 
                     @if (Auth::user()?->subscription_status == 'free')
@@ -185,6 +199,13 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('download.index') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                             <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z"></path>
                         </svg> Materi Download
+                    </a>
+
+                    <!-- Wallet -->
+                    <a href="{{ route('wallet.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('wallet.*') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="mr-3 h-6 w-6 {{ request()->routeIs('wallet.*') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12V7H5a2 2 0 010-4h14v4M3 5v14a2 2 0 002 2h16v-5M18 12a2 2 0 000 4h4v-4h-4z"></path>
+                        </svg> Wallet
                     </a>
 
                     @if (Auth::user()?->subscription_status == 'free')

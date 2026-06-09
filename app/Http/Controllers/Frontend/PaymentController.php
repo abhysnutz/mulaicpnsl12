@@ -9,7 +9,6 @@ use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
@@ -43,27 +42,15 @@ class PaymentController extends Controller
                     \Log::error('Gagal kirim email: ' . $e->getMessage());
                 }
 
-                // 🔔 Kirim notif ke Telegram
-                try {
-                    $message = "🔔 *Permintaan Pembayaran Baru*\n\n"
-                        . "Nama: " . $payment->user?->name . "\n"
-                        . "Email: " . $payment->user?->email . "\n"
-                        . "WhatsApp: " . ($payment->whatsapp ?? '-') . "\n"
-                        . "Metode: " . ($payment->method?->name ?? '-') . "\n"
-                        . "Nominal: Rp " . number_format($payment->total, 0, ',', '.') . "\n"
-                        . "Tanggal: " . $payment->created_at->format('d M Y, H:i');
-
-                    Http::post(
-                        'https://api.telegram.org/bot' . config('services.telegram.bot_token') . '/sendMessage',
-                        [
-                            'chat_id' => config('services.telegram.chat_id'),
-                            'text' => $message,
-                            'parse_mode' => 'Markdown',
-                        ]
-                    );
-                } catch (\Exception $e) {
-                    \Log::error('Gagal kirim Telegram: ' . $e->getMessage());
-                }
+                notif_telegram(
+                    "🔔 *Permintaan Pembayaran Baru*\n\n"
+                    . "Nama: " . $payment->user?->name . "\n"
+                    . "Email: " . $payment->user?->email . "\n"
+                    . "WhatsApp: " . ($payment->whatsapp ?? '-') . "\n"
+                    . "Metode: " . ($payment->method?->name ?? '-') . "\n"
+                    . "Nominal: Rp " . number_format($payment->total, 0, ',', '.') . "\n"
+                    . "Tanggal: " . $payment->created_at->format('d M Y, H:i')
+                );
             }
         }
 

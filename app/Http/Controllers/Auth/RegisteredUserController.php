@@ -73,6 +73,15 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        notif_telegram(
+            "🆕 *User Baru Mendaftar*\n\n"
+            . "Nama: " . $user->name . "\n"
+            . "Email: " . $user->email . "\n"
+            . "Kode Referral: " . $user->referral_code . "\n"
+            . "Diajak oleh: " . ($user->referrer?->name ?? '-') . "\n"
+            . "Tanggal: " . now()->format('d M Y, H:i')
+        );
+
         return redirect(route('dashboard.index', absolute: false));
     }
 }

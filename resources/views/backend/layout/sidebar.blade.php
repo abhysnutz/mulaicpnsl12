@@ -57,6 +57,23 @@
                     </a>
                 </li>
 
+                <!-- Penarikan Saldo -->
+                <li class="nav-item">
+                    <a href="{{ route('console.withdrawal.index') }}"
+                       class="nav-link {{ Request::is('console/withdrawal*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-hand-holding-usd"></i>
+                        <p>
+                            Penarikan Saldo
+                            @php
+                                $withdrawalPending = \App\Models\Withdrawal::where('status', 'pending')->count();
+                            @endphp
+                            @if ($withdrawalPending > 0)
+                                <span class="badge badge-danger right">{{ $withdrawalPending }}</span>
+                            @endif
+                        </p>
+                    </a>
+                </li>
+
                 <!-- Tryout -->
                 <li class="nav-item">
                     <a href="{{ route('console.tryout.index') }}"
@@ -98,6 +115,15 @@
                                 <span class="badge badge-danger right">{{ $reportBaru }}</span>
                             @endif
                         </p>
+                    </a>
+                </li>
+
+                <!-- Komisi Referral -->
+                <li class="nav-item">
+                    <a href="{{ route('console.commission.index') }}"
+                    class="nav-link {{ Request::is('console/commission*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-coins"></i>
+                        <p>Komisi Referral</p>
                     </a>
                 </li>
 
