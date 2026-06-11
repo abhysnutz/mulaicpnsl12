@@ -144,6 +144,10 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
             Route::post('attach', 'attach')->name('attach');
             Route::get('export', 'export')->name('export');
             Route::post('import', 'import')->name('import');
+            Route::post('import/analyze', 'analyzeImport')->name('import.analyze');
+            Route::post('import/commit', 'commitImport')->name('import.commit');
+
+
         });
 
     // QUESTION BANK
@@ -159,6 +163,8 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::get('preview/{id}', 'preview')->name('preview');
         Route::get('export', 'export')->name('export');
         Route::post('import', 'import')->name('import');
+        Route::post('import/analyze', 'analyzeImport')->name('import.analyze');
+        Route::post('import/commit', 'commitImport')->name('import.commit');
     });
 
     // DATABASE BACKUP

@@ -333,6 +333,56 @@ class QuestionController extends Controller
         }
     }
 
+    /**
+     * TAHAP 1 — Analisa file import (dry-run). Return JSON. Tidak menyimpan apa pun.
+     */
+    public function analyzeImport(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:zip,xlsx,xls|max:51200',
+        ]);
+
+        try {
+            $result = $this->importService->analyze($request->file('file'), null);
+            return response()->json(['ok' => true] + $result);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'ok'      => false,
+                'message' => 'Gagal menganalisa file: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * TAHAP 2 — Commit import dari token. All-or-nothing.
+     */
+    public function commitImport(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'ext'   => 'required|string|in:zip,xlsx,xls',
+        ]);
+
+        try {
+            $result = $this->importService->commitFromToken(
+                $request->input('token'),
+                $request->input('ext'),
+                null
+            );
+
+            return response()->json([
+                'ok'      => true,
+                'success' => $result['success'],
+                'message' => "✅ Import selesai: {$result['success']} soal berhasil ditambahkan ke bank soal.",
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'ok'      => false,
+                'message' => '❌ Import dibatalkan: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
     public function export()
     {
         $questions = Question::with(['topic', 'answers'])->orderBy('id')->get();

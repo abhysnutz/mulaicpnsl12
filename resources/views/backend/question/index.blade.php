@@ -37,19 +37,22 @@
                                 </a>
                             </div>
 
-                            {{-- Import Form (1 baris) --}}
-                            <form action="{{ route('console.question.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2 flex-wrap">
+                            {{-- Import Form (AJAX 2-tahap: analyze -> review -> commit) --}}
+                            <form id="importForm" class="d-flex align-items-center gap-2 flex-wrap"
+                                  data-analyze="{{ route('console.question.import.analyze') }}"
+                                  data-commit="{{ route('console.question.import.commit') }}">
                                 @csrf
                                 <div class="input-group">
                                     <div class="custom-file mr-2">
-                                        <input type="file" name="file" id="importFile" class="custom-file-input" required>
+                                        <input type="file" name="file" id="importFile" class="custom-file-input"
+                                               accept=".zip,.xlsx,.xls" required>
                                         <label class="custom-file-label" for="importFile">
-                                            <i class="fas fa-file-excel mr-2"></i> Pilih File Excel...
+                                            <i class="fas fa-file-excel mr-2"></i> Pilih File Excel/ZIP...
                                         </label>
                                     </div>
                                     <div class="input-group-append">
-                                        <button class="btn btn-primary d-flex align-items-center shadow-sm" type="submit">
-                                            <i class="fas fa-upload mr-2"></i> Import
+                                        <button id="btnAnalyze" class="btn btn-primary d-flex align-items-center shadow-sm" type="submit">
+                                            <i class="fas fa-search mr-2"></i> Cek &amp; Import
                                         </button>
                                     </div>
                                 </div>
@@ -135,6 +138,43 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal: Review Import --}}
+    <div class="modal fade" id="importReviewModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-clipboard-check mr-2"></i> Review Import Soal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="reviewSummary" class="mb-3"></div>
+                    <div style="max-height: 50vh; overflow-y:auto;">
+                        <table class="table table-sm table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th style="width:70px">Baris</th>
+                                    <th style="width:70px">No</th>
+                                    <th>Kategori - Topik</th>
+                                    <th style="width:90px">Status</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviewTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="button" id="btnCommitImport" class="btn btn-success" style="display:none;">
+                        <i class="fas fa-check mr-1"></i> Lanjutkan Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('js-bottom')
@@ -145,16 +185,107 @@
             e.target.nextElementSibling.innerText = fileName;
         });
 
-        // Klik gambar di tabel → buka modal preview besar
+        // Klik gambar di tabel -> buka modal preview besar
         $(document).on('click', '.table td img', function () {
             $('#imagePreviewTarget').attr('src', $(this).attr('src'));
             $('#imagePreviewModal').modal('show');
         });
 
-        $('form[action="{{ route('console.question.import') }}"]').on('submit', function () {
-            const $btn = $(this).find('button[type="submit"]');
-            $btn.prop('disabled', true)
-                .html('<i class="fas fa-spinner fa-spin mr-2"></i> Mengimport...');
+        // ============================
+        // Import 2-tahap (analyze -> review -> commit)
+        // ============================
+        const $importForm = $('#importForm');
+        let reviewToken = null;
+        let reviewExt   = null;
+
+        $importForm.on('submit', function (e) {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('importFile');
+            if (!fileInput.files.length) return;
+
+            const fd = new FormData();
+            fd.append('file', fileInput.files[0]);
+            fd.append('_token', '{{ csrf_token() }}');
+
+            const $btn = $('#btnAnalyze');
+            const original = $btn.html();
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Mengecek...');
+
+            $.ajax({
+                url: $importForm.data('analyze'),
+                method: 'POST',
+                data: fd,
+                processData: false,
+                contentType: false,
+            }).done(function (res) {
+                renderReview(res);
+                $('#importReviewModal').modal('show');
+            }).fail(function (xhr) {
+                const msg = xhr.responseJSON?.message || 'Gagal menganalisa file.';
+                alert(msg);
+            }).always(function () {
+                $btn.prop('disabled', false).html(original);
+            });
+        });
+
+        function renderReview(res) {
+            reviewToken = res.token;
+            reviewExt   = res.ext;
+
+            const s = res.summary;
+            const allOk = s.failed === 0;
+
+            $('#reviewSummary').html(
+                `<div class="alert ${allOk ? 'alert-success' : 'alert-warning'} mb-0">
+                    <strong>Total: ${s.total}</strong> &nbsp;|&nbsp;
+                    <span class="text-success"><i class="fas fa-check-circle"></i> Lolos: ${s.ok}</span> &nbsp;|&nbsp;
+                    <span class="text-danger"><i class="fas fa-times-circle"></i> Gagal: ${s.failed}</span>
+                    ${allOk
+                        ? '<div class="mt-1">Semua baris valid. Klik <strong>Lanjutkan Import</strong> untuk menyimpan.</div>'
+                        : '<div class="mt-1">Perbaiki baris yang gagal di Excel, lalu ulangi. Tidak ada soal yang disimpan sampai semua valid.</div>'}
+                 </div>`
+            );
+
+            const rows = res.rows.map(r => {
+                const badge = r.status === 'ok'
+                    ? '<span class="badge badge-success">OK</span>'
+                    : '<span class="badge badge-danger">GAGAL</span>';
+                const reason = r.reason
+                    ? `<span class="text-danger">${$('<div>').text(r.reason).html()}</span>`
+                    : '<span class="text-muted">—</span>';
+                return `<tr class="${r.status === 'failed' ? 'table-danger' : ''}">
+                            <td class="text-center">${r.row}</td>
+                            <td class="text-center">${r.number}</td>
+                            <td>${$('<div>').text(r.label).html()}</td>
+                            <td class="text-center">${badge}</td>
+                            <td>${reason}</td>
+                        </tr>`;
+            }).join('');
+
+            $('#reviewTableBody').html(rows);
+
+            // Tombol commit hanya muncul kalau SEMUA lolos (all-or-nothing)
+            $('#btnCommitImport').toggle(allOk);
+        }
+
+        $('#btnCommitImport').on('click', function () {
+            if (!reviewToken) return;
+
+            const $btn = $(this);
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
+
+            $.ajax({
+                url: $importForm.data('commit'),
+                method: 'POST',
+                data: { _token: '{{ csrf_token() }}', token: reviewToken, ext: reviewExt },
+            }).done(function (res) {
+                location.reload();
+            }).fail(function (xhr) {
+                const msg = xhr.responseJSON?.message || 'Import gagal.';
+                alert(msg);
+                $btn.prop('disabled', false).html('<i class="fas fa-check mr-1"></i> Lanjutkan Import');
+            });
         });
     </script>
 @endpush

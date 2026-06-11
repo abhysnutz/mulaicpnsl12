@@ -352,6 +352,58 @@ class TryoutQuestionController extends Controller
         }
     }
 
+     /**
+     * TAHAP 1 — Analisa file import (dry-run). Return JSON utk ditampilkan
+     * di panel review. Tidak menyimpan apa pun ke DB.
+     */
+    public function analyzeImport(Request $request, $tryoutId)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:zip,xlsx,xls|max:51200',
+        ]);
+
+        try {
+            $result = $this->importService->analyze($request->file('file'), $tryoutId);
+            return response()->json(['ok' => true] + $result);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'ok'      => false,
+                'message' => 'Gagal menganalisa file: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * TAHAP 2 — Commit import dari token hasil analyze().
+     * All-or-nothing: kalau ada baris gagal, semua dibatalkan.
+     */
+    public function commitImport(Request $request, $tryoutId)
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'ext'   => 'required|string|in:zip,xlsx,xls',
+        ]);
+
+        try {
+            $result = $this->importService->commitFromToken(
+                $request->input('token'),
+                $request->input('ext'),
+                $tryoutId
+            );
+
+            return response()->json([
+                'ok'      => true,
+                'success' => $result['success'],
+                'message' => "✅ {$result['success']} soal berhasil diimport ke tryout ini.",
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'ok'      => false,
+                'message' => '❌ Import dibatalkan: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
     public function export($tryoutId)
     {
         $tryout = Tryout::with(['questions.answers', 'questions.topic'])->findOrFail($tryoutId);
