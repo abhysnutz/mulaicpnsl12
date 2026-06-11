@@ -125,8 +125,6 @@ class QuestionImportService
         if (str_starts_with($sig, "PK")) {
             $zip = new \ZipArchive();
             if ($zip->open($filePath) === true) {
-                $hasXlsxInside = $zip->locateName('soal.xlsx', \ZipArchive::FL_NOCASE) !== false
-                    || $zip->locateName('xl/workbook.xml') === false; // xlsx asli punya xl/workbook.xml
                 // lebih akurat: kalau punya xl/workbook.xml → ini xlsx itu sendiri
                 $isXlsxItself = $zip->locateName('xl/workbook.xml') !== false;
                 $zip->close();
@@ -203,7 +201,8 @@ class QuestionImportService
                 //    Kolom geser +1 krn ada "Nomor" di kolom A.
                 //    A=Nomor B=Kategori C=Topik D=Soal E–I=Jwb A–E
                 //    J=Jwb benar K=Penjelasan L–P=Score A–E
-                //    Q=Gbr soal R=Gbr penjelasan S–W=Gbr A–E
+                //    (Kolom Q–W lama untuk nama gambar SUDAH TIDAK DIPAKAI —
+                //     gambar dicari otomatis dari folder images/ via pola nama)
                 // ======================
                 $nomor      = (int) trim($row['A'] ?? 0);
                 $kategori   = trim($row['B'] ?? '');
@@ -229,17 +228,6 @@ class QuestionImportService
                     (int)($row['P'] ?? 0),
                 ];
 
-                // Nama file gambar dari Excel (boleh kosong)
-                $gambarSoal       = trim($row['Q'] ?? '');
-                $gambarPenjelasan = trim($row['R'] ?? '');
-                $gambarJawaban = [
-                    trim($row['S'] ?? ''),
-                    trim($row['T'] ?? ''),
-                    trim($row['U'] ?? ''),
-                    trim($row['V'] ?? ''),
-                    trim($row['W'] ?? ''),
-                ];
-
                 // Baris kosong (tanpa kategori/topik) → skip diam-diam
                 if ($kategori === '' && $topik === '' && $soal === '') {
                     continue;
@@ -254,15 +242,6 @@ class QuestionImportService
 
                 if (!$topic) {
                     throw new Exception("Topik tidak ditemukan: {$kategori} - {$topik}");
-                }
-
-                // ======================
-                // 🔸 Validasi jawaban minimal (teks atau gambar)
-                // ======================
-                foreach (['A', 'B', 'C', 'D', 'E'] as $i => $opt) {
-                    if (empty($jawaban[$i]) && empty($gambarJawaban[$i])) {
-                        throw new Exception("Jawaban {$opt} kosong (teks & gambar).");
-                    }
                 }
 
                 // ======================
@@ -307,6 +286,7 @@ class QuestionImportService
                     }
 
                     // --- Gambar jawaban A–E: "answer-{nomor}-{opt}.*" ---
+                    // Jika file gambar ketemu, $jawaban[$i] diisi <img> (menggantikan teks kosong).
                     foreach (['A', 'B', 'C', 'D', 'E'] as $i => $opt) {
                         if ($file = $this->moveImage($imagesDir, "answer-{$nomor}-{$opt}", $finalPath, $opt)) {
                             // gambar jawaban: inline <img> langsung (tanpa <p>) spy rapi di opsi
@@ -319,6 +299,18 @@ class QuestionImportService
                         'question'    => $questionHtml,
                         'explanation' => $explanationHtml,
                     ]);
+                }
+
+                // ======================
+                // 🔸 Validasi jawaban minimal — DIJALANKAN SETELAH proses gambar,
+                //    supaya opsi yg berupa gambar (answer-{n}-{opt}) tidak ke-flag
+                //    kosong. Pada titik ini $jawaban[$i] sudah berisi <img> bila
+                //    file gambar opsi ketemu di folder images/.
+                // ======================
+                foreach (['A', 'B', 'C', 'D', 'E'] as $i => $opt) {
+                    if (empty($jawaban[$i])) {
+                        throw new Exception("Jawaban {$opt} kosong (teks & gambar tidak ditemukan).");
+                    }
                 }
 
                 // ======================

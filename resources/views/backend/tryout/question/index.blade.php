@@ -94,7 +94,21 @@ tbody tr.cursor-move:active {
                                                 <td class="text-center align-middle">
                                                     {{ $question?->pivot?->order }}
                                                 </td>
-                                                <td>{!! $question?->question !!}</td>
+                                                <td>
+                                                    @php
+                                                        $raw = $question?->question ?? '';
+                                                        $preview = trim(strip_tags(html_entity_decode($raw, ENT_QUOTES | ENT_HTML5)));
+                                                        $preview = preg_replace('/\s+/', ' ', $preview); // rapikan spasi/baris ganda
+                                                    @endphp
+
+                                                    @if($preview !== '')
+                                                        {{ \Illuminate\Support\Str::limit($preview, 150) }}
+                                                    @elseif(str_contains($raw, '<img'))
+                                                        {!! preg_replace('/<img/', '<img style="max-width:120px;max-height:80px;height:auto;" ', $raw, 1) !!}
+                                                    @else
+                                                        <em class="text-muted">—</em>
+                                                    @endif
+                                                </td>
                                                 <td>{{ $question?->topic?->category }}</td>
                                                 <td>{{ $question?->topic?->name }}</td>
                                                 <td class="d-flex align-items-center">
