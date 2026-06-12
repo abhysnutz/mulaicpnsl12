@@ -13,7 +13,7 @@
     opacity: .8;
 }
 </style>
-    
+
 @endpush
 @section('content')
     @include('backend.layout.breadcrumb',['content' => 'Question' ])
@@ -59,10 +59,54 @@
                             </form>
                         </div>
                     </div>
+
+                    {{-- Filter Bar --}}
+                    <div class="card mb-3">
+                        <div class="card-body py-3">
+                            <form method="GET" action="{{ route('console.question.index') }}" class="form-row align-items-end">
+                                <div class="form-group col-md-3 mb-2 mb-md-0">
+                                    <label for="filterCategory">Kategori</label>
+                                    <select name="category" id="filterCategory" class="form-control">
+                                        <option value="">Semua Kategori</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category }}" {{ request('category') === $category ? 'selected' : '' }}>
+                                                {{ $category }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4 mb-2 mb-md-0">
+                                    <label for="filterTopic">Topik</label>
+                                    <select name="topic_id" id="filterTopic" class="form-control">
+                                        <option value="">Semua Topik</option>
+                                        @foreach ($topics as $topic)
+                                            <option value="{{ $topic->id }}"
+                                                    data-category="{{ $topic->category }}"
+                                                    {{ request('topic_id') == $topic->id ? 'selected' : '' }}>
+                                                {{ $topic->category }} - {{ $topic->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-5 mb-0">
+                                    <button type="submit" class="btn btn-primary mr-2">
+                                        <i class="fas fa-filter mr-1"></i> Filter
+                                    </button>
+                                    <a href="{{ route('console.question.index') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-undo mr-1"></i> Reset
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                     <div class="card mb-4">
-                        
+
                         <div class="card-header d-flex align-items-center">
-                            <h3 class="card-title mb-0">Question Management</h3>
+                            <h3 class="card-title mb-0">
+                                Question Management
+                                <span class="badge badge-info ml-2">{{ $questions->count() }} soal</span>
+                            </h3>
                             <a href ="{{ route('console.question.create') }}" type="button" class="btn btn-primary btn-sm ml-auto">
                                 <strong>
                                     <i class="fas fa-plus fa-fw mr-1"></i> 
@@ -83,35 +127,44 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if ($questions->count())
-                                        @foreach ($questions as $question)
-                                            <tr class="align-middle">
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{!! $question?->question !!}</td>
-                                                <td>{{ $question?->topic?->category }}</td>
-                                                <td>{{ $question?->topic?->name }}</td>
-                                                <td class="d-flex align-items-center">
-                                                    <a href="{{ route('console.question.preview', $question->id) }}" target="_blank" class="btn btn-info btn-sm mr-2">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    <form action="{{ route('console.question.clone', $question->id) }}" method="POST" class="mr-2">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-sm btn-primary">
-                                                            <i class="fas fa-clone me-1"></i>
-                                                        </button>
-                                                    </form>
-                                                    <a href="{{ route('console.question.edit',$question->id) }}" class="btn btn-warning btn-sm mr-2">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <form class="mr-2" action="{{ route('console.question.destroy',$question->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus question ini?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                    @forelse ($questions as $question)
+                                        <tr class="align-middle">
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>
+                                                {{ Str::limit(strip_tags($question?->question), 100) }}
+                                                @if (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $question?->question, $m))
+                                                    <img src="{{ $m[1] }}" alt="Gambar soal" style="max-height:40px; margin-left:6px; vertical-align:middle;">
+                                                @endif
+                                            </td>
+                                            <td>{{ $question?->topic?->category }}</td>
+                                            <td>{{ $question?->topic?->name }}</td>
+                                            <td class="d-flex align-items-center">
+                                                <a href="{{ route('console.question.preview', $question->id) }}" target="_blank" class="btn btn-info btn-sm mr-2">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <form action="{{ route('console.question.clone', $question->id) }}" method="POST" class="mr-2">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-primary">
+                                                        <i class="fas fa-clone me-1"></i>
+                                                    </button>
+                                                </form>
+                                                <a href="{{ route('console.question.edit',$question->id) }}" class="btn btn-warning btn-sm mr-2">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form class="mr-2" action="{{ route('console.question.destroy',$question->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus question ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-4">
+                                                Tidak ada soal yang cocok dengan filter.
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -192,100 +245,33 @@
         });
 
         // ============================
-        // Import 2-tahap (analyze -> review -> commit)
+        // Filter: topik mengikuti kategori terpilih
         // ============================
-        const $importForm = $('#importForm');
-        let reviewToken = null;
-        let reviewExt   = null;
+        const $filterCategory = $('#filterCategory');
+        const $filterTopic    = $('#filterTopic');
+        const allTopicOptions = $filterTopic.find('option').clone();
 
-        $importForm.on('submit', function (e) {
-            e.preventDefault();
+        function syncTopicOptions() {
+            const cat      = $filterCategory.val();
+            const selected = $filterTopic.val();
 
-            const fileInput = document.getElementById('importFile');
-            if (!fileInput.files.length) return;
-
-            const fd = new FormData();
-            fd.append('file', fileInput.files[0]);
-            fd.append('_token', '{{ csrf_token() }}');
-
-            const $btn = $('#btnAnalyze');
-            const original = $btn.html();
-            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Mengecek...');
-
-            $.ajax({
-                url: $importForm.data('analyze'),
-                method: 'POST',
-                data: fd,
-                processData: false,
-                contentType: false,
-            }).done(function (res) {
-                renderReview(res);
-                $('#importReviewModal').modal('show');
-            }).fail(function (xhr) {
-                const msg = xhr.responseJSON?.message || 'Gagal menganalisa file.';
-                alert(msg);
-            }).always(function () {
-                $btn.prop('disabled', false).html(original);
+            $filterTopic.empty();
+            allTopicOptions.each(function () {
+                const $opt = $(this);
+                if (!cat || !$opt.val() || $opt.data('category') === cat) {
+                    $filterTopic.append($opt.clone());
+                }
             });
-        });
 
-        function renderReview(res) {
-            reviewToken = res.token;
-            reviewExt   = res.ext;
-
-            const s = res.summary;
-            const allOk = s.failed === 0;
-
-            $('#reviewSummary').html(
-                `<div class="alert ${allOk ? 'alert-success' : 'alert-warning'} mb-0">
-                    <strong>Total: ${s.total}</strong> &nbsp;|&nbsp;
-                    <span class="text-success"><i class="fas fa-check-circle"></i> Lolos: ${s.ok}</span> &nbsp;|&nbsp;
-                    <span class="text-danger"><i class="fas fa-times-circle"></i> Gagal: ${s.failed}</span>
-                    ${allOk
-                        ? '<div class="mt-1">Semua baris valid. Klik <strong>Lanjutkan Import</strong> untuk menyimpan.</div>'
-                        : '<div class="mt-1">Perbaiki baris yang gagal di Excel, lalu ulangi. Tidak ada soal yang disimpan sampai semua valid.</div>'}
-                 </div>`
-            );
-
-            const rows = res.rows.map(r => {
-                const badge = r.status === 'ok'
-                    ? '<span class="badge badge-success">OK</span>'
-                    : '<span class="badge badge-danger">GAGAL</span>';
-                const reason = r.reason
-                    ? `<span class="text-danger">${$('<div>').text(r.reason).html()}</span>`
-                    : '<span class="text-muted">—</span>';
-                return `<tr class="${r.status === 'failed' ? 'table-danger' : ''}">
-                            <td class="text-center">${r.row}</td>
-                            <td class="text-center">${r.number}</td>
-                            <td>${$('<div>').text(r.label).html()}</td>
-                            <td class="text-center">${badge}</td>
-                            <td>${reason}</td>
-                        </tr>`;
-            }).join('');
-
-            $('#reviewTableBody').html(rows);
-
-            // Tombol commit hanya muncul kalau SEMUA lolos (all-or-nothing)
-            $('#btnCommitImport').toggle(allOk);
+            // pertahankan pilihan topik jika masih valid, jika tidak reset ke "Semua Topik"
+            if ($filterTopic.find(`option[value="${selected}"]`).length) {
+                $filterTopic.val(selected);
+            } else {
+                $filterTopic.val('');
+            }
         }
 
-        $('#btnCommitImport').on('click', function () {
-            if (!reviewToken) return;
-
-            const $btn = $(this);
-            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
-
-            $.ajax({
-                url: $importForm.data('commit'),
-                method: 'POST',
-                data: { _token: '{{ csrf_token() }}', token: reviewToken, ext: reviewExt },
-            }).done(function (res) {
-                location.reload();
-            }).fail(function (xhr) {
-                const msg = xhr.responseJSON?.message || 'Import gagal.';
-                alert(msg);
-                $btn.prop('disabled', false).html('<i class="fas fa-check mr-1"></i> Lanjutkan Import');
-            });
-        });
+        $filterCategory.on('change', syncTopicOptions);
+        syncTopicOptions();
     </script>
 @endpush

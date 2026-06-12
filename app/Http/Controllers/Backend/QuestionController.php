@@ -23,9 +23,21 @@ class QuestionController extends Controller
         $this->importService = $importService;
     }
     
-    public function index(){
-        $questions = Question::with('topic')->latest()->get();
-        return view('backend.question.index', compact('questions'));
+    public function index(Request $request){
+        $categories = QuestionTopic::select('category')->distinct()->orderBy('category')->pluck('category');
+        $topics     = QuestionTopic::orderBy('category')->orderBy('name')->get();
+
+        $questions = Question::with('topic')
+            ->when($request->filled('category'), function ($q) use ($request) {
+                $q->whereHas('topic', fn ($t) => $t->where('category', $request->category));
+            })
+            ->when($request->filled('topic_id'), function ($q) use ($request) {
+                $q->where('topic_id', $request->topic_id);
+            })
+            ->latest()
+            ->get();
+
+        return view('backend.question.index', compact('questions', 'categories', 'topics'));
     }
 
     public function create(){
