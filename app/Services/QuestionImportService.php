@@ -49,6 +49,26 @@ class QuestionImportService
     }
 
     /**
+     * Normalisasi teks jawaban: buang wrapper <div> tunggal hasil copy
+     * dari sumber luar. <div> adalah elemen block sehingga memaksa opsi
+     * turun baris di bawah label (A. \n Tata Usaha). Hanya unwrap kalau
+     * SELURUH isi cell adalah satu div — multi-div / nested dibiarkan.
+     */
+    private function normalizeAnswer(string $text): string
+    {
+        $text = trim($text);
+
+        // <div>isi apapun tanpa div lain</div> → isi
+        if (preg_match('/^<div[^>]*>(.*)<\/div>$/is', $text, $m)
+            && stripos($m[1], '<div') === false
+        ) {
+            return trim($m[1]);
+        }
+
+        return $text;
+    }
+
+    /**
      * Bangun tag <img> dengan format yg SAMA seperti output Summernote:
      *   <p><img src="http://domain/storage/question/{id}/{slot}.{ext}"><br></p>
      */
@@ -462,11 +482,11 @@ class QuestionImportService
                 $penjelasan = $this->normalizeExplanation($row['K'] ?? '');
 
                 $jawaban = [
-                    trim($row['E'] ?? ''),
-                    trim($row['F'] ?? ''),
-                    trim($row['G'] ?? ''),
-                    trim($row['H'] ?? ''),
-                    trim($row['I'] ?? ''),
+                    $this->normalizeAnswer(trim($row['E'] ?? '')),
+                    $this->normalizeAnswer(trim($row['F'] ?? '')),
+                    $this->normalizeAnswer(trim($row['G'] ?? '')),
+                    $this->normalizeAnswer(trim($row['H'] ?? '')),
+                    $this->normalizeAnswer(trim($row['I'] ?? '')),
                 ];
 
                 $jawabanBenar = strtoupper(trim($row['J'] ?? ''));
