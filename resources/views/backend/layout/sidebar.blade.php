@@ -83,6 +83,14 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('console.tryout-source.index') }}"
+                    class="nav-link {{ request()->routeIs('console.tryout-source.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-globe"></i>
+                        <p>Tryout Source</p>
+                    </a>
+                </li>
+
                 <!-- Question -->
                 <li class="nav-item">
                     <a href="{{ route('console.question.index') }}"

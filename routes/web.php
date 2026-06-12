@@ -5,6 +5,7 @@ use App\Http\Controllers\Backend\PaymentController as BackendPaymentController;
 use App\Http\Controllers\Backend\QuestionController as BackendQuestionController;
 use App\Http\Controllers\Backend\QuestionReportController as BackendQuestionReportController;
 use App\Http\Controllers\Backend\TryoutController as BackendTryoutController;
+use App\Http\Controllers\Backend\TryoutSourceController;
 use App\Http\Controllers\Backend\TryoutQuestionController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserActivityController;
@@ -130,6 +131,15 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::put('{id}', 'update')->name('update');
         Route::delete('{id}', 'destroy')->name('destroy');
+    });
+
+
+    Route::controller(TryoutSourceController::class)->prefix('tryout-source')->name('tryout-source.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'destroy')->name('destroy');
     });
 
     // TRYOUT > QUESTION

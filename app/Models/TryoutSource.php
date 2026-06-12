@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class TryoutSource extends Model
 {
-    protected $guards = [];
+    protected $fillable = ['name'];
 
-    public function tryouts(){
-        return $this->hasMany(Tryout::class);
+    public function tryouts()
+    {
+        return $this->hasMany(Tryout::class, 'tryout_source_id');
     }
 }
