@@ -109,11 +109,16 @@ class QuestionImportService
     {
         $ext = strtolower($file->getClientOriginalExtension());
 
-        $token  = bin2hex(random_bytes(16));
         $tmpDir = storage_path('app/tmp');
         if (!is_dir($tmpDir)) {
             mkdir($tmpDir, 0755, true);
         }
+
+        // 🧹 Sapu file review_* lama (>1 jam) yg tertinggal krn batal commit.
+        // Cleanup "nebeng" di sini supaya tidak butuh cron/scheduler.
+        $this->cleanupOldTmp($tmpDir);
+
+        $token      = bin2hex(random_bytes(16));
         $storedPath = "{$tmpDir}/review_{$token}.{$ext}";
         copy($file->getRealPath(), $storedPath);
 
@@ -277,6 +282,15 @@ class QuestionImportService
 
         if (!$topic) {
             return "Topik tidak ditemukan: {$kategori} - {$topik}";
+        }
+
+        // Soal wajib punya teks ATAU gambar (question-{nomor}). Cegah soal "hantu".
+        $soal       = trim($row['D'] ?? '');
+        $hasSoalImg = $imagesDir
+            && $this->findExtractedImage($imagesDir, "question-{$nomor}") !== null;
+
+        if ($soal === '' && !$hasSoalImg) {
+            return "Soal kosong (teks & gambar tidak ditemukan).";
         }
 
         if ($topic->category === 'TKP') {
@@ -528,6 +542,32 @@ class QuestionImportService
             return $f;
         }
         return null;
+    }
+
+    /**
+     * Sapu file tmp import yang tertinggal (review_* lebih tua dari $maxAgeSeconds).
+     * Dipanggil saat analyze() supaya cleanup berjalan tanpa cron/scheduler.
+     * Folder extract sisa (review_extract_*) yg mungkin yatim juga dibersihkan.
+     */
+    private function cleanupOldTmp(string $tmpDir, int $maxAgeSeconds = 3600): void
+    {
+        if (!is_dir($tmpDir)) return;
+
+        $now = time();
+
+        // File: review_{token}.{ext}
+        foreach (glob("{$tmpDir}/review_*") as $path) {
+            if (is_file($path) && ($now - filemtime($path)) > $maxAgeSeconds) {
+                @unlink($path);
+            }
+        }
+
+        // Folder extract yatim (kalau ada proses yg gagal di tengah)
+        foreach (glob("{$tmpDir}/review_extract_*") as $path) {
+            if (is_dir($path) && ($now - filemtime($path)) > $maxAgeSeconds) {
+                $this->rrmdir($path);
+            }
+        }
     }
 
     /**
