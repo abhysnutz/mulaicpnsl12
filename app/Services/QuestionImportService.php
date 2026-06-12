@@ -14,6 +14,13 @@ use Exception;
 class QuestionImportService
 {
     /**
+     * Placeholder posisi gambar di dalam konten cell.
+     * Jika cell mengandung token ini, gambar di-inject PERSIS di posisinya.
+     * Jika tidak ada, gambar di-append di akhir (perilaku lama).
+     */
+    private const IMG_PLACEHOLDER = '[[IMG]]';
+
+    /**
      * Normalisasi teks penjelasan dari cell Excel menjadi HTML <p> per baris,
      * supaya formatnya SELARAS dengan seeder dan editor summernote.
      */
@@ -49,6 +56,33 @@ class QuestionImportService
     {
         $url = asset("storage/{$finalPath}/{$fileName}");
         return '<p><img src="' . $url . '"><br></p>';
+    }
+
+    /**
+     * Inject gambar ke dalam konten.
+     * - Ada token [[IMG]]  → ganti token PERTAMA dgn <img> polos (tanpa wrapper
+     *   <p>, karena token biasanya sudah berada di dalam <div>/<p> sendiri).
+     * - Tidak ada token    → append di akhir dgn format Summernote (legacy).
+     */
+    private function injectImage(string $content, string $finalPath, string $fileName): string
+    {
+        if (str_contains($content, self::IMG_PLACEHOLDER)) {
+            $url     = asset("storage/{$finalPath}/{$fileName}");
+            $bareImg = '<img src="' . $url . '" alt="">';
+            return preg_replace('/\[\[IMG\]\]/', $bareImg, $content, 1);
+        }
+
+        return $content . $this->imgTag($finalPath, $fileName);
+    }
+
+    /**
+     * Jaring pengaman: buang token [[IMG]] yang tersisa supaya tidak pernah
+     * tampil literal ke user (mis. token ditulis tapi file gambarnya tdk ada
+     * — seharusnya sudah tertangkap validateRow, ini lapisan kedua).
+     */
+    private function stripLeftoverPlaceholders(string $content): string
+    {
+        return str_replace(self::IMG_PLACEHOLDER, '', $content);
     }
 
     /**
@@ -293,6 +327,31 @@ class QuestionImportService
             return "Soal kosong (teks & gambar tidak ditemukan).";
         }
 
+        // Token [[IMG]] dipakai tapi file gambarnya tidak ada di ZIP
+        // → kemungkinan lupa memasukkan file, atau salah nama. Gagalkan
+        //   di sini supaya soal tidak tersimpan bolong.
+        $placeholderChecks = [
+            ['D', "question-{$nomor}",    'Soal'],
+            ['K', "explanation-{$nomor}", 'Penjelasan'],
+            ['E', "answer-{$nomor}-A",    'Jawaban A'],
+            ['F', "answer-{$nomor}-B",    'Jawaban B'],
+            ['G', "answer-{$nomor}-C",    'Jawaban C'],
+            ['H', "answer-{$nomor}-D",    'Jawaban D'],
+            ['I', "answer-{$nomor}-E",    'Jawaban E'],
+        ];
+        foreach ($placeholderChecks as [$col, $base, $label]) {
+            $val = (string) ($row[$col] ?? '');
+            if (str_contains($val, self::IMG_PLACEHOLDER)) {
+                $found = $imagesDir
+                    ? $this->findExtractedImage($imagesDir, $base)
+                    : null;
+                if (!$found) {
+                    return "{$label} memakai " . self::IMG_PLACEHOLDER
+                        . " tapi file {$base}.* tidak ditemukan di folder images.";
+                }
+            }
+        }
+
         if ($topic->category === 'TKP') {
             $sorted = $scores;
             sort($sorted);
@@ -440,25 +499,43 @@ class QuestionImportService
 
                 $finalPath = "question/{$question->id}";
 
-                if ($imagesDir) {
-                    $questionHtml    = $soal;
-                    $explanationHtml = $penjelasan ?? '';
+                $questionHtml    = $soal;
+                $explanationHtml = $penjelasan ?? '';
 
+                if ($imagesDir) {
                     if ($file = $this->moveImage($imagesDir, "question-{$nomor}", $finalPath, 'question')) {
-                        $questionHtml = $soal . $this->imgTag($finalPath, $file);
+                        $questionHtml = $this->injectImage($questionHtml, $finalPath, $file);
                     }
 
                     if ($file = $this->moveImage($imagesDir, "explanation-{$nomor}", $finalPath, 'explanation')) {
-                        $explanationHtml = ($penjelasan ?? '') . $this->imgTag($finalPath, $file);
+                        $explanationHtml = $this->injectImage($explanationHtml, $finalPath, $file);
                     }
 
                     foreach (['A', 'B', 'C', 'D', 'E'] as $i => $opt) {
                         if ($file = $this->moveImage($imagesDir, "answer-{$nomor}-{$opt}", $finalPath, $opt)) {
                             $url = asset("storage/{$finalPath}/{$file}");
-                            $jawaban[$i] = '<img src="' . $url . '">';
+
+                            if (str_contains($jawaban[$i], self::IMG_PLACEHOLDER)) {
+                                // Token di dalam teks jawaban → inject di posisi token
+                                $jawaban[$i] = $this->injectImage($jawaban[$i], $finalPath, $file);
+                            } else {
+                                // Legacy: jawaban gambar = <img> saja (teks diabaikan
+                                // krn selama ini jawaban bergambar memang tanpa teks)
+                                $jawaban[$i] = '<img src="' . $url . '">';
+                            }
                         }
                     }
+                }
 
+                // Jaring pengaman: token yg tersisa (apapun sebabnya) dibuang
+                // supaya tidak pernah tampil literal "[[IMG]]" ke user.
+                $questionHtml    = $this->stripLeftoverPlaceholders($questionHtml);
+                $explanationHtml = $this->stripLeftoverPlaceholders($explanationHtml);
+                foreach ($jawaban as $k => $v) {
+                    $jawaban[$k] = $this->stripLeftoverPlaceholders($v);
+                }
+
+                if ($questionHtml !== $soal || $explanationHtml !== ($penjelasan ?? '')) {
                     $question->update([
                         'question'    => $questionHtml,
                         'explanation' => $explanationHtml,
