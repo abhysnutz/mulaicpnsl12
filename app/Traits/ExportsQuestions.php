@@ -12,6 +12,35 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 trait ExportsQuestions
 {
     /**
+     * Token posisi gambar — HARUS sama dengan QuestionImportService::IMG_PLACEHOLDER.
+     */
+    private const EXPORT_IMG_TOKEN = '[[IMG]]';
+
+    /**
+     * Ganti SETIAP tag <img> di HTML menjadi token [[IMG]], TANPA mengganggu
+     * formatting lain (<strong>, <p>, <br>, style text-align, dll).
+     *
+     * Tujuannya: export → import balik (round-trip) mempertahankan POSISI gambar.
+     * Importer akan mengganti [[IMG]] kembali menjadi <img> di posisi yg sama,
+     * dengan URL fresh sesuai ID soal baru (tidak ada URL basi, tidak dobel).
+     *
+     * Catatan: gambar tetap diangkut sebagai file di folder images/ (kolom
+     * "Gambar Soal" dst tetap diisi). Token hanya penanda POSISI di dalam teks.
+     */
+    protected function imagesToPlaceholder(?string $html): string
+    {
+        $html = (string) $html;
+        if (trim($html) === '') {
+            return '';
+        }
+
+        // Ganti tiap elemen <img ...> (self-closing maupun tidak) jadi token.
+        $html = preg_replace('/<img\b[^>]*>(?:<\/img>)?/i', self::EXPORT_IMG_TOKEN, $html);
+
+        return trim($html);
+    }
+
+    /**
      * Bangun file ZIP berisi soal.xlsx + folder images/ dari koleksi soal.
      *
      * @param  \Illuminate\Support\Collection  $questions  Koleksi Question (with topic & answers)
@@ -31,8 +60,6 @@ trait ExportsQuestions
             "A", "B", "C", "D", "E",
             "Jawaban Benar", "Penjelasan",
             "Score A", "Score B", "Score C", "Score D", "Score E",
-            "Gambar Soal", "Gambar Penjelasan",
-            "Gambar A", "Gambar B", "Gambar C", "Gambar D", "Gambar E",
         ];
 
         foreach ($headers as $i => $header) {
@@ -114,36 +141,36 @@ trait ExportsQuestions
                 $score[] = ($category === 'TKP') ? $ans->score : 0;
             }
 
+            // 🔑 HTML mentah TANPA <img> (round-trip). Formatting teks dipertahankan;
+            //    gambar tetap lewat folder images/ + di-append ulang oleh importer.
             $data = [
                 $nomor,
                 $category,
                 $topik,
-                strip_tags($q->question),
-                strip_tags($answers[0]->answer ?? ''),
-                strip_tags($answers[1]->answer ?? ''),
-                strip_tags($answers[2]->answer ?? ''),
-                strip_tags($answers[3]->answer ?? ''),
-                strip_tags($answers[4]->answer ?? ''),
+                $this->imagesToPlaceholder($q->question),
+                $this->imagesToPlaceholder($answers[0]->answer ?? ''),
+                $this->imagesToPlaceholder($answers[1]->answer ?? ''),
+                $this->imagesToPlaceholder($answers[2]->answer ?? ''),
+                $this->imagesToPlaceholder($answers[3]->answer ?? ''),
+                $this->imagesToPlaceholder($answers[4]->answer ?? ''),
                 $jawabanBenar,
-                strip_tags($q->explanation ?? ''),
+                $this->imagesToPlaceholder($q->explanation ?? ''),
                 $score[0] ?? 0,
                 $score[1] ?? 0,
                 $score[2] ?? 0,
                 $score[3] ?? 0,
                 $score[4] ?? 0,
-                $gambarSoal,
-                $gambarPenjelasan,
-                $gambarJawaban[0] ?? '',
-                $gambarJawaban[1] ?? '',
-                $gambarJawaban[2] ?? '',
-                $gambarJawaban[3] ?? '',
-                $gambarJawaban[4] ?? '',
             ];
 
             foreach ($data as $i => $value) {
                 $col = $i + 1;
                 $cell = Coordinate::stringFromColumnIndex($col) . $rowIndex;
-                $sheet->setCellValue($cell, $value);
+                // setValueExplicit STRING supaya HTML (mis. "=...", angka, dll) tidak
+                // disalahartikan Excel sebagai formula/number.
+                $sheet->getCell($cell)->setValueExplicit(
+                    (string) $value,
+                    \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                );
             }
 
             $rowIndex++;

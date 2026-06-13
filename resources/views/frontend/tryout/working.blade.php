@@ -15,7 +15,10 @@
                                 </div>
                             </div>
 
-                            <div id="questionContainer" class="px-5 py-6 sm:p-7 bg-white overflow-hidden shadow-md hover:shadow-lg transition-shadow border border-gray-100 rounded-2xl">
+                            <div id="questionContainer" class="relative px-5 py-6 sm:p-7 bg-white overflow-hidden shadow-md hover:shadow-lg transition-shadow border border-gray-100 rounded-2xl">
+                                <!-- Overlay loading -->
+                                <div id="question-loading"><div class="spinner"></div></div>
+
                                 <div class="flex justify-between items-center">
                                     <h3 class="text-lg font-semibold text-gray-800"> Soal No.
                                         <span id="number-question"></span>
@@ -66,10 +69,10 @@
                                     </div>
                                 </div>
                                 <!-- Legend -->
-                                <div class="flex items-center justify-center gap-4 px-4 pb-4 text-xs text-gray-500">
-                                    <span class="flex items-center"><span class="w-3 h-3 rounded bg-gray-200 mr-1.5"></span>Belum</span>
-                                    <span class="flex items-center"><span class="w-3 h-3 rounded bg-green-400 mr-1.5"></span>Terjawab</span>
-                                    <span class="flex items-center"><span class="w-3 h-3 rounded bg-amber-500 mr-1.5"></span>Aktif</span>
+                                <div class="legend-wrap">
+                                    <span class="legend-item"><span class="legend-dot legend-belum"></span>Belum</span>
+                                    <span class="legend-item"><span class="legend-dot legend-terjawab"></span>Terjawab</span>
+                                    <span class="legend-item"><span class="legend-dot legend-aktif"></span>Aktif</span>
                                 </div>
                             </div>
 
@@ -249,6 +252,7 @@
 
                 $.each(reply.is_answers, function(index, is_answer) {
                     $(`.number-question-list[data-question-id='${is_answer}']`)
+                        .attr('data-answered', '1')
                         .removeClass('bg-gray-200 text-gray-700')
                         .addClass(['bg-green-400', 'text-white']);
                 });
@@ -259,8 +263,10 @@
     function selectedQuestion(index, afterLoad) {
         // reset hanya state "aktif", jangan hapus warna terjawab
         $(`.number-question-list`).each(function() {
-            $(this).removeClass('bg-amber-500 ring-2 ring-amber-300 ring-offset-1').prop('disabled', false);
-            if (!$(this).hasClass('bg-green-400')) {
+            $(this).removeClass('bg-amber-500 ring-2 ring-amber-300 ring-offset-1 bg-green-400 bg-gray-200 text-gray-700 text-white').prop('disabled', false);
+            if ($(this).attr('data-answered') === '1') {
+                $(this).addClass('bg-green-400 text-white');
+            } else {
                 $(this).addClass('bg-gray-200 text-gray-700');
             }
         });
@@ -269,9 +275,6 @@
             dataType: 'json',
             data: { exam_id, index },
             success: function(reply) {
-                // $(`.number-question-list[data-question-id='${reply?.question?.id}']`)
-                //     .removeClass('bg-gray-200 text-gray-700')
-                //     .addClass('bg-amber-500 text-white ring-2 ring-amber-300 ring-offset-1').prop('disabled', true);
 
                 $(`.number-question-list[data-question-id='${reply?.question?.id}']`)
                     .removeClass('bg-gray-200 text-gray-700 bg-green-400')
@@ -303,7 +306,12 @@
                 const qid = reply?.question?.id;
                 if (typeof afterLoad === "function") afterLoad(qid);
             },
-            error: function(xhr) { console.log(xhr.responseText); }
+            error: function(xhr) {
+                console.log(xhr.responseText);
+                isNavigating = false;
+                $('#question-loading').removeClass('show');
+                $("#next-button, #prev-button").prop("disabled", false);
+            }
         });
     }
 
@@ -385,6 +393,7 @@
                 async: true
             }).done(function() {
                 $(`.number-question-list[data-question-id='${question_id}']`)
+                    .attr('data-answered', '1')
                     .removeClass('bg-gray-200 text-gray-700')
                     .addClass('bg-green-400 text-white');
             }).fail(function(xhr) {
@@ -396,6 +405,7 @@
     function goTo(index) {
         if (isNavigating || (typeof currentIndex === "number" && index === currentIndex)) return;
         isNavigating = true;
+        $('#question-loading').addClass('show');
 
         if (currentQuestionId) endQuestion(currentQuestionId);
 
@@ -403,6 +413,7 @@
             currentQuestionId = qid;
             startQuestion(qid);
             isNavigating = false;
+            $('#question-loading').removeClass('show');
         });
     }
 
@@ -428,6 +439,27 @@
 
     $("#next-button").click(() => goTo(currentIndex + 1));
     $("#prev-button").click(() => goTo(currentIndex - 1));
+
+    $(document).on('keydown', function(e) {
+        // Navigasi panah kiri/kanan
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            if ($(e.target).is("input[type='radio']")) {
+                e.preventDefault();
+            }
+            if (e.key === 'ArrowRight') goTo(currentIndex + 1);
+            if (e.key === 'ArrowLeft')  goTo(currentIndex - 1);
+            return;
+        }
+
+        // Pilih opsi dengan huruf A-E
+        let key = e.key.toUpperCase();
+        if (['A', 'B', 'C', 'D', 'E'].includes(key)) {
+            let $radio = $(`#optionsRadios${key}`);
+            if ($radio.length) {
+                $radio.prop('checked', true).trigger('change');
+            }
+        }
+    });
 
     $('#btn-working-help').on('click', function() {
         $('.alert-overflow, .alert-background, .alert-content').fadeIn("fast");

@@ -278,6 +278,13 @@
         $("#next-button").click(function() { selectedQuestion(currentIndex + 1); });
         $("#prev-button").click(function() { selectedQuestion(currentIndex - 1); });
 
+        $(document).on('keydown', function(e) {
+            // jangan ganggu saat user mengetik di modal laporan
+            if ($(e.target).is('input, textarea, select')) return;
+            if (e.key === 'ArrowRight') selectedQuestion(currentIndex + 1);
+            if (e.key === 'ArrowLeft')  selectedQuestion(currentIndex - 1);
+        });
+
         $('#report-button').on('click', function() {
             $('#report-modal').removeClass('hidden').addClass('flex');
         });

@@ -17,6 +17,8 @@ class SettingsSeeder extends Seeder
             ['key' => 'passing_grade_twk', 'value' => '65', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'passing_grade_tiu', 'value' => '80', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'passing_grade_tkp', 'value' => '166', 'created_at' => now(), 'updated_at' => now()],
+            ['key' => 'min_withdrawal', 'value' => '10000', 'created_at' => now(), 'updated_at' => now()],
+            
         ]);
     }
 }

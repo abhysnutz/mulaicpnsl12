@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingsSeeder::class);
         $this->call(TryoutSourceTableSeeder::class);
         $this->call(QuestionTopicsSeeder::class);
-        $this->call(TryoutsSeeder::class);
+        // $this->call(TryoutsSeeder::class);
         // $this->call(QuestionAnswerSeeder::class);
-        $this->call(QuestionSeeder::class);
-        $this->call(AnswerSeeder::class);
+        // $this->call(QuestionSeeder::class);
+        // $this->call(AnswerSeeder::class);
     }
 }

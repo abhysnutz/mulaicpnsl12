@@ -1,5 +1,23 @@
 @extends('frontend.layout')
 @section('content')
+@php
+    // Helper format durasi
+    $fmtDur = function($sec) {
+        $sec = (int) $sec;
+        if ($sec <= 0) return '0 dtk';
+        $h = intdiv($sec, 3600);
+        $m = intdiv($sec % 3600, 60);
+        $s = $sec % 60;
+        $out = [];
+        if ($h > 0) $out[] = $h . ' jam';
+        if ($m > 0) $out[] = $m . ' mnt';
+        if ($s > 0 && $h == 0) $out[] = $s . ' dtk';
+        return implode(' ', $out) ?: '0 dtk';
+    };
+
+    // Helper donut SVG single value (persen 0-100, warna)
+    // dipakai inline di bawah
+@endphp
 <div class="pt-4 pb-20 sm:pt-6 sm:pb-6" style="background-color:#f9fafb; min-height:100vh;">
     <div class="mx-auto px-4 sm:px-6 md:px-5">
         <div class="bg-white px-5 pt-5 pb-8 rounded-2xl shadow-sm border border-gray-100">
@@ -11,7 +29,7 @@
                     <p class="text-base text-gray-600 sm:ml-2">{{ $exam?->tryout?->title }}</p>
                 </div>
 
-                <!-- Tabs -->
+                <!-- Tabs Statistik / Pembahasan -->
                 <div class="border-b border-gray-200">
                     <nav aria-label="Tabs" class="-mb-px flex space-x-8">
                         <a href="#" class="group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm border-amber-500 text-amber-600">
@@ -33,7 +51,6 @@
                     $score   = (int) ($exam?->result?->total_score ?? 0);
                     $maxScore = 550;
                     $pct = $maxScore > 0 ? min(100, round($score / $maxScore * 100)) : 0;
-                    // keliling lingkaran r=80 => 2*pi*80 ≈ 502.65
                     $circ = 502.65;
                     $dash = $circ * (1 - $pct / 100);
                     $passed = $exam?->result?->is_passed;
@@ -45,7 +62,7 @@
                     ];
                 @endphp
 
-                <!-- Kartu skor utama -->
+                <!-- Kartu skor utama (global) -->
                 <div class="mt-6 grid grid-cols-1 lg:grid-cols-5 gap-5">
                     <!-- Donut skor -->
                     <div class="lg:col-span-2 p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center"
@@ -88,8 +105,7 @@
                     <div class="lg:col-span-3 p-6 rounded-2xl border border-gray-100 shadow-sm bg-white">
                         <h3 class="text-base font-bold text-gray-900 mb-1">Rincian Nilai</h3>
                         <p class="text-sm text-gray-500 mb-5">Nilai per kategori dibanding passing grade</p>
-
-                        <div class="space-y-5">
+                        <div style="display:flex; flex-direction:column; gap:22px;">
                             @foreach($cats as $c)
                                 @php
                                     $ok = $c['val'] >= $c['pass'];
@@ -98,43 +114,213 @@
                                     $barColor = $ok ? '#22c55e' : '#ef4444';
                                 @endphp
                                 <div>
-                                    <div class="flex items-center justify-between mb-1.5">
-                                        <div class="flex items-center gap-2">
-                                            <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-xs font-bold text-white"
-                                                  style="background-color:#d97706;">{{ $c['label'] }}</span>
+                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                                        <div style="display:flex; align-items:center; gap:10px;">
+                                            <span style="display:inline-flex; align-items:center; justify-content:center; width:42px; height:30px; border-radius:8px; font-size:12px; font-weight:700; color:#fff; background-color:#d97706; flex-shrink:0;">{{ $c['label'] }}</span>
                                             <span class="text-sm text-gray-600">{{ $c['name'] }}</span>
                                         </div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-lg font-bold" style="color:{{ $barColor }};">{{ $c['val'] }}</span>
+                                        <div style="display:flex; align-items:baseline; gap:4px; flex-shrink:0;">
+                                            <span style="font-size:18px; font-weight:700; color:{{ $barColor }};">{{ $c['val'] }}</span>
                                             <span class="text-xs text-gray-400">/ PG {{ $c['pass'] }}</span>
-                                            @if($ok)
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" style="color:#22c55e;">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                                </svg>
-                                            @else
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" style="color:#ef4444;">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                                </svg>
-                                            @endif
                                         </div>
                                     </div>
-                                    <!-- progress bar dengan marker passing grade -->
-                                    <div class="relative w-full h-3 rounded-full overflow-hidden" style="background-color:#f3f4f6;">
-                                        <div class="absolute left-0 top-0 h-full rounded-full"
-                                             style="width:{{ $barPct }}%; background-color:{{ $barColor }};"></div>
-                                        <div class="absolute top-0 h-full"
-                                             style="left:{{ $passMarker }}%; width:2px; background-color:#9ca3af;"
-                                             title="Passing Grade"></div>
+                                    <div style="position:relative; width:100%; height:12px; border-radius:9999px; overflow:hidden; background-color:#f3f4f6;">
+                                        <div style="position:absolute; left:0; top:0; height:100%; border-radius:9999px; width:{{ $barPct }}%; background-color:{{ $barColor }};"></div>
+                                        <div style="position:absolute; top:0; height:100%; left:{{ $passMarker }}%; width:2px; background-color:#9ca3af;" title="Passing Grade"></div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
-
                         <p class="text-xs text-gray-400 mt-4">Garis abu pada bar menandai posisi passing grade.</p>
                     </div>
                 </div>
+
+                <!-- ===== Panel per kategori (ditumpuk) ===== -->
+                @if(!empty($data['cat_summary']))
+                <div class="mt-6">
+
+                    @foreach(['TWK','TIU','TKP'] as $i => $cat)
+                        @php $cs = $data['cat_summary'][$cat]; @endphp
+                        <div class="cat-panel" data-cat="{{ $cat }}" style="display:block; margin-bottom:20px;">
+                            <div class="p-6 rounded-2xl border border-gray-100 shadow-sm bg-white">
+                                <div class="flex items-center justify-between mb-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold text-white" style="background-color:#d97706;">{{ $cat }}</span>
+                                        <h3 class="text-base font-bold text-gray-900">{{ $cs['name'] }}</h3>
+                                    </div>
+                                    <span class="text-xs text-gray-500">Durasi: {{ $fmtDur($cs['duration']) }}</span>
+                                </div>
+                                <hr class="my-4 border-gray-100">
+
+                                <div style="display:flex; flex-wrap:wrap; gap:32px; align-items:center;">
+                                    <!-- KIRI: ringkasan + donut -->
+                                    <div style="flex:1; min-width:240px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                        @php
+                                            // Donut: TKP pakai proporsi skor, lainnya benar/salah/kosong
+                                            $r = 70; $cir = 2 * 3.14159 * $r; // 439.8
+                                            if ($cat === 'TKP') {
+                                                $p = $cs['score_max'] > 0 ? $cs['score_got'] / $cs['score_max'] : 0;
+                                                $segs = [
+                                                    ['val' => $p,       'color' => '#d97706'],
+                                                    ['val' => 1 - $p,   'color' => '#fde68a'],
+                                                ];
+                                                $centerBig = $cs['score_got'];
+                                                $centerSub = 'dari ' . $cs['score_max'] . ' poin';
+                                                $chartData = [
+                                                    'labels' => ['Skor didapat', 'Sisa'],
+                                                    'values' => [$cs['score_got'], max(0, $cs['score_max'] - $cs['score_got'])],
+                                                    'colors' => ['#d97706', '#fde68a'],
+                                                ];
+                                            } else {
+                                                $tot = max(1, $cs['total']);
+                                                $segs = [
+                                                    ['val' => $cs['benar']/$tot,  'color' => '#22c55e'],
+                                                    ['val' => $cs['salah']/$tot,  'color' => '#ef4444'],
+                                                    ['val' => $cs['kosong']/$tot, 'color' => '#e5e7eb'],
+                                                ];
+                                                $centerBig = $cs['benar'];
+                                                $centerSub = 'benar dari ' . $cs['total'];
+                                                $chartData = [
+                                                    'labels' => ['Benar', 'Salah', 'Kosong'],
+                                                    'values' => [$cs['benar'], $cs['salah'], $cs['kosong']],
+                                                    'colors' => ['#22c55e', '#ef4444', '#e5e7eb'],
+                                                ];
+                                            }
+                                        @endphp
+                                        <div style="position:relative; width:180px; height:180px;"
+                                             data-donut='@json($chartData)'
+                                             data-center-big="{{ $centerBig }}"
+                                             data-center-sub="{{ $centerSub }}">
+                                            <!-- Fallback SVG (disembunyikan jika Chart.js sukses) -->
+                                            <svg class="donut-svg" width="180" height="180" viewBox="0 0 180 180">
+                                                <circle cx="90" cy="90" r="{{ $r }}" fill="none" stroke="#f3f4f6" stroke-width="18"></circle>
+                                                @php $offset = 0; @endphp
+                                                @foreach($segs as $seg)
+                                                    @php
+                                                        $len = $seg['val'] * $cir;
+                                                        $gap = $cir - $len;
+                                                    @endphp
+                                                    @if($len > 0)
+                                                    <circle cx="90" cy="90" r="{{ $r }}" fill="none"
+                                                            stroke="{{ $seg['color'] }}" stroke-width="18"
+                                                            stroke-dasharray="{{ $len }} {{ $gap }}"
+                                                            stroke-dashoffset="{{ -$offset }}"
+                                                            transform="rotate(-90 90 90)"></circle>
+                                                    @endif
+                                                    @php $offset += $len; @endphp
+                                                @endforeach
+                                            </svg>
+                                            <!-- Canvas Chart.js (diisi via JS) -->
+                                            <canvas class="donut-canvas" width="180" height="180" style="display:none;"></canvas>
+                                            <div class="absolute inset-0 flex flex-col items-center justify-center" style="pointer-events:none;">
+                                                <span class="text-3xl font-bold text-gray-900">{{ $centerBig }}</span>
+                                                <span class="text-xs text-gray-500">{{ $centerSub }}</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Legend ringkasan -->
+                                        <div class="flex flex-wrap items-center justify-center gap-4 mt-5 text-sm">
+                                            @if($cat === 'TKP')
+                                                <span class="flex items-center"><span style="width:12px;height:12px;border-radius:3px;background:#d97706;display:inline-block;margin-right:6px;"></span>Skor {{ $cs['score_got'] }}</span>
+                                                <span class="flex items-center"><span style="width:12px;height:12px;border-radius:3px;background:#fde68a;display:inline-block;margin-right:6px;"></span>Maks {{ $cs['score_max'] }}</span>
+                                                <span class="flex items-center"><span style="width:12px;height:12px;border-radius:3px;background:#9ca3af;display:inline-block;margin-right:6px;"></span>Kosong {{ $cs['kosong'] }}</span>
+                                            @else
+                                                <span class="flex items-center"><span style="width:12px;height:12px;border-radius:3px;background:#22c55e;display:inline-block;margin-right:6px;"></span>Benar {{ $cs['benar'] }}</span>
+                                                <span class="flex items-center"><span style="width:12px;height:12px;border-radius:3px;background:#ef4444;display:inline-block;margin-right:6px;"></span>Salah {{ $cs['salah'] }}</span>
+                                                <span class="flex items-center"><span style="width:12px;height:12px;border-radius:3px;background:#e5e7eb;display:inline-block;margin-right:6px;"></span>Kosong {{ $cs['kosong'] }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- KANAN: bar sub-topik -->
+                                    <div style="flex:1.4; min-width:280px;">
+                                        <p class="text-sm font-semibold text-gray-700 mb-4">Skor per Sub-Kategori</p>
+                                        <div style="display:flex; flex-direction:column; gap:14px;">
+                                            @foreach($cs['topics'] as $t)
+                                                @php
+                                                    if ($t['pct'] >= 70)      $tColor = '#22c55e';
+                                                    elseif ($t['pct'] >= 40)  $tColor = '#f59e0b';
+                                                    else                      $tColor = '#ef4444';
+                                                    if ($cat === 'TKP') {
+                                                        $detail = $t['score_got'] . ' / ' . $t['score_max'] . ' poin';
+                                                    } else {
+                                                        $detail = $t['correct'] . ' / ' . $t['total'] . ' benar';
+                                                    }
+                                                @endphp
+                                                <div>
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <span class="text-sm text-gray-700">{{ $t['name'] }}</span>
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="text-xs text-gray-400">{{ $fmtDur($t['duration']) }}</span>
+                                                            <span class="text-xs text-gray-400">·</span>
+                                                            <span class="text-xs text-gray-400">{{ $detail }}</span>
+                                                            <span class="text-sm font-bold" style="color:{{ $tColor }}; min-width:42px; text-align:right; display:inline-block;">{{ $t['pct'] }}%</span>
+                                                        </div>
+                                                    </div>
+                                                    <div style="position:relative; width:100%; height:10px; border-radius:9999px; overflow:hidden; background-color:#f3f4f6;">
+                                                        <div style="position:absolute; left:0; top:0; height:100%; border-radius:9999px; width:{{ $t['pct'] }}%; background-color:{{ $tColor }};"></div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                @endif
+
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('js-bottom')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Chart === 'undefined') return; // gagal load -> SVG fallback tetap tampil
+
+        document.querySelectorAll('[data-donut]').forEach(function(wrap) {
+            var data, canvas = wrap.querySelector('.donut-canvas'),
+                svg = wrap.querySelector('.donut-svg');
+            try {
+                data = JSON.parse(wrap.getAttribute('data-donut'));
+            } catch (e) { return; }
+            if (!canvas) return;
+
+            // Chart.js sukses -> sembunyikan SVG, tampilkan canvas
+            if (svg) svg.style.display = 'none';
+            canvas.style.display = 'block';
+
+            new Chart(canvas, {
+                type: 'doughnut',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.values,
+                        backgroundColor: data.colors,
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    cutout: '68%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ' ' + ctx.label + ': ' + ctx.parsed;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+@endpush

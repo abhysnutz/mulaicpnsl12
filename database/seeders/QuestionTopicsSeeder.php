@@ -43,30 +43,5 @@ class QuestionTopicsSeeder extends Seeder
         ];
 
         QuestionTopic::insert($topics);
-
-        // DB::table('question_topics')->insert($topics);
-
-
-        // 6 TWK - NASIONALISME
-        // 6 TWK - INTEGRITAS
-        // 6 TWK - BELA NEGARA
-        // 6 TWK - PILAR NEGARA
-        // 6 TWK - BAHASA INDONESIA
-        // 4 TIU - VERBAL (ANALOGI)
-        // 3 TIU - VERBAL (SILOGISME)
-        // 4 TIU - VERBAL (LOGIKA ANALITIK)
-        // 5 TIU - NUMERIK (HITUNG CEPAT) (GAMBAR)
-        // 5 TIU - NUMERIK (DERET)
-        // 4 TIU - NUMERIK (PERBANDINGAN) (GAMBAR)
-        // 4 TIU - NUMERIK (SOAL CERITA) (GAMBAR)
-        // 2 TIU - FIGURAL (ANALOGI GAMBAR) (GAMBAR)
-        // 2 TIU - FIGURAL (KETIDAKSAMAAN) (GAMBAR)
-        // 2 TIU - FIGURAL (SERIAL) (GAMBAR)
-        // 8 TKP - PROFESIONALISME
-        // 8 TKP - PELAYANAN PUBLIK
-        // 8 TKP - JEJARING KERJA
-        // 7 TKP - SOSIAL BUDAYA
-        // 7 TKP - TEKNOLOGI INFORMASI DAN KOMUNIKASI
-        // 7 TKP - ANTI RADIKALISME
     }
 }
