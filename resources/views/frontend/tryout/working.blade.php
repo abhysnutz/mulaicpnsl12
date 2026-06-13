@@ -435,6 +435,20 @@
         if (currentQuestionId) endQuestion(currentQuestionId);
     });
 
+    // Kirim end saat tab ditutup/refresh (pakai sendBeacon agar terkirim walau halaman ditutup)
+    function endQuestionBeacon(questionId) {
+        if (!questionId || !navigator.sendBeacon) return;
+        const data = new FormData();
+        data.append('user_exam_id', userExamId);
+        data.append('question_id', questionId);
+        data.append('_token', "{{ csrf_token() }}");
+        navigator.sendBeacon("{{ route('tryout.question.end') }}", data);
+    }
+
+    window.addEventListener('beforeunload', function() {
+        if (currentQuestionId) endQuestionBeacon(currentQuestionId);
+    });
+
     window.addEventListener('focus', () => { getTime(); });
 
     $("#next-button").click(() => goTo(currentIndex + 1));

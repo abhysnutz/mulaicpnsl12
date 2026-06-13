@@ -19,7 +19,7 @@ use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\TryoutController;
 use App\Http\Controllers\Frontend\WalletController;
-use App\Http\Controllers\QuestionTimeController;
+use App\Http\Controllers\Frontend\QuestionTimeController;
 use App\Http\Controllers\Frontend\QuestionReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
