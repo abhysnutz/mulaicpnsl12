@@ -13,7 +13,7 @@
                             {{-- Export & Fresh Migrate --}}
                             <div class="d-flex flex-wrap gap-2">
                                 <a href="{{ route('console.backup.export') }}" class="btn btn-success d-flex align-items-center shadow-sm mr-2">
-                                    <i class="fas fa-database mr-2"></i> Export Now
+                                    <i class="fas fa-database mr-2"></i> Backup Now
                                 </a>
 
                                 <form action="{{ route('console.backup.migrate-fresh') }}" method="POST" class="d-inline"

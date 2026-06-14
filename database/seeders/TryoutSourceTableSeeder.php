@@ -15,7 +15,6 @@ class TryoutSourceTableSeeder extends Seeder
         DB::table('tryout_sources')->insert([
             [ 'name' => 'Teman ASN', 'created_at' => now(), 'updated_at' => now(), ],
             [ 'name' => 'AYO CPNS', 'created_at' => now(), 'updated_at' => now(), ],
-            [ 'name' => 'Website D', 'created_at' => now(), 'updated_at' => now(), ],
         ]);
     }
 }

@@ -301,6 +301,9 @@ class BackupController extends Controller
             ]);
             $migrateOutput = \Artisan::output();
 
+            // Hapus semua gambar soal (file yatim setelah DB di-reset)
+            \Illuminate\Support\Facades\Storage::disk('public')->deleteDirectory('question');
+
             \Artisan::call('cache:clear');
             \Artisan::call('config:clear');
             \Artisan::call('route:clear');
@@ -308,7 +311,7 @@ class BackupController extends Controller
 
             \Illuminate\Support\Facades\Redis::connection()->flushdb();
 
-            return redirect()->route('login')->with('success', 'Database & cache berhasil di-reset. Silakan login ulang.');
+            return redirect()->route('login')->with('success', 'Database, gambar soal & cache berhasil di-reset. Silakan login ulang.');
         } catch (\Exception $e) {
             return back()->with('error', 'Migrate fresh gagal: ' . $e->getMessage());
         }

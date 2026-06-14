@@ -74,7 +74,7 @@ class QuestionImportService
      */
     private function imgTag(string $finalPath, string $fileName): string
     {
-        $url = asset("storage/{$finalPath}/{$fileName}");
+        $url = "/storage/{$finalPath}/{$fileName}";
         return '<p><img src="' . $url . '"><br></p>';
     }
 
@@ -87,7 +87,7 @@ class QuestionImportService
     private function injectImage(string $content, string $finalPath, string $fileName): string
     {
         if (str_contains($content, self::IMG_PLACEHOLDER)) {
-            $url     = asset("storage/{$finalPath}/{$fileName}");
+            $url     = "/storage/{$finalPath}/{$fileName}";
             $bareImg = '<img src="' . $url . '" alt="">';
             return preg_replace('/\[\[IMG\]\]/', $bareImg, $content, 1);
         }
@@ -533,7 +533,7 @@ class QuestionImportService
 
                     foreach (['A', 'B', 'C', 'D', 'E'] as $i => $opt) {
                         if ($file = $this->moveImage($imagesDir, "answer-{$nomor}-{$opt}", $finalPath, $opt)) {
-                            $url = asset("storage/{$finalPath}/{$file}");
+                            $url = "/storage/{$finalPath}/{$file}";
 
                             if (str_contains($jawaban[$i], self::IMG_PLACEHOLDER)) {
                                 // Token di dalam teks jawaban → inject di posisi token
