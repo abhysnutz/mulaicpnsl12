@@ -5,15 +5,16 @@ use App\Http\Controllers\Backend\PaymentController as BackendPaymentController;
 use App\Http\Controllers\Backend\QuestionController as BackendQuestionController;
 use App\Http\Controllers\Backend\QuestionReportController as BackendQuestionReportController;
 use App\Http\Controllers\Backend\TryoutController as BackendTryoutController;
+use App\Http\Controllers\Backend\MaterialController as BackendMaterialController;
 use App\Http\Controllers\Backend\TryoutSourceController;
 use App\Http\Controllers\Backend\TryoutQuestionController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserActivityController;
 use App\Http\Controllers\Backend\BackupController;
+use \App\Http\Controllers\Frontend\MaterialController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\ReferralCommissionController;
 use App\Http\Controllers\Backend\WithdrawalController;
-use App\Http\Controllers\Frontend\DownloadController;
 use App\Http\Controllers\Frontend\ExamController;
 use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController;
@@ -81,16 +82,17 @@ Route::group(['prefix' => 'tryout', 'middleware' => ['auth','checkSingleSession'
 });
 
 
-// DOWNLOAD
-Route::controller(DownloadController::class)->prefix('download')->middleware(['auth','checkSingleSession'])->name('download.')->group(function () {
+// MATERI
+Route::controller(MaterialController::class)->prefix('material')->middleware(['auth','checkSingleSession'])->name('material.')->group(function () {
     Route::get('/', 'index')->name('index');
+    Route::get('{id}/download', 'download')->name('download');
 });
 
 // PAYMENT
 Route::controller(PaymentController::class)->prefix('payment')->middleware(['auth','checkSingleSession'])->name('payment.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('store', 'store')->name('store');
-    });
+    Route::get('/', 'index')->name('index');
+    Route::post('store', 'store')->name('store');
+});
 
 Route::get('petunjuk_upgrade', function(){ return view('frontend.petunjuk_upgrade'); })->middleware(['auth','checkSingleSession'])->name('petunjuk_upgrade');
 
@@ -144,21 +146,19 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
 
     // TRYOUT > QUESTION
     Route::controller(TryoutQuestionController::class)->prefix('tryout/{tryout_id}/question')->name('tryout.question.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('create', 'create')->name('create');
-            Route::post('store', 'store')->name('store');
-            Route::get('{id}/edit', 'edit')->name('edit');
-            Route::put('{id}', 'update')->name('update');
-            Route::delete('{id}', 'destroy')->name('destroy');
-            Route::post('reorder', 'reorder')->name('reorder');
-            Route::post('attach', 'attach')->name('attach');
-            Route::get('export', 'export')->name('export');
-            Route::post('import', 'import')->name('import');
-            Route::post('import/analyze', 'analyzeImport')->name('import.analyze');
-            Route::post('import/commit', 'commitImport')->name('import.commit');
-
-
-        });
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::delete('{id}', 'destroy')->name('destroy');
+        Route::post('reorder', 'reorder')->name('reorder');
+        Route::post('attach', 'attach')->name('attach');
+        Route::get('export', 'export')->name('export');
+        Route::post('import', 'import')->name('import');
+        Route::post('import/analyze', 'analyzeImport')->name('import.analyze');
+        Route::post('import/commit', 'commitImport')->name('import.commit');
+    });
 
     // QUESTION BANK
     Route::controller(BackendQuestionController::class)->prefix('question')->name('question.')->group(function () {
@@ -175,6 +175,16 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::post('import', 'import')->name('import');
         Route::post('import/analyze', 'analyzeImport')->name('import.analyze');
         Route::post('import/commit', 'commitImport')->name('import.commit');
+    });
+
+    // MATERI (DOWNLOAD)
+    Route::controller(BackendMaterialController::class)->prefix('material')->name('material.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::delete('{id}', 'destroy')->name('destroy');
     });
 
     // DATABASE BACKUP

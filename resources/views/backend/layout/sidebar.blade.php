@@ -100,6 +100,15 @@
                     </a>
                 </li>
 
+                <!-- Materi -->
+                <li class="nav-item">
+                    <a href="{{ route('console.material.index') }}"
+                       class="nav-link {{ Request::is('console/material', 'console/material/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-file-pdf"></i>
+                        <p>Materi</p>
+                    </a>
+                </li>
+
                 <!-- Database Backup -->
                 <li class="nav-item">
                     <a href="{{ route('console.backup.index') }}"

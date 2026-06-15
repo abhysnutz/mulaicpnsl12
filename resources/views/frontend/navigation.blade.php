@@ -36,7 +36,7 @@
                         </div>
                         <p class="mt-1 font-medium text-xs text-gray-700">Hasil Tryout</p>
                     </a>
-                    <a href="{{ route('download.index') }}">
+                    <a href="{{ route('material.index') }}">
                         <div class="w-full flex justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="text-gray-700 h-6 w-6" fill="gray">
                                 <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z"></path>
@@ -110,8 +110,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg> Hasil Tryout
                     </a>
-                    <a href="{{ route('download.index') }}" class="group flex items-center px-2 py-2 text-base font-medium rounded-md {{ request()->routeIs('download.index') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('download.index') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
+                    <a href="{{ route('material.index') }}" class="group flex items-center px-2 py-2 text-base font-medium rounded-md {{ request()->routeIs('material.*') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('material.*') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                             <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z"></path>
                         </svg> Materi Download
                     </a>
@@ -195,8 +195,8 @@
                     </a>
 
                     <!-- Materi Download -->
-                    <a href="{{ route('download.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('download.index') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('download.index') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
+                    <a href="{{ route('material.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('material.*') ? 'bg-amber-100 text-gray-900' : 'text-gray-600 hover:bg-amber-100 hover:text-gray-900' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="mr-3 h-6 w-6 {{ request()->routeIs('material.*') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}">
                             <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z"></path>
                         </svg> Materi Download
                     </a>
