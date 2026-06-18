@@ -21,11 +21,8 @@ trait ExportsQuestions
      * formatting lain (<strong>, <p>, <br>, style text-align, dll).
      *
      * Tujuannya: export → import balik (round-trip) mempertahankan POSISI gambar.
-     * Importer akan mengganti [[IMG]] kembali menjadi <img> di posisi yg sama,
-     * dengan URL fresh sesuai ID soal baru (tidak ada URL basi, tidak dobel).
-     *
-     * Catatan: gambar tetap diangkut sebagai file di folder images/ (kolom
-     * "Gambar Soal" dst tetap diisi). Token hanya penanda POSISI di dalam teks.
+     * Importer mengganti [[IMG]] kembali jadi <img> di posisi yg sama, dgn URL
+     * fresh sesuai ID soal baru (tidak ada URL basi, tidak dobel).
      */
     protected function imagesToPlaceholder(?string $html): string
     {
@@ -34,17 +31,56 @@ trait ExportsQuestions
             return '';
         }
 
-        // Ganti tiap elemen <img ...> (self-closing maupun tidak) jadi token.
         $html = preg_replace('/<img\b[^>]*>(?:<\/img>)?/i', self::EXPORT_IMG_TOKEN, $html);
 
         return trim($html);
     }
 
     /**
-     * Bangun file ZIP berisi soal.xlsx + folder images/ dari koleksi soal.
+     * Kumpulkan SEMUA file gambar berurutan untuk satu slot di folder storage soal:
+     *   {slot}      → gambar ke-1 (mis. explanation.jpg)
+     *   {slot}-2    → gambar ke-2 (mis. explanation-2.jpg)
+     *   {slot}-3    → …
+     * Berhenti saat nomor berikutnya tidak ada.
      *
-     * @param  \Illuminate\Support\Collection  $questions  Koleksi Question (with topic & answers)
-     * @param  string  $fileName  Nama file ZIP yang akan diunduh
+     * Mengembalikan array: [ ['ext'=>'jpg','rel'=>'question/12/explanation.jpg'], ... ]
+     * Terurut sesuai posisi. Kosong bila gambar pertama tidak ada.
+     *
+     * Cermin dari QuestionImportService::collectSequentialImages().
+     */
+    private function collectSequentialExportImages(string $imagePath, string $slot): array
+    {
+        $find = function (string $base) use ($imagePath) {
+            foreach (['png', 'jpg', 'jpeg', 'webp', 'gif'] as $ext) {
+                $rel = "{$imagePath}/{$base}.{$ext}";
+                if (Storage::disk('public')->exists($rel)) {
+                    return ['ext' => $ext, 'rel' => $rel];
+                }
+            }
+            return null;
+        };
+
+        $out = [];
+
+        // Gambar pertama: tanpa suffix
+        $first = $find($slot);
+        if (!$first) {
+            return [];
+        }
+        $out[] = $first;
+
+        // Lanjut -2, -3, … sampai putus
+        $n = 2;
+        while (($next = $find("{$slot}-{$n}")) !== null) {
+            $out[] = $next;
+            $n++;
+        }
+
+        return $out;
+    }
+
+    /**
+     * Bangun file ZIP berisi soal.xlsx + folder images/ dari koleksi soal.
      */
     protected function buildExportZip(Collection $questions, string $fileName)
     {
@@ -52,9 +88,6 @@ trait ExportsQuestions
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Export Soal');
 
-        // ==========================
-        // 📌 Header kolom
-        // ==========================
         $headers = [
             "Nomor", "Kategori", "Topik", "Soal",
             "A", "B", "C", "D", "E",
@@ -76,7 +109,7 @@ trait ExportsQuestions
         // 🗂️ Map gambar utk ZIP: [ 'images/question-1.png' => '/path/absolut' ]
         $imageMap = [];
 
-        // 🔎 Cari file gambar dgn ekstensi apapun untuk slot tertentu.
+        // 🔎 Cari file gambar tunggal (utk jawaban A–E yg tetap single).
         $findImage = function (string $imagePath, string $slot) {
             foreach (['png', 'jpg', 'jpeg', 'webp', 'gif'] as $ext) {
                 $rel = "{$imagePath}/{$slot}.{$ext}";
@@ -87,9 +120,6 @@ trait ExportsQuestions
             return null;
         };
 
-        // ==========================
-        // 📝 Isi data soal
-        // ==========================
         $rowIndex = 2;
         foreach ($questions->values() as $no => $q) {
             $nomor    = $no + 1; // nomor urut Excel = kunci penamaan gambar
@@ -99,29 +129,28 @@ trait ExportsQuestions
 
             $imagePath = "question/{$q->id}";
 
-            // --- Gambar soal ---
-            $gambarSoal = '';
-            if ($img = $findImage($imagePath, 'question')) {
-                $gambarSoal = "question-{$nomor}.{$img['ext']}";
-                $imageMap["images/{$gambarSoal}"] = Storage::disk('public')->path($img['rel']);
+            // --- Gambar SOAL (multi): question-{n}, question-{n}-2, … ---
+            foreach ($this->collectSequentialExportImages($imagePath, 'question') as $idx => $img) {
+                $name = $idx === 0
+                    ? "question-{$nomor}.{$img['ext']}"
+                    : "question-{$nomor}-" . ($idx + 1) . ".{$img['ext']}";
+                $imageMap["images/{$name}"] = Storage::disk('public')->path($img['rel']);
             }
 
-            // --- Gambar penjelasan ---
-            $gambarPenjelasan = '';
-            if ($img = $findImage($imagePath, 'explanation')) {
-                $gambarPenjelasan = "explanation-{$nomor}.{$img['ext']}";
-                $imageMap["images/{$gambarPenjelasan}"] = Storage::disk('public')->path($img['rel']);
+            // --- Gambar PENJELASAN (multi): explanation-{n}, explanation-{n}-2, … ---
+            foreach ($this->collectSequentialExportImages($imagePath, 'explanation') as $idx => $img) {
+                $name = $idx === 0
+                    ? "explanation-{$nomor}.{$img['ext']}"
+                    : "explanation-{$nomor}-" . ($idx + 1) . ".{$img['ext']}";
+                $imageMap["images/{$name}"] = Storage::disk('public')->path($img['rel']);
             }
 
-            // --- Gambar jawaban A–E ---
-            $gambarJawaban = [];
+            // --- Gambar JAWABAN A–E (tetap single) ---
             foreach (['A', 'B', 'C', 'D', 'E'] as $opt) {
-                $namaFile = '';
                 if ($img = $findImage($imagePath, $opt)) {
-                    $namaFile = "answer-{$nomor}-{$opt}.{$img['ext']}";
-                    $imageMap["images/{$namaFile}"] = Storage::disk('public')->path($img['rel']);
+                    $name = "answer-{$nomor}-{$opt}.{$img['ext']}";
+                    $imageMap["images/{$name}"] = Storage::disk('public')->path($img['rel']);
                 }
-                $gambarJawaban[] = $namaFile;
             }
 
             // Jawaban benar (TWK/TIU)
@@ -141,8 +170,7 @@ trait ExportsQuestions
                 $score[] = ($category === 'TKP') ? $ans->score : 0;
             }
 
-            // 🔑 HTML mentah TANPA <img> (round-trip). Formatting teks dipertahankan;
-            //    gambar tetap lewat folder images/ + di-append ulang oleh importer.
+            // 🔑 HTML mentah: <img> → [[IMG]] (posisi gambar dipertahankan).
             $data = [
                 $nomor,
                 $category,
@@ -165,8 +193,6 @@ trait ExportsQuestions
             foreach ($data as $i => $value) {
                 $col = $i + 1;
                 $cell = Coordinate::stringFromColumnIndex($col) . $rowIndex;
-                // setValueExplicit STRING supaya HTML (mis. "=...", angka, dll) tidak
-                // disalahartikan Excel sebagai formula/number.
                 $sheet->getCell($cell)->setValueExplicit(
                     (string) $value,
                     \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
@@ -176,14 +202,10 @@ trait ExportsQuestions
             $rowIndex++;
         }
 
-        // 🪄 Auto lebar kolom
         foreach (range(1, count($headers)) as $col) {
             $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($col))->setAutoSize(true);
         }
 
-        // ==========================
-        // 💾 Tulis Excel ke temp, bungkus jadi ZIP
-        // ==========================
         $tmpXlsx = tempnam(sys_get_temp_dir(), 'soal_') . '.xlsx';
         (new Xlsx($spreadsheet))->save($tmpXlsx);
 

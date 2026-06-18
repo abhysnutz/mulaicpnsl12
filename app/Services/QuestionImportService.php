@@ -13,17 +13,8 @@ use Exception;
 
 class QuestionImportService
 {
-    /**
-     * Placeholder posisi gambar di dalam konten cell.
-     * Jika cell mengandung token ini, gambar di-inject PERSIS di posisinya.
-     * Jika tidak ada, gambar di-append di akhir (perilaku lama).
-     */
     private const IMG_PLACEHOLDER = '[[IMG]]';
 
-    /**
-     * Normalisasi teks penjelasan dari cell Excel menjadi HTML <p> per baris,
-     * supaya formatnya SELARAS dengan seeder dan editor summernote.
-     */
     private function normalizeExplanation(?string $text): ?string
     {
         $text = trim((string) $text);
@@ -31,7 +22,6 @@ class QuestionImportService
             return null;
         }
 
-        // Sudah HTML? jangan diutak-atik.
         if (preg_match('/<[a-z][\s\S]*>/i', $text)) {
             return $text;
         }
@@ -48,42 +38,26 @@ class QuestionImportService
             ->implode('');
     }
 
-    /**
-     * Normalisasi teks jawaban: buang wrapper <div> tunggal hasil copy
-     * dari sumber luar. <div> adalah elemen block sehingga memaksa opsi
-     * turun baris di bawah label (A. \n Tata Usaha). Hanya unwrap kalau
-     * SELURUH isi cell adalah satu div — multi-div / nested dibiarkan.
-     */
     private function normalizeAnswer(string $text): string
     {
         $text = trim($text);
 
-        // <div>isi apapun tanpa div lain</div> → isi
-        if (preg_match('/^<div[^>]*>(.*)<\/div>$/is', $text, $m)
-            && stripos($m[1], '<div') === false
+        if (preg_match('/^<(div|p)\b[^>]*>(.*)<\/\1>$/is', $text, $m)
+            && stripos($m[2], '<div') === false
+            && stripos($m[2], '<p') === false
         ) {
-            return trim($m[1]);
+            return trim($m[2]);
         }
 
         return $text;
     }
 
-    /**
-     * Bangun tag <img> dengan format yg SAMA seperti output Summernote:
-     *   <p><img src="http://domain/storage/question/{id}/{slot}.{ext}"><br></p>
-     */
     private function imgTag(string $finalPath, string $fileName): string
     {
         $url = "/storage/{$finalPath}/{$fileName}";
         return '<p><img src="' . $url . '"><br></p>';
     }
 
-    /**
-     * Inject gambar ke dalam konten.
-     * - Ada token [[IMG]]  → ganti token PERTAMA dgn <img> polos (tanpa wrapper
-     *   <p>, karena token biasanya sudah berada di dalam <div>/<p> sendiri).
-     * - Tidak ada token    → append di akhir dgn format Summernote (legacy).
-     */
     private function injectImage(string $content, string $finalPath, string $fileName): string
     {
         if (str_contains($content, self::IMG_PLACEHOLDER)) {
@@ -95,20 +69,11 @@ class QuestionImportService
         return $content . $this->imgTag($finalPath, $fileName);
     }
 
-    /**
-     * Jaring pengaman: buang token [[IMG]] yang tersisa supaya tidak pernah
-     * tampil literal ke user (mis. token ditulis tapi file gambarnya tdk ada
-     * — seharusnya sudah tertangkap validateRow, ini lapisan kedua).
-     */
     private function stripLeftoverPlaceholders(string $content): string
     {
         return str_replace(self::IMG_PLACEHOLDER, '', $content);
     }
 
-    /**
-     * Cari file gambar di folder extract berdasarkan basis nama (tanpa ekstensi),
-     * mendukung ekstensi apapun. Mengembalikan nama file lengkap atau null.
-     */
     private function findExtractedImage(string $imagesDir, string $base): ?string
     {
         foreach (['png', 'jpg', 'jpeg', 'webp', 'gif'] as $ext) {
@@ -120,9 +85,6 @@ class QuestionImportService
         return null;
     }
 
-    /**
-     * Entry point utama untuk file hasil upload (UploadedFile).
-     */
     public function importFromUpload($file, $tryoutId = null)
     {
         $ext  = strtolower($file->getClientOriginalExtension());
@@ -131,10 +93,6 @@ class QuestionImportService
         return $this->importFromFile($path, $tryoutId, $ext);
     }
 
-    /**
-     * Entry point import dari path. Mendukung .zip (Excel + folder images/)
-     * maupun .xlsx polos (tanpa gambar).
-     */
     public function importFromFile(string $filePath, $tryoutId = null, ?string $extHint = null)
     {
         $ext = $extHint ?: strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
@@ -150,15 +108,6 @@ class QuestionImportService
         return $this->process($filePath, null, $tryoutId);
     }
 
-    // =====================================================================
-    // 🔍 MODE REVIEW (2 TAHAP)
-    // =====================================================================
-
-    /**
-     * TAHAP 1 — Analisa (dry-run).
-     * Simpan file upload ke tmp dengan token, validasi SEMUA baris TANPA
-     * menyimpan ke DB. Mengembalikan ringkasan + detail per baris.
-     */
     public function analyze($file, $tryoutId = null): array
     {
         $ext = strtolower($file->getClientOriginalExtension());
@@ -168,8 +117,6 @@ class QuestionImportService
             mkdir($tmpDir, 0755, true);
         }
 
-        // 🧹 Sapu file review_* lama (>1 jam) yg tertinggal krn batal commit.
-        // Cleanup "nebeng" di sini supaya tidak butuh cron/scheduler.
         $this->cleanupOldTmp($tmpDir);
 
         $token      = bin2hex(random_bytes(16));
@@ -201,9 +148,6 @@ class QuestionImportService
         ];
     }
 
-    /**
-     * TAHAP 2 — Commit dari token hasil analyze().
-     */
     public function commitFromToken(string $token, string $ext, $tryoutId = null): array
     {
         if (!preg_match('/^[a-f0-9]{32}$/', $token)) {
@@ -228,10 +172,6 @@ class QuestionImportService
         return $result;
     }
 
-    /**
-     * Tentukan sumber xlsx + images dari file tmp.
-     * @return array [string $xlsxPath, ?string $imagesDir, ?string $cleanupDir]
-     */
     private function resolveSources(string $storedPath, string $ext): array
     {
         if ($ext === '') {
@@ -265,10 +205,6 @@ class QuestionImportService
         return [$storedPath, null, null];
     }
 
-    /**
-     * Validasi semua baris TANPA menulis ke DB.
-     * @return array<int,array{row:int,number:int,status:string,label:string,reason:?string}>
-     */
     private function collectValidation(string $xlsxPath, ?string $imagesDir): array
     {
         $spreadsheet = IOFactory::load($xlsxPath);
@@ -303,11 +239,6 @@ class QuestionImportService
         return $out;
     }
 
-    /**
-     * Validasi SATU baris. Mengembalikan pesan error (string) bila gagal,
-     * atau null bila lolos. Dipakai analyze() (dry-run) DAN process() (commit)
-     * supaya aturan validasi tidak pernah berbeda.
-     */
     private function validateRow(array $row, ?string $imagesDir): ?string
     {
         $nomor    = (int) trim($row['A'] ?? 0);
@@ -338,7 +269,6 @@ class QuestionImportService
             return "Topik tidak ditemukan: {$kategori} - {$topik}";
         }
 
-        // Soal wajib punya teks ATAU gambar (question-{nomor}). Cegah soal "hantu".
         $soal       = trim($row['D'] ?? '');
         $hasSoalImg = $imagesDir
             && $this->findExtractedImage($imagesDir, "question-{$nomor}") !== null;
@@ -347,24 +277,45 @@ class QuestionImportService
             return "Soal kosong (teks & gambar tidak ditemukan).";
         }
 
-        // Token [[IMG]] dipakai tapi file gambarnya tidak ada di ZIP
-        // → kemungkinan lupa memasukkan file, atau salah nama. Gagalkan
-        //   di sini supaya soal tidak tersimpan bolong.
-        $placeholderChecks = [
+        // ── Validasi multi-gambar untuk SOAL & PENJELASAN ──
+        // Jumlah token [[IMG]] HARUS sama dgn jumlah file gambar berurutan.
+        $multiChecks = [
             ['D', "question-{$nomor}",    'Soal'],
             ['K', "explanation-{$nomor}", 'Penjelasan'],
-            ['E', "answer-{$nomor}-A",    'Jawaban A'],
-            ['F', "answer-{$nomor}-B",    'Jawaban B'],
-            ['G', "answer-{$nomor}-C",    'Jawaban C'],
-            ['H', "answer-{$nomor}-D",    'Jawaban D'],
-            ['I', "answer-{$nomor}-E",    'Jawaban E'],
         ];
-        foreach ($placeholderChecks as [$col, $base, $label]) {
+        foreach ($multiChecks as [$col, $base, $label]) {
+            $val        = (string) ($row[$col] ?? '');
+            $tokenCount = substr_count($val, self::IMG_PLACEHOLDER);
+            $fileCount  = $imagesDir ? count($this->collectSequentialImages($imagesDir, $base)) : 0;
+
+            if ($tokenCount === 0) {
+                continue; // tidak pakai token → append legacy, tidak divalidasi ketat
+            }
+
+            if ($fileCount === 0) {
+                return "{$label} memakai " . self::IMG_PLACEHOLDER
+                    . " tapi file {$base}.* tidak ditemukan di folder images.";
+            }
+
+            if ($tokenCount !== $fileCount) {
+                return "{$label}: jumlah " . self::IMG_PLACEHOLDER
+                    . " ({$tokenCount}) tidak sama dengan jumlah file gambar ({$fileCount}). "
+                    . "Pastikan {$base}, {$base}-2, {$base}-3, … sesuai jumlah token.";
+            }
+        }
+
+        // ── Validasi token jawaban A–E (tetap single) ──
+        $answerChecks = [
+            ['E', "answer-{$nomor}-A", 'Jawaban A'],
+            ['F', "answer-{$nomor}-B", 'Jawaban B'],
+            ['G', "answer-{$nomor}-C", 'Jawaban C'],
+            ['H', "answer-{$nomor}-D", 'Jawaban D'],
+            ['I', "answer-{$nomor}-E", 'Jawaban E'],
+        ];
+        foreach ($answerChecks as [$col, $base, $label]) {
             $val = (string) ($row[$col] ?? '');
             if (str_contains($val, self::IMG_PLACEHOLDER)) {
-                $found = $imagesDir
-                    ? $this->findExtractedImage($imagesDir, $base)
-                    : null;
+                $found = $imagesDir ? $this->findExtractedImage($imagesDir, $base) : null;
                 if (!$found) {
                     return "{$label} memakai " . self::IMG_PLACEHOLDER
                         . " tapi file {$base}.* tidak ditemukan di folder images.";
@@ -394,8 +345,36 @@ class QuestionImportService
     }
 
     /**
-     * Deteksi tipe dari beberapa byte awal file.
+     * Kumpulkan SEMUA file gambar berurutan untuk satu basis nama:
+     *   {base}      → gambar ke-1 (tanpa suffix)
+     *   {base}-2    → gambar ke-2
+     *   {base}-3    → gambar ke-3
+     *   … berhenti saat nomor berikutnya tidak ditemukan.
+     *
+     * Mengembalikan array nama file lengkap, terurut: ['explanation-58.jpg', 'explanation-58-2.jpg', …]
+     * Kosong bila gambar pertama ({base}) tidak ada.
      */
+    private function collectSequentialImages(string $imagesDir, string $base): array
+    {
+        $files = [];
+
+        // Gambar pertama: tanpa suffix
+        $first = $this->findExtractedImage($imagesDir, $base);
+        if (!$first) {
+            return []; // tidak ada gambar sama sekali utk slot ini
+        }
+        $files[] = $first;
+
+        // Lanjut -2, -3, -4, … sampai putus
+        $n = 2;
+        while (($next = $this->findExtractedImage($imagesDir, "{$base}-{$n}")) !== null) {
+            $files[] = $next;
+            $n++;
+        }
+
+        return $files;
+    }
+
     private function detectByMagicBytes(string $filePath): string
     {
         $fh = @fopen($filePath, 'rb');
@@ -414,9 +393,6 @@ class QuestionImportService
         return 'xlsx';
     }
 
-    /**
-     * Extract ZIP ke folder temp, temukan soal.xlsx, proses, lalu bersihkan.
-     */
     private function importFromZip(string $zipPath, $tryoutId = null)
     {
         $extractDir = storage_path('app/tmp/import_' . uniqid());
@@ -448,11 +424,6 @@ class QuestionImportService
         return $result;
     }
 
-    /**
-     * Proses isi Excel dalam SATU transaction (all-or-nothing).
-     * Jika ADA baris gagal validasi, SEMUA dibatalkan (rollback) & exception
-     * dilempar. Validasi pakai validateRow() yg sama dgn tahap review.
-     */
     private function process(string $xlsxPath, ?string $imagesDir, $tryoutId = null)
     {
         $spreadsheet = IOFactory::load($xlsxPath);
@@ -523,32 +494,30 @@ class QuestionImportService
                 $explanationHtml = $penjelasan ?? '';
 
                 if ($imagesDir) {
-                    if ($file = $this->moveImage($imagesDir, "question-{$nomor}", $finalPath, 'question')) {
-                        $questionHtml = $this->injectImage($questionHtml, $finalPath, $file);
-                    }
+                    // SOAL — multi-gambar (token [[IMG]] berurutan) atau single/append
+                    $questionHtml = $this->injectMultiImages(
+                        $questionHtml, $imagesDir, "question-{$nomor}", $finalPath, 'question'
+                    );
 
-                    if ($file = $this->moveImage($imagesDir, "explanation-{$nomor}", $finalPath, 'explanation')) {
-                        $explanationHtml = $this->injectImage($explanationHtml, $finalPath, $file);
-                    }
+                    // PENJELASAN — multi-gambar
+                    $explanationHtml = $this->injectMultiImages(
+                        $explanationHtml, $imagesDir, "explanation-{$nomor}", $finalPath, 'explanation'
+                    );
 
+                    // JAWABAN A–E — tetap single
                     foreach (['A', 'B', 'C', 'D', 'E'] as $i => $opt) {
                         if ($file = $this->moveImage($imagesDir, "answer-{$nomor}-{$opt}", $finalPath, $opt)) {
                             $url = "/storage/{$finalPath}/{$file}";
 
                             if (str_contains($jawaban[$i], self::IMG_PLACEHOLDER)) {
-                                // Token di dalam teks jawaban → inject di posisi token
                                 $jawaban[$i] = $this->injectImage($jawaban[$i], $finalPath, $file);
                             } else {
-                                // Legacy: jawaban gambar = <img> saja (teks diabaikan
-                                // krn selama ini jawaban bergambar memang tanpa teks)
                                 $jawaban[$i] = '<img src="' . $url . '">';
                             }
                         }
                     }
                 }
 
-                // Jaring pengaman: token yg tersisa (apapun sebabnya) dibuang
-                // supaya tidak pernah tampil literal "[[IMG]]" ke user.
                 $questionHtml    = $this->stripLeftoverPlaceholders($questionHtml);
                 $explanationHtml = $this->stripLeftoverPlaceholders($explanationHtml);
                 foreach ($jawaban as $k => $v) {
@@ -607,8 +576,69 @@ class QuestionImportService
     }
 
     /**
-     * Pindahkan gambar dari folder extract ke storage final.
+     * Sisipkan gambar (bisa lebih dari satu) ke dalam konten.
+     *
+     * - Konten mengandung [[IMG]]:
+     *     Tiap token ke-N diganti gambar ke-N (berurutan dari
+     *     collectSequentialImages). Jumlah sudah dipastikan cocok oleh
+     *     validateRow, tapi tetap aman bila tidak (token sisa dibuang nanti).
+     *
+     * - Konten TIDAK mengandung [[IMG]] tapi gambar ada:
+     *     Append SEMUA gambar di akhir (legacy), berurutan.
+     *
+     * - Tidak ada gambar sama sekali: konten dikembalikan apa adanya.
+     *
+     * Tiap file dipindah ke storage final dgn nama slot unik:
+     *   gambar ke-1 → {slot}.{ext}      (mis. explanation.jpg)
+     *   gambar ke-2 → {slot}-2.{ext}    (mis. explanation-2.jpg)
+     *   …
      */
+    private function injectMultiImages(
+        string $content,
+        string $imagesDir,
+        string $base,
+        string $finalPath,
+        string $slot
+    ): string {
+        $sources = $this->collectSequentialImages($imagesDir, $base);
+        if (empty($sources)) {
+            return $content; // tidak ada gambar utk slot ini
+        }
+
+        // Pindahkan semua file ke storage final dgn nama slot berurutan.
+        // $finalNames[i] = nama file final utk gambar ke-(i+1)
+        $finalNames = [];
+        foreach ($sources as $i => $srcName) {
+            $ext       = pathinfo($srcName, PATHINFO_EXTENSION);
+            $finalName = $i === 0 ? "{$slot}.{$ext}" : "{$slot}-" . ($i + 1) . ".{$ext}";
+
+            Storage::disk('public')->makeDirectory($finalPath);
+            $contents = file_get_contents("{$imagesDir}/{$srcName}");
+            Storage::disk('public')->put("{$finalPath}/{$finalName}", $contents);
+
+            $finalNames[] = $finalName;
+        }
+
+        // Ada token → ganti tiap token berurutan dgn gambar ke-N
+        if (str_contains($content, self::IMG_PLACEHOLDER)) {
+            foreach ($finalNames as $finalName) {
+                if (!str_contains($content, self::IMG_PLACEHOLDER)) {
+                    break; // token habis (jumlah dijaga validateRow)
+                }
+                $url     = "/storage/{$finalPath}/{$finalName}";
+                $bareImg = '<img src="' . $url . '" alt="">';
+                $content = preg_replace('/\[\[IMG\]\]/', $bareImg, $content, 1);
+            }
+            return $content;
+        }
+
+        // Tidak ada token → append semua gambar di akhir (legacy)
+        foreach ($finalNames as $finalName) {
+            $content .= $this->imgTag($finalPath, $finalName);
+        }
+        return $content;
+    }
+
     private function moveImage(string $imagesDir, string $base, string $finalPath, string $slot): ?string
     {
         $found = $this->findExtractedImage($imagesDir, $base);
@@ -627,9 +657,6 @@ class QuestionImportService
         return $finalName;
     }
 
-    /**
-     * Cari file *.xlsx di dalam folder extract (cek root dulu, lalu subfolder).
-     */
     private function locateXlsx(string $dir): ?string
     {
         foreach (glob("{$dir}/*.xlsx") as $f) {
@@ -641,25 +668,18 @@ class QuestionImportService
         return null;
     }
 
-    /**
-     * Sapu file tmp import yang tertinggal (review_* lebih tua dari $maxAgeSeconds).
-     * Dipanggil saat analyze() supaya cleanup berjalan tanpa cron/scheduler.
-     * Folder extract sisa (review_extract_*) yg mungkin yatim juga dibersihkan.
-     */
     private function cleanupOldTmp(string $tmpDir, int $maxAgeSeconds = 3600): void
     {
         if (!is_dir($tmpDir)) return;
 
         $now = time();
 
-        // File: review_{token}.{ext}
         foreach (glob("{$tmpDir}/review_*") as $path) {
             if (is_file($path) && ($now - filemtime($path)) > $maxAgeSeconds) {
                 @unlink($path);
             }
         }
 
-        // Folder extract yatim (kalau ada proses yg gagal di tengah)
         foreach (glob("{$tmpDir}/review_extract_*") as $path) {
             if (is_dir($path) && ($now - filemtime($path)) > $maxAgeSeconds) {
                 $this->rrmdir($path);
@@ -667,9 +687,6 @@ class QuestionImportService
         }
     }
 
-    /**
-     * Hapus folder rekursif.
-     */
     private function rrmdir(string $dir): void
     {
         if (!is_dir($dir)) return;
@@ -681,9 +698,6 @@ class QuestionImportService
         @rmdir($dir);
     }
 
-    // ======================================================
-    // 🔁 Backward compat
-    // ======================================================
     public function importFromExcel($file, $tryoutId = null)
     {
         if (is_string($file)) {
