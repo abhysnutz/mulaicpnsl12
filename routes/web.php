@@ -6,12 +6,13 @@ use App\Http\Controllers\Backend\QuestionController as BackendQuestionController
 use App\Http\Controllers\Backend\QuestionReportController as BackendQuestionReportController;
 use App\Http\Controllers\Backend\TryoutController as BackendTryoutController;
 use App\Http\Controllers\Backend\MaterialController as BackendMaterialController;
+use App\Http\Controllers\Backend\MonitoringController;
 use App\Http\Controllers\Backend\TryoutSourceController;
 use App\Http\Controllers\Backend\TryoutQuestionController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserActivityController;
 use App\Http\Controllers\Backend\BackupController;
-use \App\Http\Controllers\Frontend\MaterialController;
+use App\Http\Controllers\Frontend\MaterialController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\ReferralCommissionController;
 use App\Http\Controllers\Backend\WithdrawalController;
@@ -226,6 +227,12 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::post('store', 'store')->name('store');
         Route::post('update', 'update')->name('update');
         Route::delete('destroy', 'destroy')->name('destroy');
+    });
+
+    Route::controller(MonitoringController::class)->prefix('monitoring')->name('monitoring.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/stats', 'stats')->name('stats');
+        Route::get('/history', 'history')->name('history');
     });
 });
 

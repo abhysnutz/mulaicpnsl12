@@ -144,6 +144,14 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('console.monitoring.index') }}"
+                    class="nav-link {{ request()->routeIs('console/monitoring.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-server"></i>
+                        <p>Monitoring</p>
+                    </a>
+                </li>
+
                 <!-- Settings -->
                 <li class="nav-item">
                     <a href="{{ route('console.setting.index') }}"
