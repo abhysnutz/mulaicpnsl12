@@ -176,6 +176,7 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
         Route::post('import', 'import')->name('import');
         Route::post('import/analyze', 'analyzeImport')->name('import.analyze');
         Route::post('import/commit', 'commitImport')->name('import.commit');
+        Route::delete('bulk-destroy', 'bulkDestroy')->name('bulk-destroy');
     });
 
     // MATERI (DOWNLOAD)

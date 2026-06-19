@@ -12,8 +12,14 @@
 .table td img:hover {
     opacity: .8;
 }
+/* popover daftar tryout */
+.popover { max-width: 320px; }
+.popover-body ul { margin: 0; padding-left: 1.1rem; }
+.popover-body ul li { margin-bottom: .2rem; }
+/* header sortable */
+.sort-link { color: inherit; text-decoration: none; }
+.sort-link:hover { text-decoration: underline; }
 </style>
-
 @endpush
 @section('content')
     @include('backend.layout.breadcrumb',['content' => 'Question' ])
@@ -100,76 +106,145 @@
                         </div>
                     </div>
 
-                    <div class="card mb-4">
+                    {{-- Form bulk delete membungkus tabel --}}
+                    <form id="bulkDeleteForm" action="{{ route('console.question.bulk-destroy') }}" method="POST"
+                          onsubmit="return confirm('Hapus semua soal yang dipilih? Tindakan ini tidak bisa dibatalkan.');">
+                        @csrf
+                        @method('DELETE')
 
-                        <div class="card-header d-flex align-items-center">
-                            <h3 class="card-title mb-0">
-                                Question Management
-                                <span class="badge badge-info ml-2">{{ $questions->count() }} soal</span>
-                            </h3>
-                            <a href ="{{ route('console.question.create') }}" type="button" class="btn btn-primary btn-sm ml-auto">
-                                <strong>
-                                    <i class="fas fa-plus fa-fw mr-1"></i> 
-                                    <span style="letter-spacing: 0.05em;">CREATE</span>
-                                </strong>
-                            </a>
-                        </div>
+                        <div class="card mb-4">
 
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-head-fixed text-nowrap">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 10px">No</th>
-                                        <th>Soal</th>
-                                        <th>Kategori</th>
-                                        <th>Topik</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($questions as $question)
-                                        <tr class="align-middle">
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
-                                                {{ Str::limit(strip_tags($question?->question), 100) }}
-                                                @if (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $question?->question, $m))
-                                                    <img src="{{ $m[1] }}" alt="Gambar soal" style="max-height:40px; margin-left:6px; vertical-align:middle;">
-                                                @endif
-                                            </td>
-                                            <td>{{ $question?->topic?->category }}</td>
-                                            <td>{{ $question?->topic?->name }}</td>
-                                            <td class="d-flex align-items-center">
-                                                <a href="{{ route('console.question.preview', $question->id) }}" target="_blank" class="btn btn-info btn-sm mr-2">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <form action="{{ route('console.question.clone', $question->id) }}" method="POST" class="mr-2">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-primary">
-                                                        <i class="fas fa-clone me-1"></i>
-                                                    </button>
-                                                </form>
-                                                <a href="{{ route('console.question.edit',$question->id) }}" class="btn btn-warning btn-sm mr-2">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <form class="mr-2" action="{{ route('console.question.destroy',$question->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus question ini?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @empty
+                            <div class="card-header d-flex align-items-center flex-wrap">
+                                <h3 class="card-title mb-0">
+                                    Question Management
+                                    <span class="badge badge-info ml-2">
+                                        {{ $isFiltered ? $questions->count() : $questions->total() }} soal
+                                    </span>
+                                </h3>
+
+                                {{-- Tombol hapus terpilih: muncul saat ada yang dicentang --}}
+                                <button type="submit" id="btnBulkDelete" class="btn btn-danger btn-sm ml-3" style="display:none;">
+                                    <i class="fas fa-trash mr-1"></i> Hapus Terpilih (<span id="selectedCount">0</span>)
+                                </button>
+
+                                <a href="{{ route('console.question.create') }}" type="button" class="btn btn-primary btn-sm ml-auto">
+                                    <strong>
+                                        <i class="fas fa-plus fa-fw mr-1"></i>
+                                        <span style="letter-spacing: 0.05em;">CREATE</span>
+                                    </strong>
+                                </a>
+                            </div>
+
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-head-fixed text-nowrap">
+                                    <thead>
                                         <tr>
-                                            <td colspan="5" class="text-center text-muted py-4">
-                                                Tidak ada soal yang cocok dengan filter.
-                                            </td>
+                                            <th style="width: 10px">
+                                                <input type="checkbox" id="checkAll" aria-label="Pilih semua soal">
+                                            </th>
+                                            <th style="width: 10px">No</th>
+                                            <th>Soal</th>
+                                            <th>Kategori</th>
+                                            <th>Topik</th>
+                                            <th style="width: 90px">
+                                                @php
+                                                    $nextDir = ($sort === 'tryout_count' && $dir === 'desc') ? 'asc' : 'desc';
+                                                    $sortParams = array_merge(request()->query(), ['sort' => 'tryout_count', 'dir' => $nextDir]);
+                                                @endphp
+                                                <a href="{{ route('console.question.index', $sortParams) }}" class="sort-link" title="Urutkan berdasarkan jumlah tryout">
+                                                    Tryout
+                                                    @if ($sort === 'tryout_count')
+                                                        <i class="fas fa-sort-{{ $dir === 'asc' ? 'up' : 'down' }}"></i>
+                                                    @else
+                                                        <i class="fas fa-sort text-muted"></i>
+                                                    @endif
+                                                </a>
+                                            </th>
+                                            <th>Action</th>
                                         </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($questions as $question)
+                                            <tr class="align-middle">
+                                                <td>
+                                                    <input type="checkbox" name="ids[]" value="{{ $question->id }}"
+                                                           class="row-check" aria-label="Pilih soal #{{ $question->id }}">
+                                                </td>
+                                                <td>{{ $isFiltered ? $loop->iteration : ($questions->firstItem() + $loop->index) }}</td>
+                                                <td>
+                                                    {{ Str::limit(strip_tags($question?->question), 100) }}
+                                                    @if (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $question?->question, $m))
+                                                        <img src="{{ $m[1] }}" alt="Gambar soal" style="max-height:40px; margin-left:6px; vertical-align:middle;">
+                                                    @endif
+                                                </td>
+                                                <td>{{ $question?->topic?->category }}</td>
+                                                <td>{{ $question?->topic?->name }}</td>
+                                                <td>
+                                                    @if ($question->tryouts_count > 0)
+                                                        @php
+                                                            $tryoutTitles = $question->tryouts->pluck('title')->all();
+                                                            $popoverHtml  = '<ul>' . collect($tryoutTitles)
+                                                                ->map(fn ($t) => '<li>' . e($t) . '</li>')
+                                                                ->implode('') . '</ul>';
+                                                        @endphp
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-outline-info tryout-popover"
+                                                                data-toggle="popover"
+                                                                data-html="true"
+                                                                data-trigger="focus"
+                                                                title="Dipakai di {{ $question->tryouts_count }} tryout"
+                                                                data-content="{{ $popoverHtml }}"
+                                                                aria-label="Soal ini dipakai di {{ $question->tryouts_count }} tryout. Klik untuk lihat daftar.">
+                                                            <i class="fas fa-list-ol mr-1"></i> {{ $question->tryouts_count }}
+                                                        </button>
+                                                    @else
+                                                        <span class="badge badge-secondary" title="Belum dipakai di tryout manapun">0</span>
+                                                    @endif
+                                                </td>
+                                                <td class="d-flex align-items-center">
+                                                    <a href="{{ route('console.question.preview', $question->id) }}" target="_blank" class="btn btn-info btn-sm mr-2">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    {{-- form clone & delete dikeluarkan dari form bulk via formaction tidak bisa; pakai JS submit terpisah --}}
+                                                    <button type="button" class="btn btn-sm btn-primary mr-2 btn-clone"
+                                                            data-action="{{ route('console.question.clone', $question->id) }}">
+                                                        <i class="fas fa-clone"></i>
+                                                    </button>
+                                                    <a href="{{ route('console.question.edit',$question->id) }}" class="btn btn-warning btn-sm mr-2">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-danger btn-sm btn-single-delete"
+                                                            data-action="{{ route('console.question.destroy', $question->id) }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted py-4">
+                                                    Tidak ada soal yang cocok dengan filter.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+
+                            {{-- Pagination hanya saat tidak difilter --}}
+                            @unless ($isFiltered)
+                                <div class="card-footer d-flex justify-content-center">
+                                    {{ $questions->links('pagination::bootstrap-4') }}
+                                </div>
+                            @endunless
                         </div>
-                        <!-- /.card-body -->
-                    </div>
+                    </form>
+
+                    {{-- form tersembunyi untuk clone & single delete (di luar bulk form agar tidak nested) --}}
+                    <form id="actionForm" method="POST" style="display:none;">
+                        @csrf
+                        <input type="hidden" name="_method" id="actionMethod" value="POST">
+                    </form>
                 </div>
             </div>
         </div>
@@ -245,6 +320,55 @@
         });
 
         // ============================
+        // Popover daftar tryout
+        // ============================
+        $('[data-toggle="popover"]').popover({ container: 'body' });
+
+        // ============================
+        // Bulk select & delete
+        // ============================
+        const $checkAll      = $('#checkAll');
+        const $btnBulkDelete = $('#btnBulkDelete');
+        const $selectedCount = $('#selectedCount');
+
+        function refreshBulkUI() {
+            const total   = $('.row-check').length;
+            const checked = $('.row-check:checked').length;
+            $selectedCount.text(checked);
+            $btnBulkDelete.toggle(checked > 0);
+            // sinkronkan state checkAll
+            $checkAll.prop('checked', total > 0 && checked === total);
+            $checkAll.prop('indeterminate', checked > 0 && checked < total);
+        }
+
+        $checkAll.on('change', function () {
+            $('.row-check').prop('checked', this.checked);
+            refreshBulkUI();
+        });
+
+        $(document).on('change', '.row-check', refreshBulkUI);
+
+        // ============================
+        // Clone & single delete (pakai form tersembunyi terpisah)
+        // ============================
+        $(document).on('click', '.btn-clone', function () {
+            const action = $(this).data('action');
+            const $f = $('#actionForm');
+            $f.attr('action', action);
+            $('#actionMethod').val('POST');
+            $f.trigger('submit');
+        });
+
+        $(document).on('click', '.btn-single-delete', function () {
+            if (!confirm('Apakah Anda yakin ingin menghapus question ini?')) return;
+            const action = $(this).data('action');
+            const $f = $('#actionForm');
+            $f.attr('action', action);
+            $('#actionMethod').val('DELETE');
+            $f.trigger('submit');
+        });
+
+        // ============================
         // Filter: topik mengikuti kategori terpilih
         // ============================
         const $filterCategory = $('#filterCategory');
@@ -263,7 +387,6 @@
                 }
             });
 
-            // pertahankan pilihan topik jika masih valid, jika tidak reset ke "Semua Topik"
             if ($filterTopic.find(`option[value="${selected}"]`).length) {
                 $filterTopic.val(selected);
             } else {

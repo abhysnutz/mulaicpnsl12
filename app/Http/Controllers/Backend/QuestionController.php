@@ -27,17 +27,35 @@ class QuestionController extends Controller
         $categories = QuestionTopic::select('category')->distinct()->orderBy('category')->pluck('category');
         $topics     = QuestionTopic::orderBy('category')->orderBy('name')->get();
 
-        $questions = Question::with('topic')
+        $isFiltered = $request->filled('category') || $request->filled('topic_id');
+
+        // sorting (default: terbaru). Hanya izinkan kolom yang valid.
+        $sort = $request->input('sort');
+        $dir  = $request->input('dir') === 'asc' ? 'asc' : 'desc';
+
+        $query = Question::with(['topic', 'tryouts:id,title'])
+            ->withCount('tryouts')
             ->when($request->filled('category'), function ($q) use ($request) {
                 $q->whereHas('topic', fn ($t) => $t->where('category', $request->category));
             })
             ->when($request->filled('topic_id'), function ($q) use ($request) {
                 $q->where('topic_id', $request->topic_id);
-            })
-            ->latest()
-            ->get();
+            });
 
-        return view('backend.question.index', compact('questions', 'categories', 'topics'));
+        if ($sort === 'tryout_count') {
+            $query->orderBy('tryouts_count', $dir);
+        } else {
+            $query->latest();
+        }
+
+        // Pagination HANYA saat tidak difilter. Saat difilter -> tampilkan semua.
+        if ($isFiltered) {
+            $questions = $query->get();
+        } else {
+            $questions = $query->paginate(100)->withQueryString();
+        }
+
+        return view('backend.question.index', compact('questions', 'categories', 'topics', 'isFiltered', 'sort', 'dir'));
     }
 
     public function create(){
@@ -250,6 +268,40 @@ class QuestionController extends Controller
 
         return redirect()->route('console.question.index')
             ->with('success', 'Soal berhasil dihapus dari bank soal!');
+    }
+
+    /**
+     * 🗑️ Hapus banyak soal sekaligus berdasarkan pilihan checkbox.
+     * Menerima array ids[]. Menghapus folder gambar tiap soal juga.
+     */
+    public function bulkDestroy(Request $request){
+        $validated = $request->validate([
+            'ids'   => 'required|array|min:1',
+            'ids.*' => 'integer|exists:questions,id',
+        ]);
+
+        $ids = $validated['ids'];
+
+        DB::beginTransaction();
+        try {
+            foreach ($ids as $id) {
+                $folderPath = "question/{$id}";
+                if (Storage::disk('public')->exists($folderPath)) {
+                    Storage::disk('public')->deleteDirectory($folderPath);
+                }
+            }
+
+            // hapus dalam satu query (jawaban ikut terhapus jika pakai cascade)
+            $deleted = Question::whereIn('id', $ids)->delete();
+
+            DB::commit();
+
+            return redirect()->route('console.question.index')
+                ->with('success', "{$deleted} soal berhasil dihapus dari bank soal!");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal menghapus soal terpilih: ' . $e->getMessage());
+        }
     }
 
     public function image(Request $request){
