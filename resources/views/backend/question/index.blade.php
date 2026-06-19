@@ -19,6 +19,8 @@
 /* header sortable */
 .sort-link { color: inherit; text-decoration: none; }
 .sort-link:hover { text-decoration: underline; }
+/* cegah pilih teks saat shift-click range */
+.row-check { user-select: none; }
 </style>
 @endpush
 @section('content')
@@ -205,7 +207,6 @@
                                                     <a href="{{ route('console.question.preview', $question->id) }}" target="_blank" class="btn btn-info btn-sm mr-2">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    {{-- form clone & delete dikeluarkan dari form bulk via formaction tidak bisa; pakai JS submit terpisah --}}
                                                     <button type="button" class="btn btn-sm btn-primary mr-2 btn-clone"
                                                             data-action="{{ route('console.question.clone', $question->id) }}">
                                                         <i class="fas fa-clone"></i>
@@ -231,7 +232,7 @@
                             </div>
                             <!-- /.card-body -->
 
-                            {{-- Pagination hanya saat tidak difilter --}}
+                            {{-- Pagination hanya saat tidak difilter, di tengah --}}
                             @unless ($isFiltered)
                                 <div class="card-footer d-flex justify-content-center">
                                     {{ $questions->links('pagination::bootstrap-4') }}
@@ -325,11 +326,12 @@
         $('[data-toggle="popover"]').popover({ container: 'body' });
 
         // ============================
-        // Bulk select & delete
+        // Bulk select & delete + shift-click range
         // ============================
         const $checkAll      = $('#checkAll');
         const $btnBulkDelete = $('#btnBulkDelete');
         const $selectedCount = $('#selectedCount');
+        let lastChecked = null;   // index checkbox terakhir yang diklik (untuk shift-range)
 
         function refreshBulkUI() {
             const total   = $('.row-check').length;
@@ -341,12 +343,28 @@
             $checkAll.prop('indeterminate', checked > 0 && checked < total);
         }
 
+        // "select all" di header
         $checkAll.on('change', function () {
             $('.row-check').prop('checked', this.checked);
+            lastChecked = null;   // reset anchor shift setelah select-all
             refreshBulkUI();
         });
 
-        $(document).on('change', '.row-check', refreshBulkUI);
+        // klik checkbox baris: tangani klik biasa DAN shift+klik (range)
+        $(document).on('click', '.row-check', function (e) {
+            const $checks = $('.row-check');        // semua checkbox baris, urut sesuai tampilan
+            const idx     = $checks.index(this);    // posisi checkbox yang baru diklik (0-based)
+
+            if (e.shiftKey && lastChecked !== null) {
+                const start = Math.min(idx, lastChecked);
+                const end   = Math.max(idx, lastChecked);
+                const state = this.checked;         // ikuti state checkbox yang baru diklik
+                $checks.slice(start, end + 1).prop('checked', state);
+            }
+
+            lastChecked = idx;
+            refreshBulkUI();
+        });
 
         // ============================
         // Clone & single delete (pakai form tersembunyi terpisah)
