@@ -162,21 +162,25 @@ Route::group(['prefix' => 'console', 'middleware' => ['auth','admin','checkSingl
     });
 
     // QUESTION BANK
-    Route::controller(BackendQuestionController::class)->prefix('question')->name('question.')->group(function () {
+   Route::controller(BackendQuestionController::class)->prefix('question')->name('question.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
-        Route::get('{id}/edit', 'edit')->name('edit');
-        Route::put('{id}', 'update')->name('update');
-        Route::delete('{id}', 'destroy')->name('destroy');
+
+        // ⬇️ route statis HARUS sebelum route wildcard {id}
+        Route::delete('bulk-destroy', 'bulkDestroy')->name('bulk-destroy');
         Route::post('image', 'image')->name('image');
-        Route::post('{id}/clone', 'clone')->name('clone');
-        Route::get('preview/{id}', 'preview')->name('preview');
         Route::get('export', 'export')->name('export');
         Route::post('import', 'import')->name('import');
         Route::post('import/analyze', 'analyzeImport')->name('import.analyze');
         Route::post('import/commit', 'commitImport')->name('import.commit');
-        Route::delete('bulk-destroy', 'bulkDestroy')->name('bulk-destroy');
+        Route::get('preview/{id}', 'preview')->name('preview');
+
+        // ⬇️ route wildcard {id} di bawah
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('{id}', 'update')->name('update');
+        Route::delete('{id}', 'destroy')->name('destroy');
+        Route::post('{id}/clone', 'clone')->name('clone');
     });
 
     // MATERI (DOWNLOAD)
