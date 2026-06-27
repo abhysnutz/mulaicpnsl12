@@ -9,17 +9,17 @@ use Illuminate\Support\Facades\Storage;
 
 class MaterialController extends Controller
 {
+
     public function index()
     {
         $isPaid = Auth::user()->subscription_status === 'premium';
 
-        // materi aktif, dikelompokkan per kategori topik (TWK/TIU/TKP)
         $materials = Material::with('topic')
             ->where('is_active', true)
             ->whereHas('topic')
             ->get()
             ->sortBy(fn ($m) => $m->topic->category . ' - ' . $m->topic->name)
-            ->groupBy(fn ($m) => $m->topic->category);
+            ->values();
 
         return view('frontend.material.index', compact('materials', 'isPaid'));
     }

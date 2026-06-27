@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Process\Process;
 
@@ -34,7 +35,7 @@ class BackupController extends Controller
                 'name' => basename($file),
                 'size' => $this->formatBytes(filesize($file)),
                 'created_at' => date('d-M-Y H:i', filemtime($file)),
-                'type' => str_ends_with($file, '.tar.gz') ? 'Full (DB + Gambar)' : 'Database',
+                'type' => str_ends_with($file, '.tar.gz') ? 'Full (DB + Gambar + Materi)' : 'Database',
             ])
             ->sortByDesc('created_at')
             ->values();
@@ -97,20 +98,30 @@ class BackupController extends Controller
             // Kalau gagal copy, lanjut saja (backup DB tetap berguna), tapi catat
         }
 
-        // 3. Bungkus workdir jadi satu .tar.gz
+        // 3. Salin folder materi PDF (disk 'local' = storage/app/private/material) ke workdir/material
+        $materialStorage = Storage::disk('local')->path('material');
+        if (is_dir($materialStorage)) {
+            $copyMatCmd = sprintf('cp -r %s %s', escapeshellarg($materialStorage), escapeshellarg("{$workDir}/material"));
+            $copyMatProc = Process::fromShellCommandline($copyMatCmd);
+            $copyMatProc->setTimeout(300);
+            $copyMatProc->run();
+            // Kalau gagal copy, lanjut saja (backup DB + gambar tetap berguna)
+        }
+
+        // 4. Bungkus workdir jadi satu .tar.gz
         $tarCmd = sprintf('tar -czf %s -C %s .', escapeshellarg($path), escapeshellarg($workDir));
         $tarProc = Process::fromShellCommandline($tarCmd);
         $tarProc->setTimeout(300);
         $tarProc->run();
 
-        // 4. Bersihkan workdir
+        // 5. Bersihkan workdir
         $this->cleanupDir($workDir);
 
         if (!$tarProc->isSuccessful()) {
             return back()->with('error', 'Export gagal (kompres): ' . $tarProc->getErrorOutput());
         }
 
-        return back()->with('success', "Backup lengkap (DB + Gambar) berhasil dibuat: {$filename}");
+        return back()->with('success', "Backup lengkap (DB + Gambar + Materi) berhasil dibuat: {$filename}");
     }
 
     public function upload(Request $request)
@@ -152,7 +163,7 @@ class BackupController extends Controller
 
         $db = config('database.connections.mysql');
 
-        // === Backup penuh (.tar.gz): restore DB + gambar ===
+        // === Backup penuh (.tar.gz): restore DB + gambar + materi ===
         if (str_ends_with($filename, '.tar.gz')) {
             return $this->importFull($path, $db, $filename);
         }
@@ -247,10 +258,24 @@ class BackupController extends Controller
             $cpProc->run();
         }
 
-        // 4. Bersihkan
+        // 4. Balikin folder materi PDF ke disk 'local' (storage/app/private/material)
+        $extractedMaterial = "{$workDir}/material";
+        if (is_dir($extractedMaterial)) {
+            $materialStorage = Storage::disk('local')->path('material');
+            if (!is_dir($materialStorage)) {
+                mkdir($materialStorage, 0755, true);
+            }
+            // Salin isi (timpa file yang ada)
+            $copyMatCmd = sprintf('cp -r %s/. %s/', escapeshellarg($extractedMaterial), escapeshellarg($materialStorage));
+            $cpMatProc = Process::fromShellCommandline($copyMatCmd);
+            $cpMatProc->setTimeout(300);
+            $cpMatProc->run();
+        }
+
+        // 5. Bersihkan
         $this->cleanupDir($workDir);
 
-        return back()->with('success', "Restore lengkap (DB + Gambar) berhasil dari '{$filename}'");
+        return back()->with('success', "Restore lengkap (DB + Gambar + Materi) berhasil dari '{$filename}'");
     }
 
     public function download($filename)
