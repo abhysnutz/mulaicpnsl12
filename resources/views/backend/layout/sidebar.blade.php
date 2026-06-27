@@ -31,61 +31,22 @@
                     </a>
                 </li>
 
-                <!-- User -->
-                <li class="nav-item">
-                    <a href="{{ route('console.user.index') }}"
-                       class="nav-link {{ Request::is('console/user*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>User</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('console.user-activity.index') }}"
-                        class="nav-link {{ Request::is('console/user-activity*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-history"></i>
-                        <p>User Activity</p>
-                    </a>
-                </li>
-
-                <!-- Payment -->
-                <li class="nav-item">
-                    <a href="{{ route('console.payment.index') }}"
-                       class="nav-link {{ Request::is('console/payment*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-money-check-alt"></i>
-                        <p>Payment</p>
-                    </a>
-                </li>
-
-                <!-- Penarikan Saldo -->
-                <li class="nav-item">
-                    <a href="{{ route('console.withdrawal.index') }}"
-                       class="nav-link {{ Request::is('console/withdrawal*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-hand-holding-usd"></i>
-                        <p>
-                            Penarikan Saldo
-                            @php
-                                $withdrawalPending = \App\Models\Withdrawal::where('status', 'pending')->count();
-                            @endphp
-                            @if ($withdrawalPending > 0)
-                                <span class="badge badge-danger right">{{ $withdrawalPending }}</span>
-                            @endif
-                        </p>
-                    </a>
-                </li>
+                <!-- ===== CONTENT ===== -->
+                <li class="nav-header">CONTENT</li>
 
                 <!-- Tryout -->
                 <li class="nav-item">
                     <a href="{{ route('console.tryout.index') }}"
-                       class="nav-link {{ Request::is('console/tryout*') ? 'active' : '' }}">
+                       class="nav-link {{ Request::is('console/tryout', 'console/tryout/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-book"></i>
                         <p>Tryout</p>
                     </a>
                 </li>
 
+                <!-- Tryout Source -->
                 <li class="nav-item">
                     <a href="{{ route('console.tryout-source.index') }}"
-                    class="nav-link {{ request()->routeIs('console.tryout-source.*') ? 'active' : '' }}">
+                    class="nav-link {{ Request::is('console/tryout-source', 'console/tryout-source/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-globe"></i>
                         <p>Tryout Source</p>
                     </a>
@@ -105,16 +66,7 @@
                     <a href="{{ route('console.material.index') }}"
                        class="nav-link {{ Request::is('console/material', 'console/material/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-file-pdf"></i>
-                        <p>Materi</p>
-                    </a>
-                </li>
-
-                <!-- Database Backup -->
-                <li class="nav-item">
-                    <a href="{{ route('console.backup.index') }}"
-                    class="nav-link {{ Request::is('console/backup*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-database"></i>
-                        <p>Database Backup</p>
+                        <p>Materials</p>
                     </a>
                 </li>
 
@@ -124,7 +76,7 @@
                     class="nav-link {{ Request::is('console/question-report*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-flag"></i>
                         <p>
-                            Laporan Soal
+                            Question Reports
                             @php
                                 $reportBaru = \App\Models\QuestionReport::where('status', 'baru')->count();
                             @endphp
@@ -135,18 +87,81 @@
                     </a>
                 </li>
 
+                <!-- ===== USER ===== -->
+                <li class="nav-header">USER</li>
+
+                <!-- User -->
+                <li class="nav-item">
+                    <a href="{{ route('console.user.index') }}"
+                       class="nav-link {{ Request::is('console/user', 'console/user/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>User</p>
+                    </a>
+                </li>
+
+                <!-- User Activity -->
+                <li class="nav-item">
+                    <a href="{{ route('console.user-activity.index') }}"
+                        class="nav-link {{ Request::is('console/user-activity', 'console/user-activity/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-history"></i>
+                        <p>User Activity</p>
+                    </a>
+                </li>
+
+                <!-- ===== FINANCE ===== -->
+                <li class="nav-header">FINANCE</li>
+
+                <!-- Payment -->
+                <li class="nav-item">
+                    <a href="{{ route('console.payment.index') }}"
+                       class="nav-link {{ Request::is('console/payment*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-money-check-alt"></i>
+                        <p>Payment</p>
+                    </a>
+                </li>
+
+                <!-- Penarikan Saldo -->
+                <li class="nav-item">
+                    <a href="{{ route('console.withdrawal.index') }}"
+                       class="nav-link {{ Request::is('console/withdrawal*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-hand-holding-usd"></i>
+                        <p>
+                            Withdrawal
+                            @php
+                                $withdrawalPending = \App\Models\Withdrawal::where('status', 'pending')->count();
+                            @endphp
+                            @if ($withdrawalPending > 0)
+                                <span class="badge badge-danger right">{{ $withdrawalPending }}</span>
+                            @endif
+                        </p>
+                    </a>
+                </li>
+
                 <!-- Komisi Referral -->
                 <li class="nav-item">
                     <a href="{{ route('console.commission.index') }}"
                     class="nav-link {{ Request::is('console/commission*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-coins"></i>
-                        <p>Komisi Referral</p>
+                        <p>Referral Commission</p>
                     </a>
                 </li>
 
+                <!-- ===== SYSTEM ===== -->
+                <li class="nav-header">SYSTEM</li>
+
+                <!-- Database Backup -->
+                <li class="nav-item">
+                    <a href="{{ route('console.backup.index') }}"
+                    class="nav-link {{ Request::is('console/backup*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-database"></i>
+                        <p>Database Backup</p>
+                    </a>
+                </li>
+
+                <!-- Monitoring -->
                 <li class="nav-item">
                     <a href="{{ route('console.monitoring.index') }}"
-                    class="nav-link {{ request()->routeIs('console/monitoring.*') ? 'active' : '' }}">
+                    class="nav-link {{ Request::is('console/monitoring*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-server"></i>
                         <p>Monitoring</p>
                     </a>
